@@ -143,17 +143,19 @@ Consider
 
 What is the meaning of `(partial foo 1)`? Is it the application of the
 single arity case, or is it the partial of the double arity case? The
-only answer I can see is that rather than defining `apply` in terms of
-functions apply is defined in terms of partials and partial is defined
-in terms of Fns and Partials. This means that `(apply (partial foo
-3))` for example is what we would typically write as `(foo 3)`, while
-`(foo 3 4)` is `(apply (partial (partial foo 3) 4))`.
+only answer I see is to expose what's happening under the covers with
+Clojure, being that there are really three operations at play here:
+`partial`, `apply` (partial with varargs) and `invoke` which calls a
+fully partialed function. That is, for the `foo` above, `(invoke
+(partial foo 1))` is an invocation of the single arity case, where
+`(invoke (apply foo [1 2]))` would be the double arity case.  `(invoke
+foo)` and `(invoke (apply foo [1 2 3]))` would both be arity errors.
 
 ```
- - (ox.core.Fn/fn?     Any)             : Boolean
- - (ox.core.Fn/compose Fn Any)          : Fn
- - (ox.core.Fn/partial Fn Any)          : Fn
- - (ox.core.Fn/apply   Fn Any* [Any])   : Any
+ - (ox.core.Fn/fn?     Any)    : Boolean
+ - (ox.core.Fn/partial Fn Any) : Fn
+ - (ox.core.Fn/apply   Fn Seq) : Fn
+ - (ox.core.Fn/invoke  Fn)     : Any
 ```
 
 ## Named
