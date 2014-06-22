@@ -138,8 +138,7 @@ Consider
 
 ```
 (defn foo (fn ([x] x)
-              ([x y] y)))
-
+			  ([x y] y)))
 ```
 
 What is the meaning of `(partial foo 1)`? Is it the application of the
