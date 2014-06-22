@@ -7,10 +7,11 @@ clear, clean, platform independant language specification which may be
 reasonably targeted by language and compiler writers.
 
 The Oxlang spect contains, in order
- - A formal parse grammar with explicit whitespace handling rules
- - A spec for the Oxlang/Clojure "standard library"
- - A spec for standard library language extensions
- - A spec for implementation specific host interop
+ - [A formal parse grammar with explicit whitespace handling rules](src/0-grammar.md)
+ - [A spec for the Oxlang/Clojure "standard library" data abstractions](src/1-interfaces.md)
+ - [A spec for the Oxlang "standard library" functions](src/2-functions.md)
+ - [A spec for standard library language extensions](src/3-modules.md)
+ - [A spec for implementation specific host interop](src/4-interop.md)
 
 The intent of Oxlang is not to become a fork of Clojure, but to
 describe the common operations and libraries of all existing Clojure
