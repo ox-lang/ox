@@ -174,9 +174,9 @@ naming scheme.
 Symbols are Named.
 
 ```
- - (ox.core.Symbol/symbol?   Any)           : Boolean
- - (ox.core.Symbol/symbol    String)        : Symbol
- - (ox.core.Symbol/symbol    String String) : Symbol
+ - (ox.core.Symbol/symbol? Any)           : Boolean
+ - (ox.core.Symbol/symbol  String)        : Symbol
+ - (ox.core.Symbol/symbol  String String) : Symbol
 ```
 
 ## Keywords
