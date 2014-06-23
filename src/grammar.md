@@ -37,4 +37,4 @@ implementation.
 
 ## Parser grammar
 
-FIXME
+See the reference Clojure grammar in [clojure.ebnf](clojure.ebnf)
