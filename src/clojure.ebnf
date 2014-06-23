@@ -1,0 +1,81 @@
+file  := < junk > ( sexpr < junk > ) *
+
+sexpr := "(" < junk > ( expr < junk > ) * ")"
+
+junk := ( whitespace | comment ) *
+
+whitespace := #"\s"*
+
+comment := #";[^\n\r\f]*\n\r?"
+
+expr := metaExpr | derefExpr | quoteExpr
+
+metaExpr := meta rawExpr
+
+derefExpr := "@" rawExpr
+
+quoteExpr := "'" rawExpr
+
+rawExpr :=
+	  sexpr
+     	| symbol
+     	| keyword
+     	| token
+     	| string
+     	| number
+     	| vector
+     	| map
+     	| character
+     	| dispatch
+	| expr
+
+meta := "^" (symbol | keyword | map)
+
+symbol := word ( "/" word )?
+
+keyword := ":" symbol
+
+token := nilExpr | nanExpr | infExpr | boolExpr
+
+nilExpr := "nil"
+
+nanExpr := ("+" | "-")? "NaN"
+
+infExpr := ("+" | "-")? "Infinity"
+
+boolExp := "true" | "false"
+
+string :=
+
+number := floatNum | basedNum | bigNum | intNum
+
+floatNum :=
+
+basedNum :=
+
+bigNum :=
+
+intNum :=
+
+vector :=
+
+map :=
+
+character :=
+
+dispatch := "#"
+            ( set
+	    | function
+	    | recordTypeOrClass
+	    | record
+	    | readerExpr )
+
+set := "{" < junk > (rawExpr < junk >)* "}"
+
+function := "(" ")"
+
+recordTypeOrClass := symbol vector
+
+record := symbol map
+
+readerExpr := symbol < whitespace > vector
