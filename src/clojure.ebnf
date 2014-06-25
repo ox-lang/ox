@@ -1,4 +1,4 @@
-file  := < junk > ( sexpr < junk > ) *
+(* file  := < junk > ( sexpr < junk > ) * *)
 
 sexpr := "(" < junk > ( expr < junk > ) * ")"
 
@@ -8,7 +8,7 @@ whitespace := #"\s"*
 
 comment := #";[^\n\r\f]*\n\r?"
 
-expr := metaExpr | derefExpr | quoteExpr
+expr := metaExpr | derefExpr | quoteExpr | rawExpr
 
 metaExpr := meta rawExpr
 
@@ -35,6 +35,8 @@ symbol := word ( "/" word )?
 
 keyword := ":" symbol
 
+word := #"[^\s\d][^/\s]*(/[^/\s\d][^\s]*)?"
+
 token := nilExpr | nanExpr | infExpr | boolExpr
 
 nilExpr := "nil"
@@ -43,7 +45,7 @@ nanExpr := ("+" | "-")? "NaN"  (* Extension to the Clojure reference grammar *)
 
 infExpr := ("+" | "-")? "Infinity" (* Extension to the Clojure reference grammar *)
 
-boolExp := "true" | "false"
+boolExpr := "true" | "false"
 
 string := "\"" ( unicodeChar | escape | char )* "\""
 
@@ -83,7 +85,7 @@ map := "{" < junk > (mapPair < junk >)* "}"
 
 mapPair := rawExpr < junk > rawExpr
 
-character := "\" (namedChar | unicodeChar | char)
+character := "\\" (namedChar | unicodeChar | char)
 
 namedChar := returnChar | tabChar | newlineChar | spaceChar | backspaceChar
 
@@ -103,17 +105,16 @@ uChar := "u" #"[0-9A-F]{4}"
 
 oChar := "o" #"[0-8]{1,8}"
 
-dispatch := "#"
-            ( set
-	    | function
-	    | pattern
-	    | recordTypeOrClass
-	    | record
-	    | readerExpr )
+dispatch := "#" ( set
+	        | function
+                | pattern
+                | recordTypeOrClass
+                | record
+                | readerExpr )
 
-set := "{" < junk > (rawExpr < junk >)* "}"
+set := "{" < junk > ( rawExpr < junk > ) * "}"
 
-function := "(" < junk > (rawExpr < junk >)* ")"
+function := "(" < junk > ( rawExpr < junk > ) * ")"
 
 pattern := string
 
