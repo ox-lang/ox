@@ -1,14 +1,19 @@
-(* file  := < junk > ( sexpr < junk > ) * *)
+file  := < junk * > ( sexpr < junk * > ) *
 
-sexpr := "(" < junk > ( expr < junk > ) * ")"
+sexpr := "(" body ")"
 
-junk := ( whitespace | comment ) *
+body := < junk * > (expr < junk * > ) *
 
-whitespace := #"\s"*
+junk := ( whitespace | comment )
 
-comment := #";[^\n\r\f]*\n\r?"
+whitespace := #"\s"
 
-expr := metaExpr | derefExpr | quoteExpr | rawExpr
+comment := #";[^\n\r\f]*[\n\f]\r?"
+
+expr := metaExpr
+      | derefExpr
+      | quoteExpr
+      | rawExpr
 
 metaExpr := meta rawExpr
 
@@ -16,28 +21,48 @@ derefExpr := "@" rawExpr
 
 quoteExpr := "'" rawExpr
 
-rawExpr :=
-	  sexpr
-     	| symbol
-     	| keyword
-     	| token
-     	| string
-     	| number
-     	| vector
-     	| map
-     	| character
-     	| dispatch
-	| expr
+rawExpr := sexpr
+         / number
+         / keyword
+         / token
+         / string
+         / vector
+         / map
+         / character
+         / dispatch
+         / expr
+         / symbol
 
-meta := "^" (symbol | keyword | map)
+number := floatNum
+        | ratioNum
+        | basedNum
+        | bigNum
+        | intNum
 
-symbol := word ( "/" word )?
+floatNum := #"[+-]?[0-9]+\.[0-9]+"
 
-keyword := ":" symbol
+basedNum := intNum "r" intNum
 
-word := #"[^\s\d][^/\s]*(/[^/\s\d][^\s]*)?"
+bigNum := #"[+-]?[1-9][0-9]*M"
 
-token := nilExpr | nanExpr | infExpr | boolExpr
+ratioNum := intNum "/" intNum
+
+intNum := #"[+-]?[1-9][0-9]*"
+
+meta := "^" ( symbol
+            | keyword
+            | map)
+
+symbol := ( word ( "/" word ) ? ) | "/"
+
+keyword := ":" ":" ? word ( "/" word ) ?
+
+word := #"[^/\s\(\)\d][^/\s\(\)\[\]\{\}]*"
+
+token := nilExpr
+       | nanExpr
+       | infExpr
+       | boolExpr
 
 nilExpr := "nil"
 
@@ -47,9 +72,18 @@ infExpr := ("+" | "-")? "Infinity" (* Extension to the Clojure reference grammar
 
 boolExpr := "true" | "false"
 
-string := "\"" ( unicodeChar | escape | char )* "\""
+string := "\"" ( unicodeChar
+               | escape
+               | char ) *
+          "\""
 
-escape := "\\" ( quoteEscape | tabEscape | retEscape | newlineEscape | slashEscape | breakEscape | feedEscape )
+escape := "\\" ( quoteEscape
+               | tabEscape
+               | retEscape
+               | newlineEscape
+               | slashEscape
+               | breakEscape
+               | feedEscape )
 
 quoteEscape := "\""
 
@@ -67,27 +101,17 @@ feedEscape := "f"
 
 char := #"[^\"]"
 
-number := floatNum | basedNum | bigNum | ratioNum | intNum
+vector := "[" body "]"
 
-floatNum := #"[+-]?[0-9]+\.[0-9]+"
-
-basedNum := #"[1-9][0-9]*r[0-9]+"
-
-bigNum := #"[+-]?[1-9][0-9]*M"
-
-ratioNum := intNum "/" intNum
-
-intNum := #"[+-]?[1-9][0-9]*"
-
-vector := "[" < junk > (rawExpr < junk >)* "]"
-
-map := "{" < junk > (mapPair < junk >)* "}"
-
-mapPair := rawExpr < junk > rawExpr
+map := "{" body "}"
 
 character := "\\" (namedChar | unicodeChar | char)
 
-namedChar := returnChar | tabChar | newlineChar | spaceChar | backspaceChar
+namedChar := returnChar
+           | tabChar
+           | newlineChar
+           | spaceChar
+           | backspaceChar
 
 returnChar := "return"
 
@@ -106,15 +130,15 @@ uChar := "u" #"[0-9A-F]{4}"
 oChar := "o" #"[0-8]{1,8}"
 
 dispatch := "#" ( set
-	        | function
+                | function
                 | pattern
                 | recordTypeOrClass
                 | record
                 | readerExpr )
 
-set := "{" < junk > ( rawExpr < junk > ) * "}"
+set := "{" body "}"
 
-function := "(" < junk > ( rawExpr < junk > ) * ")"
+function := "(" body ")"
 
 pattern := string
 
