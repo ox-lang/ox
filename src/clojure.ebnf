@@ -10,16 +10,17 @@ whitespace := #"\s"
 
 comment := #";[^\n\r\f]*[\n\f]\r?"
 
-expr := metaExpr
-      | derefExpr
-      | quoteExpr
-      | rawExpr
+expr := < ignored > (* FIXME: empty nodes *)
+      / metaExpr
+      / derefExpr
+      / quoteExpr
+      / rawExpr
 
-metaExpr := meta rawExpr
+metaExpr := meta < junk + > rawExpr
 
-derefExpr := "@" rawExpr
+derefExpr := "@" < junk * > rawExpr
 
-quoteExpr := "'" rawExpr
+quoteExpr := "'" < junk * > rawExpr
 
 rawExpr := sexpr
          / number
@@ -51,13 +52,13 @@ intNum := #"[+-]?[1-9][0-9]*"
 
 meta := "^" ( symbol
             | keyword
-            | map)
+            | map )
 
 symbol := ( word ( "/" word ) ? ) | "/"
 
 keyword := ":" ":" ? word ( "/" word ) ?
 
-word := #"[^/\s\(\)\d][^/\s\(\)\[\]\{\}]*"
+word := #"[^/\s\(\)\d\^\@\'][^/\s\(\)\[\]\{\}\^\@\']*"
 
 token := nilExpr
        | nanExpr
@@ -128,6 +129,8 @@ unicodeChar := uChar | oChar
 uChar := "u" #"[0-9A-F]{4}"
 
 oChar := "o" #"[0-8]{1,8}"
+
+ignored := "#_" < junk * > expr
 
 dispatch := "#" ( set
                 | function
