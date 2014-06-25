@@ -113,6 +113,7 @@ namedChar := returnChar
            | newlineChar
            | spaceChar
            | backspaceChar
+	   | ffChar
 
 returnChar := "return"
 
@@ -124,6 +125,8 @@ spaceChar := "space"
 
 backspaceChar := "backspace"
 
+ffChar := "formfeed"
+
 unicodeChar := uChar | oChar
 
 uChar := "u" #"[0-9A-F]{4}"
@@ -133,6 +136,7 @@ oChar := "o" #"[0-8]{1,8}"
 ignored := "#_" < junk * > expr
 
 dispatch := "#" ( set
+                | var
                 | function
                 | pattern
                 | recordTypeOrClass
@@ -140,6 +144,8 @@ dispatch := "#" ( set
                 | readerExpr )
 
 set := "{" body "}"
+
+var := "'" symbol
 
 function := "(" body ")"
 
