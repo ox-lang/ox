@@ -4,7 +4,7 @@
 
 ### *clojure-version*
 ### *data-readers*
-### *default-data-reader-fn* 
+### *default-data-reader-fn*
 ### default-data-readers
 ### global-hierarchy
 
@@ -20,7 +20,7 @@
 ### assert
 ### binding
 ### bound-fn
-### case 
+### case
 ### comment
 ### cond
 ### cond->
@@ -45,12 +45,12 @@
 ### if-let
 ### if-not
 ### if-some
-### import 
+### import
 ### io!
 ### lazy-cat
 ### lazy-seq
 ### let
-### letfn 
+### letfn
 ### locking
 ### loop
 ### memfn
@@ -244,7 +244,7 @@
 ### force
 ### format
 ### frequencies
-### future-call 
+### future-call
 ### future-cancel
 ### future-cancelled?
 ### future-done?
@@ -255,7 +255,7 @@
 ### get-method
 ### get-thread-bindings
 ### get-validator
-### group-by 
+### group-by
 ### hash
 ### hash-map
 ### hash-ordered-coll
@@ -279,7 +279,7 @@
 ### isa?
 ### iterate
 ### iterator-seq
-### juxt 
+### juxt
 ### keep
 ### keep-indexed
 ### key
@@ -358,7 +358,7 @@
 ### partition-by
 ### pcalls
 ### peek
-### persistent! 
+### persistent!
 ### pmap
 ### pop
 ### pop!
@@ -384,7 +384,7 @@
 ### rand-nth
 ### range
 ### ratio?
-### rational? 
+### rational?
 ### rationalize
 ### re-find
 ### re-groups
@@ -488,10 +488,10 @@
 ### to-array
 ### to-array-2d
 ### trampoline
-### transient 
+### transient
 ### tree-seq
 ### true?
-### type 
+### type
 ### unchecked-add
 ### unchecked-add-int
 ### unchecked-byte
