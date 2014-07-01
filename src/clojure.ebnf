@@ -1,5 +1,4 @@
-file  :=
-	   < junk * > ( sexpr < junk * > ) *
+file := < junk * > ( sexpr < junk * > ) *
 
 sexpr := "(" body ")"
 
@@ -24,22 +23,22 @@ derefExpr := "@" < junk * > rawExpr
 quoteExpr := "'" < junk * > rawExpr
 
 rawExpr := sexpr
-	 / number
-	 / keyword
-	 / token
-	 / string
-	 / vector
-	 / map
-	 / character
-	 / dispatch
-	 / expr
-	 / symbol
+         / number
+         / keyword
+         / token
+         / string
+         / vector
+         / map
+         / character
+         / dispatch
+         / expr
+         / symbol
 
 number := floatNum
-	| ratioNum
-	| basedNum
-	| bigNum
-	| intNum
+        | ratioNum
+        | basedNum
+        | bigNum
+        | intNum
 
 floatNum := #"[+-]?[0-9]+\.[0-9]+"
 
@@ -52,8 +51,8 @@ ratioNum := intNum "/" intNum
 intNum := #"[+-]?[1-9][0-9]*"
 
 meta := "^" ( symbol
-	    | keyword
-	    | map )
+            | keyword
+            | map )
 
 symbol := ( word ( "/" word ) ? ) | "/"
 
@@ -75,17 +74,17 @@ infExpr := ("+" | "-")? "Infinity" (* Extension to the Clojure reference grammar
 boolExpr := "true" | "false"
 
 string := "\"" ( unicodeChar
-	       | escape
-	       | char ) *
-	  "\""
+               | escape
+               | char ) *
+          "\""
 
 escape := "\\" ( quoteEscape
-	       | tabEscape
-	       | retEscape
-	       | newlineEscape
-	       | slashEscape
-	       | breakEscape
-	       | feedEscape )
+               | tabEscape
+               | retEscape
+               | newlineEscape
+               | slashEscape
+               | breakEscape
+               | feedEscape )
 
 quoteEscape := "\""
 
@@ -110,11 +109,11 @@ map := "{" body "}"
 character := "\\" (namedChar | unicodeChar | char)
 
 namedChar := returnChar
-	   | tabChar
-	   | newlineChar
-	   | spaceChar
-	   | backspaceChar
-	   | ffChar
+           | tabChar
+           | newlineChar
+           | spaceChar
+           | backspaceChar
+           | ffChar
 
 returnChar := "return"
 
@@ -137,12 +136,12 @@ oChar := "o" #"[0-8]{1,8}"
 ignored := "#_" < junk * > expr
 
 dispatch := "#" ( set
-		| var
-		| function
-		| pattern
-		| recordTypeOrClass
-		| record
-		| readerExpr )
+                | var
+                | function
+                | pattern
+                | recordTypeOrClass
+                | record
+                | readerExpr )
 
 set := "{" body "}"
 
@@ -151,42 +150,42 @@ var := "'" symbol
 function := "(" body ")"
 
 pattern := "\"" ( unicodeChar
-		| escape
-		| patternEscape
-		| char ) *
-	   "\""
+                | escape
+                | patternEscape
+                | char ) *
+           "\""
 
 patternEscape := "\\" ( pClass
-		      | pBlock
-		      | pBoundary )
+                      | pBlock
+                      | pBoundary )
 
 pClass := classDigit
-	| classNotDigit
-	| classWhitespace
-	| classNotWhitespace
-	| classWord
-	| classNotWord
+        | classNotDigit
+        | classWhitespace
+        | classNotWhitespace
+        | classWord
+        | classNotWord
 
 pBlock := "p{"
-	( "Lower"
-	| "Upper"
-	  | "ASCII"
-	  | "Alpha"
-	  | "Digit"
-	  | "Alpha"
-	  | "Punct"
-	  | "Graph"
-	  | "Print"
-	  | "Blank"
-	  | "Cntrl"
-	  | "XDigit"
-	  | "Space"
-	  | "java>owerCase"
-	  | "javaUpperCase"
-	  | "javaMirrored"
-	  | "InGreek"
-	  | "Lu" )
-	  "}"
+        ( "Lower"
+        | "Upper"
+        | "ASCII"
+        | "Alpha"
+        | "Digit"
+        | "Alpha"
+        | "Punct"
+        | "Graph"
+        | "Print"
+        | "Blank"
+        | "Cntrl"
+        | "XDigit"
+        | "Space"
+        | "java>owerCase"
+        | "javaUpperCase"
+        | "javaMirrored"
+        | "InGreek"
+        | "Lu" )
+        "}"
 
 recordTypeOrClass := symbol vector
 
