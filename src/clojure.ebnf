@@ -4,7 +4,7 @@ sexpr := "(" body ")"
 
 body := < junk * > (expr < junk * > ) *
 
-junk := ( whitespace | comment )
+junk := ( whitespace / comment )
 
 whitespace := #"\s"
 
@@ -35,10 +35,10 @@ rawExpr := sexpr
          / symbol
 
 number := floatNum
-        | ratioNum
-        | basedNum
-        | bigNum
-        | intNum
+        / ratioNum
+        / basedNum
+        / bigNum
+        / intNum
 
 floatNum := #"[+-]?[0-9]+\.[0-9]+"
 
@@ -51,40 +51,40 @@ ratioNum := intNum "/" intNum
 intNum := #"[+-]?[1-9][0-9]*"
 
 meta := "^" ( symbol
-            | keyword
-            | map )
+            / keyword
+            / map )
 
-symbol := ( word ( "/" word ) ? ) | "/"
+symbol := ( word ( "/" word ) ? ) / "/"
 
 keyword := ":" ":" ? word ( "/" word ) ?
 
 word := #"[^/\s\(\)\d\^\@\'][^/\s\(\)\[\]\{\}\^\@\']*"
 
 token := nilExpr
-       | nanExpr
-       | infExpr
-       | boolExpr
+       / nanExpr
+       / infExpr
+       / boolExpr
 
 nilExpr := "nil"
 
-nanExpr := ("+" | "-")? "NaN"  (* Extension to the Clojure reference grammar *)
+nanExpr := ("+" / "-")? "NaN"  (* Extension to the Clojure reference grammar *)
 
-infExpr := ("+" | "-")? "Infinity" (* Extension to the Clojure reference grammar *)
+infExpr := ("+" / "-")? "Infinity" (* Extension to the Clojure reference grammar *)
 
-boolExpr := "true" | "false"
+boolExpr := "true" / "false"
 
 string := "\"" ( unicodeChar
-               | escape
-               | char ) *
+               / escape
+               / char ) *
           "\""
 
 escape := "\\" ( quoteEscape
-               | tabEscape
-               | retEscape
-               | newlineEscape
-               | slashEscape
-               | breakEscape
-               | feedEscape )
+               / tabEscape
+               / retEscape
+               / newlineEscape
+               / slashEscape
+               / breakEscape
+               / feedEscape )
 
 quoteEscape := "\""
 
@@ -106,14 +106,14 @@ vector := "[" body "]"
 
 map := "{" body "}"
 
-character := "\\" (namedChar | unicodeChar | char)
+character := "\\" (namedChar / unicodeChar / char)
 
 namedChar := returnChar
-           | tabChar
-           | newlineChar
-           | spaceChar
-           | backspaceChar
-           | ffChar
+           / tabChar
+           / newlineChar
+           / spaceChar
+           / backspaceChar
+           / ffChar
 
 returnChar := "return"
 
@@ -127,7 +127,7 @@ backspaceChar := "backspace"
 
 ffChar := "formfeed"
 
-unicodeChar := uChar | oChar
+unicodeChar := uChar / oChar
 
 uChar := "u" #"[0-9A-F]{4}"
 
@@ -136,12 +136,12 @@ oChar := "o" #"[0-8]{1,8}"
 ignored := "#_" < junk * > expr
 
 dispatch := "#" ( set
-                | var
-                | function
-                | pattern
-                | recordTypeOrClass
-                | record
-                | readerExpr )
+                / var
+                / function
+                / pattern
+                / recordTypeOrClass
+                / record
+                / readerExpr )
 
 set := "{" body "}"
 
@@ -150,42 +150,79 @@ var := "'" symbol
 function := "(" body ")"
 
 pattern := "\"" ( unicodeChar
-                | escape
-                | patternEscape
-                | char ) *
+                / escape
+                / patternEscape
+                / patternBOL
+                / patternEOL
+                / char ) *
            "\""
 
 patternEscape := "\\" ( pClass
-                      | pBlock
-                      | pBoundary )
+                      / pBlock
+                      / pBoundary )
 
 pClass := classDigit
-        | classNotDigit
-        | classWhitespace
-        | classNotWhitespace
-        | classWord
-        | classNotWord
+        / classNotDigit
+        / classWhitespace
+        / classNotWhitespace
+        / classWord
+        / classNotWord
+
+classDigit := "d"
+
+classNotDigit := "D"
+
+classWhitespace := "s"
+
+classNotWhitespace := "S"
+
+classWord := "w"
+
+classNotWord := "W"
 
 pBlock := "p{"
         ( "Lower"
-        | "Upper"
-        | "ASCII"
-        | "Alpha"
-        | "Digit"
-        | "Alpha"
-        | "Punct"
-        | "Graph"
-        | "Print"
-        | "Blank"
-        | "Cntrl"
-        | "XDigit"
-        | "Space"
-        | "java>owerCase"
-        | "javaUpperCase"
-        | "javaMirrored"
-        | "InGreek"
-        | "Lu" )
+        / "Upper"
+        / "ASCII"
+        / "Alpha"
+        / "Digit"
+        / "Alpha"
+        / "Punct"
+        / "Graph"
+        / "Print"
+        / "Blank"
+        / "Cntrl"
+        / "XDigit"
+        / "Space"
+        / "java>owerCase"
+        / "javaUpperCase"
+        / "javaMirrored"
+        / "InGreek"
+        / "Lu" )
         "}"
+
+pBoundary := bWord
+           / bNotWord
+           / bInput
+           / ePrevmatch
+           / eInputButTerm
+           / eInput
+
+bWord := "b"
+
+bNotWord := "B"
+
+bInput := "A"
+
+ePrevmatch := "G"
+
+eInputButTerm := "Z"
+
+eInput := "z"
+
+patternBOL := "^"
+
+patternEOL := "$"
 
 recordTypeOrClass := symbol vector
 
