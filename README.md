@@ -18,7 +18,7 @@ code so elegant into the language itself by formalizing the language
 core grammar and evaluation semantics into a platform independent form
 that can be reasonably retargeted.
 
-The Oxlang spect contains, in order
+The Oxlang spec contains, in order
  0. [A formal parse grammar with explicit whitespace handling rules](src/grammar.md)
  1. [A spec for evaluation semantics](src/evaluation.md)
  2. [A spec for the Oxlang/Clojure "standard library" data abstractions](src/interfaces.md)
