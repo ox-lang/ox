@@ -1,0 +1,132 @@
+form
+	:= atom
+	|  sexpr
+	;;
+
+sexpr
+	:= "(" form * ")"
+	;;
+
+atom
+	:= number
+	|  character
+	|  string
+     	|  keyword
+	|  dispatch
+	|  map
+	|  vector
+	|  symbol
+	;;
+
+number
+	:= fraction
+	|  float
+	|  integer
+	;;
+
+character
+	:= "\newline"
+	|  "\space"
+	|  "\tab"
+	|  "\backspace"
+	|  "\formfeed"
+	|  "\return"
+	|  octalEscape
+	;;
+
+fraction
+	:= integer "/" integer
+	;;
+
+float
+	:= integer "." integer
+	;;
+
+integer
+	:= #"\d+"
+	;;
+
+string
+	:= "\"" stringElement * "\""
+	;;
+
+stringElement
+	:= #"[^\"\\]"
+	| stringEscapeSequence
+	;;
+
+stringEscapeSequence
+	:= #"\\[^u]"
+	|  octalEscape  /* \u0000 to \u00ff: from octal value */
+	;;
+
+octalEscape
+	:= "\u"
+	   ( octalDigit
+	   | (octalDigit octalDigit)
+	   | (zeroToThree octalDigit octalDigit)
+	   )
+	   ;;
+
+octalDigit
+	:= #"[01234567]"
+	;;
+
+zeroToThree
+	:= #"[0123]"
+	;;
+
+keyword
+	:= ":" ":" ? symbol ?
+	;;
+
+dispatch
+	:= "#"
+	   ( set
+	   | regex
+	   | uuid
+           | date
+	   | discard
+	   | host
+	   | userDispatch
+	   )
+	   ;;
+
+set
+	:= "{" form + "}"
+	;;
+
+regex
+	:=  "\"" stringElement * "\""
+	;;
+
+uuid
+	:= "uuid" "\"" #"[a-f\d]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}?" "\""
+	;;
+
+date
+	:= "date" string
+	;;
+
+discard
+	:= "_" form
+	;;
+
+host
+	:= "+" symbol form
+
+userDispatch
+	:= symbol form
+	;;
+
+map
+	:= "{" (form form) * "}"
+	;;
+
+vector
+	:= "[" form * "]"
+	;;
+
+symbol
+	:= #"([\D&&[^/]].*/)?(/|[\D&&[^/]][^/]+)"
+	;;
