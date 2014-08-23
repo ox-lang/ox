@@ -97,7 +97,7 @@ upon side-effects.
 
 In Oxlang, files are read form by form, and loading is defined to be
 
-```
+```Clojure
 (defn load [resource]
   (reduce eval
     (make-empty-env)
@@ -202,7 +202,7 @@ a disfiguring loss to the programming model.
 An example of Oxlang style macros in action would be the following:
 
 ```Clojure
-(ns macro-demo) ;; creates a new environment, with the Oxlang stdlib brought in
+(ns macro-demo)
 
 (defn foo [x]
   (+ x 1))
@@ -212,7 +212,7 @@ An example of Oxlang style macros in action would be the following:
   (foo x))
 
 (defn h [y]
-  (+ (foo-macro y) 3))
+  (+ (foo-macro 3) y))
 ```
 
 While clearly contrived, this example shows that at macro use time all
