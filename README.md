@@ -19,12 +19,12 @@ core grammar and evaluation semantics into a platform independent form
 that can be reasonably retargeted.
 
 The Oxlang spec contains, in order
- 0. [A formal parse grammar with explicit whitespace handling rules](src/grammar.md)
- 1. [A spec for evaluation semantics](src/evaluation.md)
- 2. [A spec for the Oxlang/Clojure "standard library" data abstractions](src/interfaces.md)
- 3. [A spec for the Oxlang "standard library" functions](src/functions.md)
- 4. [A spec for standard library language extensions](src/modules.md)
- 5. [A spec for implementation specific host interop](src/interop.md)
+ 0. [A formal parse grammar with explicit whitespace handling rules](doc/grammar.md)
+ 1. [A spec for evaluation semantics](doc/evaluation.md)
+ 2. [A spec for the Oxlang/Clojure "standard library" data abstractions](doc/interfaces.md)
+ 3. [A spec for the Oxlang "standard library" functions](doc/functions.md)
+ 4. [A spec for standard library language extensions](doc/modules.md)
+ 5. [A spec for implementation specific host interop](doc/interop.md)
 
 ## License
 

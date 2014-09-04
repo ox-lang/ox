@@ -88,52 +88,42 @@ statically about program behavior.
 ## Oxlang - Ns
 
 In clojure, the namespace form mutates the `*ns*` dynamic value via
-the `in-ns` special form and then uses more side-effects on the
-mutable namespace object bound to `*ns*` to achieve local aliasing of
-defs in "library" code. While an effective implementation, it is an
+the `in-ns` special form and then uses more side-effects on a mutable
+namespace object bound to `*ns*` to achieve local aliasing of defs in
+"library" code. While an effective implementation, it is an
 implementation not a model for namespaces and loading, and taken as a
-model it is not an especially good or "pure" one as it relies entirely
-upon side-effects.
+model it is not an especially good one as it relies entirely upon
+side-effects and is not explicit about load order or loading purity
+due to the legitimacy of load time effects.
 
 In Oxlang, files are read form by form, and loading is defined to be
 
 ```Clojure
 (defn load [resource]
-  (reduce eval
-    (make-empty-env)
+  (reduce (fn [form env]
+	        (eval form env))
+	(make-empty-env)
 	(read-all-forms resource)))
 ```
 
-This is an operation from a "resource" to an "environment"
-representing that loaded resource, which may be cached as an
-implementation detail.
+In this model, all top level forms are not statements, but are
+unapplied lambda functions from an environment to an environment. Load
+can then be defined as the sequential invocation of the evaluation of
+these forms, being the interpretation of functions from an environment
+to an environment applied to an environment yielding an "updated"
+environment.
 
-Environments are structures having a name (symbol), dependencies
-(environments) and exports (symbol/value bindings).
-
-In this context, the `load` form is used to _purely_ get the
-environment represented by some artifact, and the `refer` function is
-then an operation from two environments and a referral selector to an
-environment which represents the first environment with added
-dependencies.
-
-Defs are then operations from a binding (symbol), a value, and an
-environment to a "new" environment with the added binding.
+Defs, imports, requires and soforth can be trivially written in this
+form as they simply explicitly update the state. This also means that
+defs, imports requires and soforth have no special privilage level as
+being part of the language core. Consequently raw lambda forms (user
+functions) can occur at the top level as well meaning that users can
+define "importing" and "loading" forms trivially.
 
 This model greatly simplifies form analysis, as at every step of this
 environment update sequence the environment either has all the data to
 fully resolve used symbols or the form being analyzed is in
 error.
-
-Furthermore as the analysis of forms is independent of their
-evaluation, such a system can be parallel on single form compilation
-as the value of previously loaded forms need not be fully resolved
-save in the case of macros. The "core" loading operation need only
-construct the next environment state being the addition of a binding
-to the environment or finalization of an environment. Only in the case
-of macroexpanding a subsequent form are the values of previous forms
-required in which case such an engine is at worst no faster than a
-traditional sequential compiler/evaluator.
 
 This style does require some "magic", as the `do` form at the top
 level must become a macro expanding to `->` composition of its forms
@@ -142,7 +132,7 @@ entities. Also the "empty environment" in which new namespaces are
 initialized cannot be truly empty as the machinery for requiring other
 dependencies from other namespaces must be loaded "magically". This
 means that all user namespaces must being "empty" with the language
-core as a dependency and the "ns" form of the language core mapped
+core as a dependency and the `ns` form of the language core mapped
 into the "current" namespace.
 
 ## Oxlang - Macros
@@ -152,12 +142,12 @@ programmers to write syntactic transformations and "embedded
 compilers" which can rewrite data read by the reader into legitimate
 forms which may be executed by eval possibly an implicit
 compiler. Macros enable a language to be written in terms of a number
-of "primitive" forms (traditionally "lambda", "if", "def" and a
+of "primitive" forms (traditionally `lambda`, `if`, `def` and a
 handful of others), in terms of which all other computations can be
 written. Other computations, written in terms of macros and functions,
 then by way of macros expand down to some simple and fixed
-determination of these "primitive" or "special" forms which a compiler
-or other evaluator can the process into machine code.
+determination of these "primitive" or "special" forms which an
+interpreter or other evaluator can the process into machine code.
 
 In an imperative, sequentially evaluated language (a traditional Lisp,
 including Clojure), macros or "syntax transforms" are defined and then
