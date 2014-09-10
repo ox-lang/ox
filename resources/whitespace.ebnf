@@ -1,0 +1,12 @@
+trash
+	:= whitespace
+	|  comment
+	;
+
+whitespace
+	:= #"[\s\n]*"
+	;
+
+comment
+	:= #";[^\n]*?\n"
+	;
