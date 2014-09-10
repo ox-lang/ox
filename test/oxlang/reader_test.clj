@@ -6,11 +6,8 @@
 (deftest whitespace-tests
   (let [w whitespace-parser]
     (testing "Whitespace consumer"
-      (are [expected got] (= expected got)
-           (w " ")  [:trash [:whitespace " "]]
-           (w "\t") [:trash [:whitespace "\t"]]
-           (w "\n") [:trash [:whitespace "\n"]]
-           (w "\r") [:trash [:whitespace "\r"]]))
+      (doseq [c [" " "\t" "\n" "\r"]]
+        (= (w c) [:trash [:whitespace c]])))
 
     (testing "Comment consumer"
       (are [expected got] (= expected got)
@@ -20,30 +17,25 @@
 (deftest symbol-tests
   (testing "Symbol consumer alone"
     (let [p (insta/parser grammar :start :symbol)]
-      (are [expected got] (= expected got)
-           (insta/parse p "a")     [:symbol "a"]
-           (insta/parse p "a.b")   [:symbol "a.b"]
-           (insta/parse p "a.b/c") [:symbol "a.b/c"]
-           (insta/parse p "a.b//") [:symbol "a.b//"]
-           (insta/parse p "/")     [:symbol "/"])))
+      (doseq [i ["a" "a.b" "a.b/c" "a.b//" "/"]]
+        (is (= (insta/parse p i)
+               [:symbol i])))))
 
   (testing "Symbol consumer in whole grammar"
     (let [p           parser
-          with-prefix (fn [x] [:file [:form [:atom x]]])]
-      (are [expected got] (= expected (with-prefix got))
-           (p "a")     [:symbol "a"]
-           (p "a.b")   [:symbol "a.b"]
-           (p "a.b/c") [:symbol "a.b/c"]
-           (p "a.b//") [:symbol "a.b//"]
-           (p "/")     [:symbol "/"]))))
+          with-prefix (fn [x] [:file [:form [:atom [:symbol x]]]])]
+      (doseq [i ["a" "a.b" "a.b/c" "a.b//" "/"]]
+        (is (= (p i) (with-prefix i)))))))
 
-(deftest vector-test
+(deftest keyword-tests)
+
+(deftest vector-tests
   (testing "Vector consumer alone"
     )
   (testing "Vector consumer in whole grammar"
     ))
 
-(deftest map-test
+(deftest map-tests
   (testing "Map consumer alone"
     )
   (testing "Map consumer in whole grammar"
