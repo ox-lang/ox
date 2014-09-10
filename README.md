@@ -1,7 +1,6 @@
-# Oxlang
-### What does the Ox say?
+# 牛: Ox, the language
 
-Oxlang is a Lisp dialect, born of Rich Hicky's Clojure, which seeks to
+Ox is a Lisp dialect, born of Rich Hicky's Clojure, which seeks to
 address the design and specification limitations of Clojure and
 Clojurescript. Clojure is born of the JVM, and explicitly embraces its
 host enthusiastically. This means that it is possible to write near
@@ -18,7 +17,7 @@ code so elegant into the language itself by formalizing the language
 core grammar and evaluation semantics into a platform independent form
 that can be reasonably retargeted.
 
-The Oxlang spec contains, in order
+The Ox spec contains, in order
  0. [A formal parse grammar with explicit whitespace handling rules](doc/grammar.md)
  1. [A spec for evaluation semantics](doc/evaluation.md)
  2. [A spec for the Oxlang/Clojure "standard library" data abstractions](doc/interfaces.md)
