@@ -51,12 +51,11 @@ integer
 	;
 
 string
-	:= "\"" stringElement * "\""
+	:= #"\"(?:[^\"\\]|(\\(\"|(u[0-7]{1,3})|(newline)|(space)|(tab)|(backspace)|(formfeed)|(return))))*\""
 	;
 
 stringElement
-	:= #"[^\"\\]"
-	/ stringEscapeSequence
+	:= stringEscapeSequence
 	;
 
 stringEscapeSequence
