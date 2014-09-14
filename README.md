@@ -25,6 +25,18 @@ The Ox spec contains, in order
  4. [A spec for standard library language extensions](doc/modules.md)
  5. [A spec for implementation specific host interop](doc/interop.md)
 
+## Disclaimer
+
+Ox is vaporware. Like Rust, this is an unstable language that may
+undergo huge changes with no warning or consistency. Ox may or may not
+even exist. There may or may not be a working prototype in some
+language(s) included in this repository. While there is a spec
+mentioned above it will change potentially a lot depending on the
+extent to which I think I'm reinventing Haskell, Ocaml, Rust and
+tother existing language. Consequently this project may well be
+abandoned if I come to the conclusion that I've reinvented some
+existing language badly.
+
 ## License
 
 Copyright 2014 Reid "arrdem" McKenzie & contributors
