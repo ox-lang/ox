@@ -28,14 +28,9 @@ The Ox spec contains, in order
 ## Disclaimer
 
 Ox is vaporware. Like Rust, this is an unstable language that may
-undergo huge changes with no warning or consistency. Ox may or may not
-even exist. There may or may not be a working prototype in some
-language(s) included in this repository. While there is a spec
-mentioned above it will change potentially a lot depending on the
-extent to which I think I'm reinventing Haskell, Ocaml, Rust and
-tother existing language. Consequently this project may well be
-abandoned if I come to the conclusion that I've reinvented some
-existing language badly.
+undergo huge changes with no warning or consistency. Depending on the
+extent to which I think I'm reinventing Haskell, Ocaml, Rust and other
+existing language(s) Ox may well be abandoned.
 
 ## License
 
