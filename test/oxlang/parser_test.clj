@@ -145,3 +145,15 @@
                        :body :a}}
             p (partial parse g :entry)]
         (success? (p bs))))))
+
+(defspec rep*-transform-ok
+  (prop/for-all [a  gen/char]
+    (prop/for-all [as (gen/vector (gen/return a))]
+      (let [t (partial map (fn [x] (/ (max (long x) 1) 2)))
+            g {:a     {:op  :term,
+                       :val a},
+               :entry {:op        :rep*,
+                       :body      :a,
+                       :transform t}}
+            r (parse g :entry as)]
+        (= (:dat r) (t as))))))
