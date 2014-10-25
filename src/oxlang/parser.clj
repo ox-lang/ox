@@ -194,15 +194,13 @@
    tokens]
   (loop [tokens tokens
          results nil]
-    (let [{r :result
-           buff :buff
-           :as res}
+    (let [{:keys [buff dat] :as res}
           (-parse grammar (get grammar t) tokens)]
-      (if (= :success r)
-        (recur buff (cons (:dat res) results))
-        (if (>= 1 (count results))
+      (if (success? res)
+        (recur buff (cons dat results))
+        (if results
           (succeed (tfn (reverse results)) tokens)
-          (fail nil))))))
+          (failure nil))))))
 
 
 (defn parse
