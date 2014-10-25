@@ -1,36 +1,7 @@
 # 牛: Ox, the language
 
-Ox is a Lisp dialect, born of Rich Hicky's Clojure, which seeks to
-address the design and specification limitations of Clojure and
-Clojurescript. Clojure is born of the JVM, and explicitly embraces its
-host enthusiastically. This means that it is possible to write near
-raw Java code in Clojure and much of the Clojure language
-implementation is built in JVM interoperation with Clojure specific
-JVM primitives rather than abstractly specified. This means that
-implementing Clojure atop other platforms is fundamentally difficult
-or even impossible as the language is defined only in terms of a
-standard library which is enmeshed in its JVM implementation.
-
-Oxlang seeks to preserve as much as possible of Clojure while
-extending the persistent datastructure philosophy which makes Clojure
-code so elegant into the language itself by formalizing the language
-core grammar and evaluation semantics into a platform independent form
-that can be reasonably retargeted.
-
-The Ox spec contains, in order
- 0. [A formal parse grammar with explicit whitespace handling rules](doc/grammar.md)
- 1. [A spec for evaluation semantics](doc/evaluation.md)
- 2. [A spec for the Oxlang/Clojure "standard library" data abstractions](doc/interfaces.md)
- 3. [A spec for the Oxlang "standard library" functions](doc/functions.md)
- 4. [A spec for standard library language extensions](doc/modules.md)
- 5. [A spec for implementation specific host interop](doc/interop.md)
-
-## Disclaimer
-
-Ox is vaporware. Like Rust, this is an unstable language that may
-undergo huge changes with no warning or consistency. Depending on the
-extent to which I think I'm reinventing Haskell, Ocaml, Rust and other
-existing language(s) Ox may well be abandoned.
+Come back later. Maybe there'll be something here. Watchers are likely
+to be bored.
 
 ## License
 
