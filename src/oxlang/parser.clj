@@ -132,18 +132,15 @@
          tokens'     tokens
          results     nil]
     (if t
-      (let [{r :result
-             buff :buff
-             :as res}
+      (let [{:keys [buff dat] :as res}
             (-parse grammar
                     (get grammar t)
                     tokens')]
-        (if (= :success r)
+        (if (success? res)
             (recur terms
                    buff
-                   (cons (:dat res)
-                         results))
-            (fail nil)))
+                   (cons dat results))
+            (failure nil)))
       (succeed (tfn (reverse results))
                tokens'))))
 
