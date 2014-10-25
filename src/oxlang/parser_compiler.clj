@@ -69,4 +69,4 @@
 ;;--------------------------------------------------------------------
 (defn compile-grammar [grammar-map]
   (as-> grammar-map g
-        (reduce -compile-grammar-rule {::c (or (::c grammar-map) 0)} g)))
+        (reduce -compile-grammar-rule {::c (or (::c grammar-map) (rand-int))} g)))
