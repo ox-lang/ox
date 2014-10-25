@@ -30,6 +30,30 @@
            (= (:dat r)
               (t m))))))
 
+;; Test :pred
+;;--------------------------------------------------------------------
+(defspec predicate-matches-only
+  (prop/for-all [[m n] (distinct-n-tuple gen/char 2)]
+    (let [g {:entry {:op :pred :body #(= m %1)}}
+          r (parse g :entry [n])]
+      (failure? r))))
+
+(defspec predicate-matches-every
+  (prop/for-all [m gen/char]
+    (let [g {:entry {:op :pred :body #(= m %1)}}
+          r (parse g :entry [m])]
+      (success? r))))
+
+(defspec predicate-trasform-ok
+  (prop/for-all [m gen/char]
+    (let [t (fn [x] (/ (max (long x) 1) 2))
+          g {:entry {:op        :pred,
+                     :body      #(= m %1),
+                     :transform t}}
+          r (parse g :entry [m])]
+      (= (:dat r)
+         (t m)))))
+
 ;; Test :alt
 ;;--------------------------------------------------------------------
 (defspec alt-matches-only
