@@ -218,14 +218,20 @@
                      :body :a}}
           p (partial parse g :entry)]
       (failure? (p [])))))
-  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)]
-    (prop/for-all [bs (gen/vector (gen/return b))]
-      (let [g {:a     {:op  :term,
-                       :val a},
-               :entry {:op   :rep+,
-                       :body :a}}
-            p (partial parse g :entry)]
-        (failure? (p bs))))))
+
+(defspec rep+-matches-trailing
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)
+                 n gen/nat
+                 m gen/nat]
+    (let [as (repeat (inc n) a)
+          bs (repeat m b)
+          g {:a     {:op  :term,
+                     :val a},
+             :entry {:op   :rep+,
+                     :body :a}}
+          p (partial parse g :entry)]
+      (and (success? (p as))
+           (success? (p (concat as bs)))))))
 
 (defspec rep+-transform-ok
   (prop/for-all [a  gen/char]
