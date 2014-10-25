@@ -27,12 +27,17 @@
   |   | {[:op        | :term]
   |   |  [:val       | Character]
   |   |  [:transform | (Option Fn | Identity)]}
-  | 
+  |
+  |  Predicate
+  |   | {[:op        | :pred]
+  |   |  [:body      | (Fn $ [Character] → Bool)]
+  |   |  [:transform | (Option Fn | Identity)]}
+  |
   |  Alternation
   |   | {[:op        | :alt]
   |   |  [:body      | [& Keyword]]
   |   |  [:transform | (Option Fn | Identity)]}
-  | 
+  |
   |  Concatination
   |   | {[:op        | :conc]
   |   |  [:body      | [& Keyword]]
@@ -93,6 +98,17 @@
    [t & tokens' :as tokens]]
   (if (= val t)
     (succeed (tfn val) tokens')
+    (failure nil)))
+
+
+(defmethod -parse :pred
+  [grammar
+   {f   :body
+    tfn :transform
+    :or {tfn identity}}
+   [t & tokens' :as tokens]]
+  (if (f t)
+    (succeed (tfn t) tokens')
     (failure nil)))
 
 
