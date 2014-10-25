@@ -42,7 +42,7 @@
 ;;  |   |  [:transform | (Option Fn | Identity)]}
 ;;  |
 ;;  |  Succeed
-;;  |   | {[:op        | :succ]}
+;;  |   | {[:op        | :succeed]}
 ;;  |
 ;;  |  Fail
 ;;  |   | {[:op        | :fail]}
@@ -69,12 +69,16 @@
    :dat    datastructure
    :buff   buff})
 
+(defn success? [res]
+  (= :success (:result res)))
 
-(defn fail
+(defn failure
   [buff]
   {:result :failure
    :buff   buff})
 
+(defn failure? [res]
+  (= :failure (:result res)))
 
 (defn -parse-dispatch
   [grammar {op :op} _tokens]
@@ -93,7 +97,7 @@
    [t & tokens' :as tokens]]
   (if (= val t)
     (succeed (tfn val) tokens')
-    (fail nil)))
+    (failure nil)))
 
 
 (defmethod -parse :alt
@@ -111,9 +115,10 @@
                     (get grammar t)
                     tokens)]
         (if (= :success r)
-          res
+          (let [{:keys [dat buff]} res]
+            (succeed (tfn dat) buff))
           (recur terms)))
-      (fail nil))))
+      (failure nil))))
 
 
 (defmethod -parse :conc
