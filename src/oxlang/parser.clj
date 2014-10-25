@@ -1,67 +1,63 @@
-(ns oxlang.parser)
+(ns oxlang.parser
+"My Little Parser
+--------------------------------------------------------------------
+ The following is a datastructure description and interpreter for an
+ obvious recursive decent state monad parser combinator supporting
+ only a few classical EBNF operations.
 
-;; My Little Parser
-;;--------------------------------------------------------------------
-;; The following is a datastructure description and interpreter for an
-;; obvious recursive decent state monad parser combinator supporting
-;; only a few classical EBNF operations.
-;;
-;; The interpretation of a production returns either
-;;   Succeed (dat . rest)
-;;   Fail (dat)
-;;
-;; Parser progress is implemented by continuing forwards on the rest
-;; of a Succeed, being the sequence of remaining tokens. Parser
-;; failure propagates back up the stack to a production which
-;; tolerates failure or to the top level. As the token sequence is
-;; immutable, the value of a Fail need not be the token sequence at
-;; which the failure occured, it can be debugginf information or any
-;; other value.
-;;
-;; At present parser failures produce no debugging information. This
-;; is a flaw which will eventually be remedied to provide column/line
-;; information.
-;;
-;; Grammar
-;;  | {[Keyword        | (Σ Terminal Alternation Concatination
-;;  |                       Succeed Fail Option Rep* Rep+)]}
-;;  |
-;;  |  Terminal
-;;  |   | {[:op        | :term]
-;;  |   |  [:val       | Character]
-;;  |   |  [:transform | (Option Fn | Identity)]}
-;;  | 
-;;  |  Alternation
-;;  |   | {[:op        | :alt]
-;;  |   |  [:body      | [& Keyword]]
-;;  |   |  [:transform | (Option Fn | Identity)]}
-;;  | 
-;;  |  Concatination
-;;  |   | {[:op        | :conc]
-;;  |   |  [:body      | [& Keyword]]
-;;  |   |  [:transform | (Option Fn | Identity)]}
-;;  |
-;;  |  Succeed
-;;  |   | {[:op        | :succeed]}
-;;  |
-;;  |  Fail
-;;  |   | {[:op        | :fail]}
-;;  |
-;;  |  Option
-;;  |   | {[:op        | :opt]
-;;  |   |  [:body      | Keyword]
-;;  |   |  [:transform | (Option Fn | Identity)]}
-;;  |
-;;  |  Rep*
-;;  |   | {[:op        | :rep*]
-;;  |   |  [:body      | Keyword]
-;;  |   |  [:transform | (Option Fn | Identity)]}
-;;  |
-;;  |  Rep+
-;;  |   | {[:op        | :rep+]
-;;  |   |  [:body      | Keyword]
-;;  |   |  [:transform | (Option Fn | Identity)]}
+ The interpretation of a production returns either
+   Succeed (dat . rest)
+   Fail (dat)
 
+ Parser progress is implemented by continuing forwards on the rest
+ of a Succeed, being the sequence of remaining tokens. Parser
+ failure propagates back up the stack to a production which
+ tolerates failure or to the top level. As the token sequence is
+ immutable, the value of a Fail need not be the token sequence at
+ which the failure occured, it can be debugginf information or any
+ other value.
+
+ At present parser failures produce no debugging information.
+
+ Grammar
+  | {[Keyword        | (Σ Terminal Alternation Concatination
+  |                       Succeed Fail Option Rep* Rep+)]}
+  |
+  |  Terminal
+  |   | {[:op        | :term]
+  |   |  [:val       | Character]
+  |   |  [:transform | (Option Fn | Identity)]}
+  | 
+  |  Alternation
+  |   | {[:op        | :alt]
+  |   |  [:body      | [& Keyword]]
+  |   |  [:transform | (Option Fn | Identity)]}
+  | 
+  |  Concatination
+  |   | {[:op        | :conc]
+  |   |  [:body      | [& Keyword]]
+  |   |  [:transform | (Option Fn | Identity)]}
+  |
+  |  Succeed
+  |   | {[:op        | :succeed]}
+  |
+  |  Fail
+  |   | {[:op        | :fail]}
+  |
+  |  Option
+  |   | {[:op        | :opt]
+  |   |  [:body      | Keyword]
+  |   |  [:transform | (Option Fn | Identity)]}
+  |
+  |  Rep*
+  |   | {[:op        | :rep*]
+  |   |  [:body      | Keyword]
+  |   |  [:transform | (Option Fn | Identity)]}
+  |
+  |  Rep+
+  |   | {[:op        | :rep+]
+  |   |  [:body      | Keyword]
+  |   |  [:transform | (Option Fn | Identity)]}")
 
 (defn succeed
   [datastructure buff]
