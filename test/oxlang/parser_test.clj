@@ -128,7 +128,7 @@
 ;;--------------------------------------------------------------------
 (defspec rep*-matches-self
   (prop/for-all [a  gen/char]
-    (prop/for-all [as (gen/vector (gen/return a))]
+    (prop/for-all [as (gen/not-empty (gen/vector (gen/return a)))]
       (let [g {:a     {:op  :term,
                        :val a},
                :entry {:op   :rep*,
