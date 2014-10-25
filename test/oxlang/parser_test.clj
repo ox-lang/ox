@@ -163,12 +163,16 @@
                      :body :a}}
           p (partial parse g :entry)]
       (success? (p [])))))
+
+(defspec rep*-matches-none
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)]
+    (prop/for-all [bs (gen/vector (gen/return b))]
       (let [g {:a     {:op  :term,
                        :val a},
                :entry {:op   :rep*,
                        :body :a}}
             p (partial parse g :entry)]
-        (success? (p (concat as bs)))))))
+        (success? (p bs))))))
 
 (defspec rep*-matches-trailing
   (prop/for-all [[a b] (distinct-n-tuple gen/char 2)]
