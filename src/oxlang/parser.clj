@@ -85,9 +85,7 @@
   [grammar {op :op} _tokens]
   op)
 
-
 (defmulti -parse -parse-dispatch)
-
 
 (defmethod -parse :term
   [grammar
@@ -100,7 +98,6 @@
     (succeed (tfn val) tokens')
     (failure nil)))
 
-
 (defmethod -parse :pred
   [grammar
    {f   :body
@@ -110,7 +107,6 @@
   (if (f t)
     (succeed (tfn t) tokens')
     (failure nil)))
-
 
 (defmethod -parse :alt
   [grammar
@@ -131,7 +127,6 @@
             (succeed (tfn dat) buff))
           (recur terms)))
       (failure nil))))
-
 
 (defmethod -parse :conc
   [grammar
@@ -156,11 +151,9 @@
       (succeed (tfn (reverse results))
                tokens'))))
 
-
 (defmethod -parse :succeed
   [grammar _op tokens]
   (succeed nil tokens))
-
 
 (defmethod -parse :opt
   [grammar
@@ -175,7 +168,6 @@
     (if (success? res)
       (succeed (tfn dat) buff)
       (succeed nil tokens))))
-
 
 (defmethod -parse :rep*
   [grammar
@@ -193,7 +185,6 @@
         (recur buff (cons dat results))
         (succeed (tfn (reverse results)) tokens)))))
 
-
 (defmethod -parse :rep+
   [grammar
    {t :body
@@ -209,7 +200,6 @@
         (if results
           (succeed (tfn (reverse results)) tokens)
           (failure nil))))))
-
 
 (defn parse
   [grammar entry token-seq]
