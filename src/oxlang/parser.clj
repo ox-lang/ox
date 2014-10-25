@@ -205,11 +205,14 @@
          results nil]
     (let [{:keys [buff dat] :as res}
           (-parse grammar (get grammar t) tokens)]
-      (if (success? res)
-        (recur buff (cons dat results))
-        (if results
-          (succeed (tfn (reverse results)) tokens)
-          (failure nil))))))
+      (cond (and (success? res) (not-empty tokens))
+            ,,(recur buff (cons dat results))
+
+            (and (success?) (empty? tokens))
+            ,,(succeed (tfn (reverse results)) tokens)
+
+            :else
+            ,,(failure nil)))))
 
 ;; Parser invocation interface
 ;;--------------------------------------------------------------------
