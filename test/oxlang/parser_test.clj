@@ -95,3 +95,31 @@
           r (parse g :entry [a])]
       (and (success? r)
            (= [a] (:buff r))))))
+
+;; Test :opt
+;;--------------------------------------------------------------------
+(defspec opt-matches
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)]
+    (let [g {:a     {:op  :term,
+                     :val a},
+             :b     {:op  :term,
+                     :val b},
+             :o     {:op   :opt,
+                     :body :a},
+             :entry {:op   :conc,
+                     :body [:o :b]}}
+          p (partial parse g :entry)]
+      (and (success? (p [a b]))
+           (success? (p [b]))
+           (failure? (p [a]))))))
+
+(defspec opt-transform-ok
+  (prop/for-all [a gen/char]
+    (let [t (fn [x] (/ (max (long x) 1) 2))
+          g {:a     {:op  :term,
+                     :val a},
+             :entry {:op        :opt,
+                     :body      :a,
+                     :transform t}}
+          r (parse g :entry [a])]
+      (= (:dat r) (t a)))))
