@@ -159,14 +159,12 @@
     tfn :transform
     :or {tfn identity}}
    tokens]
-  (let [{r :result
-         buff :buff
-         :as res}
+  (let [{:keys [buff dat] :as res}
         (-parse grammar
                 (get grammar t)
                 tokens)]
-    (if (= :success r)
-      (succeed (tfn r) buff)
+    (if (success? res)
+      (succeed (tfn dat) buff)
       (succeed nil tokens))))
 
 
