@@ -69,6 +69,7 @@
 ;;--------------------------------------------------------------------
 (defn compile-grammar [grammar-map]
   (as-> grammar-map g
-        (reduce -compile-grammar-rule {::c (or (::c grammar-map)
-                                               (rand-int Integer/MAX_VALUE))}
+        (reduce -compile-grammar-rule
+                {::c (or (::c grammar-map)
+                         (rand-int Integer/MAX_VALUE))}
                 g)))
