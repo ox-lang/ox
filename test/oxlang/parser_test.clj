@@ -211,6 +211,13 @@
         (success? (p (concat as bs)))))))
 
 (defspec rep+-rejects-zero
+  (prop/for-all [a gen/char]
+    (let [g {:a     {:op  :term,
+                     :val a},
+             :entry {:op   :rep+,
+                     :body :a}}
+          p (partial parse g :entry)]
+      (failure? (p [])))))
   (prop/for-all [[a b] (distinct-n-tuple gen/char 2)]
     (prop/for-all [bs (gen/vector (gen/return b))]
       (let [g {:a     {:op  :term,
