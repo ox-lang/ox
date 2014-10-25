@@ -1,6 +1,7 @@
-(ns oxlang.parser-compiler-test
+c(ns oxlang.parser-compiler-test
   (:require [oxlang.parser-compiler :refer :all]
             [oxlang.parser :refer [parse success? failure?]]
+            [oxlang.test :refer :all]
             [clojure.test :refer :all]
             [clojure.test.check :as tc]
             [clojure.test.check.clojure-test :refer [defspec]]
@@ -24,8 +25,7 @@
            (success? (p [b]))))))
 
 (defspec conc-compiles-ok
-  (prop/for-all [a gen/char
-                 b gen/char]
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)]
     (let [g (compile-grammar
              {:g [:conc [:term a] [:term b]]})
           p (partial parse g :g)]
