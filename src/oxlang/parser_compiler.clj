@@ -2,14 +2,24 @@
 
 ;; Grammar compiler DSL
 ;;--------------------------------------------------------------------
-(defmulti -compile-grammar-rule (fn [_ [_ [op & body]]] op))
+(declare --compile-grammar-rule)
 
-(defmethod -compile-grammar-rule :term [acc [name [_ c]]]
+(defn -compile-grammar-rule [acc [key val]]
+  (cond (or (map? val)
+            (= ::c key))
+        ,,(assoc acc key val)
+
+        :else
+        ,,(--compile-grammar-rule acc [key val])))
+
+(defmulti --compile-grammar-rule (fn [_ [_ [op & body]]] op))
+
+(defmethod --compile-grammar-rule :term [acc [name [_ c]]]
   (->> {:op :term,
         :val c}
        (assoc acc name)))
 
-(defmethod -compile-grammar-rule :pred [acc [name [_ p]]]
+(defmethod --compile-grammar-rule :pred [acc [name [_ p]]]
   (->> {:op :pred,
         :body p}
        (assoc acc name)))
@@ -25,31 +35,31 @@
           [acc []]
           forms))
 
-(defmethod -compile-grammar-rule :alt [acc [name [_ & forms]]]
+(defmethod --compile-grammar-rule :alt [acc [name [_ & forms]]]
   (let [[acc names] (-compile-children acc forms)]
     (->> {:op   :alt,
           :body names}
          (assoc acc name))))
 
-(defmethod -compile-grammar-rule :conc [acc [name [_ & forms]]]
+(defmethod --compile-grammar-rule :conc [acc [name [_ & forms]]]
   (let [[acc names] (-compile-children acc forms)]
     (->> {:op   :conc,
           :body names}
          (assoc acc name))))
 
-(defmethod -compile-grammar-rule :opt [acc [name [_ form]]]
+(defmethod --compile-grammar-rule :opt [acc [name [_ form]]]
   (let [[acc [name']] (-compile-children acc [form])]
     (->> {:op   :opt,
           :body name'}
          (assoc acc name))))
 
-(defmethod -compile-grammar-rule :rep* [acc [name [_ form]]]
+(defmethod --compile-grammar-rule :rep* [acc [name [_ form]]]
   (let [[acc [name']] (-compile-children acc [form])]
     (->> {:op   :rep*,
           :body name'}
          (assoc acc name))))
 
-(defmethod -compile-grammar-rule :rep+ [acc [name [_ form]]]
+(defmethod --compile-grammar-rule :rep+ [acc [name [_ form]]]
   (let [[acc [name']] (-compile-children acc [form])]
     (->> {:op   :rep+,
           :body name'}
@@ -59,5 +69,4 @@
 ;;--------------------------------------------------------------------
 (defn compile-grammar [grammar-map]
   (as-> grammar-map g
-        (reduce -compile-grammar-rule {::c 0} g)
-        (dissoc g ::c)))
+        (reduce -compile-grammar-rule {::c (or (::c grammar-map) 0)} g)))
