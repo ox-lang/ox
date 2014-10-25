@@ -183,9 +183,17 @@
           (-parse grammar
                   (get grammar t)
                   tokens)]
-      (if (success? res)
-        (recur buff (cons dat results))
-        (succeed (tfn (reverse results)) tokens)))))
+      (cond (and (success? res) (not-empty tokens))
+            ,,(recur buff (cons dat results))
+
+            (and (success? res) (empty? tokens))
+            ,,(succeed (tfn (reverse results)) tokens)
+
+            (and (failure? res) results)
+            ,,(succeed (tfn (reverse results)) tokens)
+
+            :else
+            ,,(succeed nil tokens)))))
 
 (defmethod -parse :rep+
   [grammar
