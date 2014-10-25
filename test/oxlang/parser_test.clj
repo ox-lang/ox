@@ -145,9 +145,15 @@
 ;; Test :rep*
 ;;--------------------------------------------------------------------
 (defspec rep*-matches-self
-  (prop/for-all [a gen/char]
-    (prop/for-all [as (gen/not-empty (gen/vector (gen/return a)))
-                   bs (gen/vector gen/char)]
+  (prop/for-all [a gen/char
+                 n gen/int]
+    (let [g {:a     {:op  :term,
+                     :val a},
+             :entry {:op   :rep*,
+                     :body :a}}
+          p (partial parse g :entry)
+          s (repeat n a)]
+      (success? (p s)))))
       (let [g {:a     {:op  :term,
                        :val a},
                :entry {:op   :rep*,
