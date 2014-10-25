@@ -154,6 +154,15 @@
           p (partial parse g :entry)
           s (repeat n a)]
       (success? (p s)))))
+
+(defspec rep*-matches-zero
+  (prop/for-all [a gen/char]
+    (let [g {:a     {:op  :term,
+                     :val a},
+             :entry {:op   :rep*,
+                     :body :a}}
+          p (partial parse g :entry)]
+      (success? (p [])))))
       (let [g {:a     {:op  :term,
                        :val a},
                :entry {:op   :rep*,
