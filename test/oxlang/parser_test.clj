@@ -86,3 +86,12 @@
       (and (success? r)
            (= (:dat r)
               (t' [a b]))))))
+
+;; Test :succeed
+;;--------------------------------------------------------------------
+(defspec succeed-matches
+  (prop/for-all [a gen/char]
+    (let [g {:entry {:op :succeed}}
+          r (parse g :entry [a])]
+      (and (success? r)
+           (= [a] (:buff r))))))
