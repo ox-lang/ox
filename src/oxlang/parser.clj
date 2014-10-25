@@ -203,6 +203,8 @@
           (succeed (tfn (reverse results)) tokens)
           (failure nil))))))
 
+;; Parser invocation interface
+;;--------------------------------------------------------------------
 (defn parse
   [grammar entry token-seq]
   (-parse grammar (get grammar entry) token-seq))
