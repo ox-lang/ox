@@ -205,10 +205,11 @@
          results nil]
     (let [{:keys [buff dat] :as res}
           (-parse grammar (get grammar t) tokens)]
-      (cond (and (success? res) (not-empty tokens))
+      (cond (success? res)
             ,,(recur buff (cons dat results))
 
-            (and (success?) (empty? tokens))
+            (or (and results (empty? tokens))
+                (and results (failure? res)))
             ,,(succeed (tfn (reverse results)) tokens)
 
             :else
