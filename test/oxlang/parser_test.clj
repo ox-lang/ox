@@ -123,3 +123,25 @@
                      :transform t}}
           r (parse g :entry [a])]
       (= (:dat r) (t a)))))
+
+;; Test :rep*
+;;--------------------------------------------------------------------
+(defspec rep*-matches-self
+  (prop/for-all [a  gen/char]
+    (prop/for-all [as (gen/vector (gen/return a))]
+      (let [g {:a     {:op  :term,
+                       :val a},
+               :entry {:op   :rep*,
+                       :body :a}}
+            p (partial parse g :entry)]
+        (success? (p as))))))
+
+(defspec rep*-matches-zero
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)]
+    (prop/for-all [bs (gen/vector (gen/return b))]
+      (let [g {:a     {:op  :term,
+                       :val a},
+               :entry {:op   :rep*,
+                       :body :a}}
+            p (partial parse g :entry)]
+        (success? (p bs))))))
