@@ -200,15 +200,15 @@
 ;; Test :rep+
 ;;--------------------------------------------------------------------
 (defspec rep+-matches-self
-  (prop/for-all [a gen/char]
-    (prop/for-all [as (gen/not-empty (gen/vector (gen/return a)))
-                   bs (gen/vector gen/char)]
-      (let [g {:a     {:op  :term,
-                       :val a},
-               :entry {:op   :rep+,
-                       :body :a}}
-            p (partial parse g :entry)]
-        (success? (p (concat as bs)))))))
+  (prop/for-all [a gen/char
+                 n gen/nat]
+    (let [g {:a     {:op  :term,
+                     :val a},
+             :entry {:op   :rep+,
+                     :body :a}}
+          p (partial parse g :entry)
+          as (repeat (inc n) a)]
+      (success? (p as)))))
 
 (defspec rep+-rejects-zero
   (prop/for-all [a gen/char]
