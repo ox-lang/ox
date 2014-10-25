@@ -188,23 +188,20 @@
 
 (defmethod -parse :rep+
   [grammar
-   {t :body
+   {t   :body
     tfn :transform
     :or {tfn identity}}
    tokens]
   (loop [tokens tokens
          results nil]
-    (let [{:keys [buff dat] :as res}
-          (-parse grammar (get grammar t) tokens)]
-      (cond (success? res)
-            ,,(recur buff (cons dat results))
-
-            (or (and results (empty? tokens))
-                (and results (failure? res)))
-            ,,(succeed (tfn (reverse results)) tokens)
-
-            :else
-            ,,(failure nil)))))
+    (let [{:keys [buff dat] :as res} (-parse grammar (get grammar t) tokens)
+          results'                   (cons dat results)]
+      (if (and (success? res)
+               (not-empty tokens))
+        (recur buff results')
+        (if results
+          (succeed (tfn (reverse results')) buff)
+          (failure nil))))))
 
 ;; Parser invocation interface
 ;;--------------------------------------------------------------------
