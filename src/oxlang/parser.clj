@@ -81,6 +81,8 @@
 (defn failure? [res]
   (= :failure (:result res)))
 
+;; Parser interpreter
+;;--------------------------------------------------------------------
 (defn -parse-dispatch
   [grammar {op :op} _tokens]
   op)
