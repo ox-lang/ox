@@ -1,4 +1,4 @@
-c(ns oxlang.parser-compiler-test
+(ns oxlang.parser-compiler-test
   (:require [oxlang.parser-compiler :refer :all]
             [oxlang.parser :refer [parse success? failure?]]
             [oxlang.test :refer :all]
