@@ -243,19 +243,23 @@
         (failure? r)))))
 
 (defspec rep+-matches-trailing
-  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)
-                 n gen/nat
-                 m gen/nat]
-    (let [as (repeat (inc n) a)
-          bs (repeat m b)
-          g {:a     {:op  :term,
-                     :val a},
-             :entry {:op   :rep+,
-                     :body :a}}
-          p (partial parse g :entry)]
-      (and (success? (p as))
-           (success? (p (concat as bs)))))))
-
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)]
+    (prop/for-all [as (gen/vector (gen/return a))
+                   bs (gen/such-that
+                          #(not (= a (first %1)))
+                        (gen/vector gen/char))]
+      (let [g {:a     {:op  :term,
+                       :val a},
+               :entry {:op   :rep+,
+                       :body :a}}
+            p (partial parse g :entry)]
+        (and (let [r (p as)]
+               (and (success? r)
+                    (= nil (:buff r))))
+             (let [r (p (concat as bs))]
+               (and (success? r)
+                    (= bs (:buff r)))))))))
+  
 ;; Test :transform
 ;;--------------------------------------------------------------------
 (defspec transform-fails-when-child-fails
