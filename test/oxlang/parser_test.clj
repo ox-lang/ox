@@ -72,6 +72,29 @@
            (success? (p [b]))
            (failure? (p [c]))))))
 
+(defspec alt-buff-ok
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)
+                 n gen/nat
+                 m gen/nat]
+    (let [n   (max n 1)
+          m   (max m 1)
+          as  (repeat n a)
+          bs  (repeat m b)
+          g   {:a     {:op  :term,
+                       :val a}
+               :b     {:op  :term,
+                       :val b}
+               :entry {:op   :alt,
+                       :body [:a, :b]}}
+          r_a (parse g :entry (concat as bs))
+          r_b (parse g :entry (concat bs as))]
+      (and (success? r_a)
+           (= (count (:buff r_a))
+              (dec (+ m n)))
+           (success? r_b)
+           (= (count (:buff r_b))
+              (dec (+ m n)))))))
+
 ;; Test :conc
 ;;--------------------------------------------------------------------
 (defspec conc-matches
