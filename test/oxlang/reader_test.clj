@@ -52,12 +52,14 @@
              (failure? r))
        "0" "{" "}" "(" ")" " " "\n" "\t" "a" "a/b" "//"))
 
+;; FIXME: should validate that the integer round trips
 (defspec decimal-tests
   (prop/for-all [i gen/nat]
     (let [s (str i)
           r (parse int-number :DecimalIntegerLiteral s)]
       (success? r))))
 
+;; FIXME: should validate that the integer round trips
 (defspec hex-tests
   (prop/for-all [i gen/nat]
     (let [s (format "0x%X" i)
