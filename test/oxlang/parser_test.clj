@@ -232,12 +232,15 @@
 
 (defspec rep+-rejects-zero
   (prop/for-all [a gen/char]
-    (let [g {:a     {:op  :term,
-                     :val a},
-             :entry {:op   :rep+,
-                     :body :a}}
-          p (partial parse g :entry)]
-      (failure? (p [])))))
+    (prop/for-all [bs (gen/such-that
+                          #(not (= a (first %1)))
+                        (gen/vector gen/char))]
+      (let [g {:a     {:op  :term,
+                       :val a},
+               :entry {:op   :rep+,
+                       :body :a}}
+            r (parse g :entry bs)]
+        (failure? r)))))
 
 (defspec rep+-matches-trailing
   (prop/for-all [[a b] (distinct-n-tuple gen/char 2)
