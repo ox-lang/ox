@@ -39,10 +39,32 @@
        (merge symbol)
        (compile-grammar)))
 
-(def number
-  (->> {:digit  [:pred #{\0 \1 \2 \3 \4 \5 \6 \7 \8 \9}]
-        :ratio  [:conc [:rep+ :digit] [:term \/] [:rep+ :digit]]
-        :float  [:conc [:rep+ :digit] [:term \.] [:rep+ :digit]]
-        :long   [:rep+ :digit]
-        :number [:alt :ratio :float :long]}
+(def int-number
+  (->> {:NonZeroDigit          [:pred #{\0 \1 \2 \3 \4 \5 \6 \7 \8 \9}]
+        :Digit                 [:alt :NonZeroDigit [:term \0]]
+        :IntegerLiteral        [:alt
+                                :DecimalIntegerLiteral
+                                :HexIntegerLiteral
+                                :OctalIntegerLiteral
+                                :BinaryIntegerLiteral]
+        
+        :DecimalIntegerLiteral [:conc :DecimalNumeral [:opt :IntegerTypeSuffix]]
+        :IntegerTypeSuffix     [:alt [:term \l] [:term \L]]
+
+        ;; FIXME: Rewrite number patterns non-recursively for efficiency
+        :DecimalNumeral        [:alt
+                                [:term \0]
+                                [:conc :NonZeroDigit [:opt :Digits]]
+                                [:conc :NonZeroDigit [:rep* [:term \_]] :Digits]]
+
+        :Digits                [:alt :Digit
+                                [:conc :Digit [:opt :DigitsAndUnderscores] :Digit]]
+
+        
+        :DigitsAndUnderscores  [:alt :DigitOrUnderscore
+                                [:conc :DigitsAndUnderscores :DigitOrUnderscore]]
+
+        :DigitOrUnderscore     [:alt :Digit [:term \_]]}
+       (compile-grammar)))
+
        (compile-grammar)))

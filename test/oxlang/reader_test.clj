@@ -2,7 +2,11 @@
   (:refer-clojure :exclude [symbol keyword])
   (:require [oxlang.reader :refer :all]
             [oxlang.parser :refer [parse success? failure?]]
-            [clojure.test :refer :all]))
+            [clojure.test :refer :all]
+            [clojure.test.check :as tc]
+            [clojure.test.check.clojure-test :refer [defspec]]
+            [clojure.test.check.generators :as gen]
+            [clojure.test.check.properties :as prop]))
 
 (deftest symbol-tests
   (are [s] (let [r (parse symbol :symbol s)]
@@ -40,3 +44,9 @@
   (are [s] (let [r (parse keyword :keyword s)]
              (failure? r))
        "0" "{" "}" "(" ")" " " "\n" "\t" "a" "a/b" "//"))
+
+(defspec decimal-tests
+  (prop/for-all [i gen/nat]
+    (let [s (str i)
+          r (parse int-number :DecimalIntegerLiteral s)]
+      (success? r))))
