@@ -9,10 +9,15 @@
 
 (def symbol
   (-> {:prefix-char [:pred (complement (union whitespace syntax numeric))]
-       :body-char   [:pred (complement whitespace)]
+       :body-char   [:pred (complement (union whitespace syntax))]
        :slash       [:term \/]
-       :body        [:transform [:conc :prefix-char [:rep* :body-char]]
-                     (fn [[x xs]] (apply str x xs))]
+       :body        [:alt
+                     [:transform
+                      [:rep+ :slash]
+                      (partial apply str)]
+                     [:transform
+                      [:conc :prefix-char [:rep* :body-char]]
+                      (fn [[x xs]] (apply str x xs))]]
        :prefix      [:transform [:conc :body :slash]
                      (partial apply str)]
        :symbol      [:transform [:alt
