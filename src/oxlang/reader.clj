@@ -1,18 +1,24 @@
 (ns oxlang.reader
   (:require [oxlang.parser :as p]
+            [clojure.set :refer [union]]
             [oxlang.parser-compiler :refer [compile-grammar]]))
 
+(def whitespace #{\space \newline \tab})
+(def syntax #{\: \;  \( \) \{ \} \" \' \/})
+(def numeric #{\0 \1 \2 \3 \4 \5 \6 \7 \8 \9})
+
 (def symbol
-  (-> {:prefix-char [:pred (fn [c] (not (#{\: \; \space \newline \( \) \" \' \/
-                                        \0 \1 \2 \3 \4 \5 \6 \7 \8 \9}
-                                      c)))]
-       :body-char   [:pred (fn [c] (not (#{\space \newline \( \) \/} c)))]
-       :body        [:conc :prefix-char
-                     [:rep* :body-char]]
-       :symbol      [:alt [:term \/]
-                     [:conc
-                      [:opt [:conc :body [:term \/]]]
-                      :body]]}
+  (-> {:prefix-char [:pred (complement (union whitespace syntax numeric))]
+       :body-char   [:pred (complement whitespace)]
+       :slash       [:term \/]
+       :body        [:transform [:conc :prefix-char [:rep* :body-char]]
+                     (fn [[x xs]] (apply str x xs))]
+       :prefix      [:transform [:conc :body :slash]
+                     (partial apply str)]
+       :symbol      [:transform [:alt
+                                 [:rep+ :slash]
+                                 [:conc [:opt :prefix] :body]]
+                     (partial apply str)]}
       (compile-grammar)))
 
 (def keyword
