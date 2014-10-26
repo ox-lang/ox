@@ -108,6 +108,19 @@
           p (partial parse g :entry)]
       (success? (p [a b])))))
 
+(defspec conc-buff-ok
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)
+                 c (gen/vector gen/char)]
+    (let [g  {:a     {:op  :term,
+                      :val a}
+              :b     {:op  :term,
+                      :val b}
+              :entry {:op   :conc,
+                      :body [:a, :b]}}
+          r  (parse g :entry (concat [a b] c))]
+      (and (success? r)
+           (= (count (:buff r)) (count c))))))
+
 ;; Test :succeed
 ;;--------------------------------------------------------------------
 (defspec succeed-matches
