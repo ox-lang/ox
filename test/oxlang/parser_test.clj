@@ -15,6 +15,20 @@
           r (parse g :entry [n])]
       (failure? r))))
 
+(defspec terminal-buff-ok
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)
+                 n gen/nat
+                 m gen/nat]
+    (let [n  (max n 1)
+          m  (max m 1)
+          as (repeat n a)
+          bs (repeat m b)
+          g  {:entry {:op :term :val a}}
+          r  (parse g :entry (concat as bs))]
+      (and (success? r)
+           (= (count (:buff r))
+              (dec (+ m n)))))))
+
 ;; Test :pred
 ;;--------------------------------------------------------------------
 (defspec predicate-matches-only
