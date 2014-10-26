@@ -43,6 +43,20 @@
           r (parse g :entry [m])]
       (success? r))))
 
+(defspec predicate-buff-ok
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)
+                 n gen/nat
+                 m gen/nat]
+    (let [n  (max n 1)
+          m  (max m 1)
+          as (repeat n a)
+          bs (repeat m b)
+          g {:entry {:op :pred :body #(= a %1)}}
+          r  (parse g :entry (concat as bs))]
+      (and (success? r)
+           (= (count (:buff r))
+              (dec (+ m n)))))))
+
 ;; Test :alt
 ;;--------------------------------------------------------------------
 (defspec alt-matches-only
