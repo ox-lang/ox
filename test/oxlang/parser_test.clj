@@ -244,9 +244,9 @@
                      :val a},
              :entry {:op   :transform,
                      :body :a
-                     :fn   str}}
+                     :fn   (constantly 3)}}
           r_a (parse g :a [a])
           r_e (parse g :entry [a])]
       (and (success? r_a)
            (success? r_e)
-           (= (str a) (:dat r_e))))))
+           (= 3 (:dat r_e))))))
