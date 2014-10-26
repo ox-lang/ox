@@ -8,7 +8,7 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]))
 
-(deftest symbol-tests
+(deftest symbol-hand-tests
   (are [s] (let [r (parse symbol :symbol s)]
              (and (success? r)
                   (= s (:dat r))))
@@ -26,6 +26,13 @@
   (are [s] (let [r (parse symbol :symbol s)]
              (failure? r))
        "0" ":" ":a" "::a" "{" "}" "(" ")" " " "\n" "\t"))
+
+(defspec symbol-tests
+  (prop/for-all [s gen/symbol-ns]
+    (let [s (pr-str s)
+          r (parse symbol :symbol s)]
+      (and (success? r)
+           (= s (:dat r))))))
 
 (deftest keyword-tests
   (are [s v] (let [r (parse keyword :keyword s)]
