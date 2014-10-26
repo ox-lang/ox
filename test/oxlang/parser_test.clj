@@ -200,8 +200,9 @@
                        :val a},
                :entry {:op   :rep*,
                        :body :a}}
-            p (partial parse g :entry)]
-        (success? (p bs))))))
+            r (parse g :entry bs)]
+        (and (success? r)
+             (= (:buff r) bs))))))
 
 (defspec rep*-matches-trailing
   (prop/for-all [[a b] (distinct-n-tuple gen/char 2)]
@@ -211,8 +212,9 @@
                        :val a},
                :entry {:op   :rep*,
                        :body :a}}
-            p (partial parse g :entry)]
-        (success? (p (concat as bs)))))))
+            r (parse g :entry (concat as bs))]
+        (and (success? r)
+             (= (:buff r) bs))))))
 
 ;; Test :rep+
 ;;--------------------------------------------------------------------
