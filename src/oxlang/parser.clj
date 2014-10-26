@@ -96,13 +96,13 @@
 (defmulti -parse -parse-dispatch)
 
 (defmethod -parse :term
-  [grammar {val :val} [t & tokens' :as tokens]]
+  [grammar {val :val} [t & tokens']]
   (if (= val t)
     (succeed val tokens')
     (failure nil)))
 
 (defmethod -parse :pred
-  [grammar {f :body} [t & tokens' :as tokens]]
+  [grammar {f :body} [t & tokens']]
   (if (f t)
     (succeed t tokens')
     (failure nil)))
@@ -153,7 +153,7 @@
           (-parse grammar (get grammar t) tokens)]
       (if (and (success? res) (not-empty tokens))
         (recur buff (cons dat results))
-        (succeed (reverse results) buff)))))
+        (succeed (reverse results) tokens)))))
 
 (defmethod -parse :rep+
   [grammar {t :body} tokens]
