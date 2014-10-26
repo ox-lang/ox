@@ -67,4 +67,23 @@
         :DigitOrUnderscore     [:alt :Digit [:term \_]]}
        (compile-grammar)))
 
+(def hex-number
+  (->> {:HexIntegerLiteral       [:conc :HexNumeral [:opt :IntegerTypeSuffix]]
+
+        :HexNumeral              [:conc [:term \0]
+                                  [:alt [:term \x] [:term \X]]
+                                  :HexDigits]
+
+        :HexDigits               [:alt
+                                  :HexDigit
+                                  [:conc :HexDigit [:opt :HexDigitsAndUnderscores] :HexDigit]]
+
+        :HexDigit                [:pred #{\0 \1 \2 \3 \4 \5 \6 \7 \8 \9 \a \b \c \d \e \f \A \B \C \D \E \F}]
+
+        :HexDigitsAndUnderscores [:alt
+                                  :HexDigitOrUnderscore
+                                  [:conc :HexDigitsAndUnderscores :HexDigitOrUnderscore]]
+
+        :HexDigitOrUnderscore    [:alt :HexDigit [:term \_]]}
+       (merge int-number)
        (compile-grammar)))

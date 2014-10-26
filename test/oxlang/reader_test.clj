@@ -50,3 +50,9 @@
     (let [s (str i)
           r (parse int-number :DecimalIntegerLiteral s)]
       (success? r))))
+
+(defspec hex-tests
+  (prop/for-all [i gen/nat]
+    (let [s (format "0x%X" i)
+          r (parse hex-number :HexIntegerLiteral s)]
+      (success? r))))
