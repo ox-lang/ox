@@ -65,6 +65,13 @@
           :body name'}
          (assoc acc name))))
 
+(defmethod --compile-grammar-rule :transform [acc [name [_ form fn]]]
+  (let [[acc [name']] (-compile-children acc [form])]
+    (->> {:op   :transform,
+          :body name'
+          :fn   fn}
+         (assoc acc name))))
+
 ;; Compiler invocation interface
 ;;--------------------------------------------------------------------
 (defn compile-grammar [grammar-map]
