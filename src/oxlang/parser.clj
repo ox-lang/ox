@@ -1,26 +1,27 @@
 (ns oxlang.parser
-"My Little Parser
---------------------------------------------------------------------
- The following is a datastructure description and interpreter for an
- obvious recursive decent state monad parser combinator supporting
- only a few classical EBNF operations.
+  "My Little Parser
+  --------------------------------------------------------------------
+  The following is a datastructure description and interpreter for an
+  obvious recursive decent state monad parser combinator supporting
+  only a few classical EBNF operations.
 
- The interpretation of a production returns either
-   Succeed (dat . rest)
-   Fail (dat)
+  The interpretation of a production returns either
+  Succeed (dat . rest)
+  Fail (dat)
 
- Parser progress is implemented by continuing forwards on the rest
- of a Succeed, being the sequence of remaining tokens. Parser
- failure propagates back up the stack to a production which
- tolerates failure or to the top level. As the token sequence is
- immutable, the value of a Fail need not be the token sequence at
- which the failure occured, it can be debugginf information or any
- other value.
+  Parser progress is implemented by continuing forwards on the rest
+  of a Succeed, being the sequence of remaining tokens. Parser
+  failure propagates back up the stack to a production which
+  tolerates failure or to the top level. As the token sequence is
+  immutable, the value of a Fail need not be the token sequence at
+  which the failure occured, it can be debugginf information or any
+  other value.
 
- At present parser failures produce no debugging information.
+  At present parser failures produce no debugging information.
 
- Grammar
-  | {[Keyword        | (Σ Terminal Alternation Concatination
+  Grammar
+  | {[Keyword        | (Σ Terminal Predicate Transform
+  |                       Alternation Concatination
   |                       Succeed Fail Option Rep* Rep+)]}
   |
   |  Terminal
@@ -32,6 +33,11 @@
   |   | {[:op        | :pred]
   |   |  [:body      | (Fn $ [Character] → Bool)]
   |   |  [:transform | (Option Fn | Identity)]}
+  |
+  |  Transform
+  |   | {[:op        | :transform]
+  |   |  [:body      | Keyword]
+  |   |  [:fn        | (Option Fn | Identity)]}
   |
   |  Alternation
   |   | {[:op        | :alt]
@@ -90,107 +96,67 @@
 (defmulti -parse -parse-dispatch)
 
 (defmethod -parse :term
-  [grammar
-   {val :val
-    tfn :transform
-    :or {tfn identity}
-    :as op}
-   [t & tokens' :as tokens]]
+  [grammar {val :val} [t & tokens' :as tokens]]
   (if (= val t)
-    (succeed (tfn val) tokens')
+    (succeed val tokens')
     (failure nil)))
 
 (defmethod -parse :pred
-  [grammar
-   {f   :body
-    tfn :transform
-    :or {tfn identity}}
-   [t & tokens' :as tokens]]
+  [grammar {f :body} [t & tokens' :as tokens]]
   (if (f t)
-    (succeed (tfn t) tokens')
+    (succeed t tokens')
     (failure nil)))
 
 (defmethod -parse :alt
-  [grammar
-   {terms :body
-    tfn :transform
-    :or {tfn identity}
-    :as op}
-   tokens]
+  [grammar {terms :body} tokens]
   (loop [[t & terms] terms]
     (if t
-      (let [{r :result
-             :as res}
-            (-parse grammar
-                    (get grammar t)
-                    tokens)]
-        (if (= :success r)
+      (let [res (-parse grammar (get grammar t) tokens)]
+        (if (success? res)
           (let [{:keys [dat buff]} res]
-            (succeed (tfn dat) buff))
+            (succeed dat buff))
           (recur terms)))
       (failure nil))))
 
 (defmethod -parse :conc
-  [grammar
-   {terms :body
-    tfn :transform
-    :or {tfn identity}
-    :as op}
-   tokens]
+  [grammar {terms :body} tokens]
   (loop [[t & terms] terms
          tokens'     tokens
          results     nil]
     (if t
-      (let [{:keys [buff dat] :as res}
-            (-parse grammar
-                    (get grammar t)
-                    tokens')]
+      (let [{:keys [buff dat] :as res} (-parse grammar (get grammar t) tokens')
+            results'                   (cons dat results)]
         (if (success? res)
-            (recur terms
-                   buff
-                   (cons dat results))
-            (failure nil)))
-      (succeed (tfn (reverse results))
-               tokens'))))
+          (recur terms buff results')
+          (failure nil)))
+      (succeed (reverse results) tokens'))))
 
 (defmethod -parse :succeed
   [grammar _op tokens]
   (succeed nil tokens))
 
 (defmethod -parse :opt
-  [grammar
-   {t :body
-    tfn :transform
-    :or {tfn identity}}
-   tokens]
+  [grammar {t :body} tokens]
   (let [{:keys [buff dat] :as res}
         (-parse grammar
                 (get grammar t)
                 tokens)]
     (if (success? res)
-      (succeed (tfn dat) buff)
+      (succeed dat buff)
       (succeed nil tokens))))
 
 (defmethod -parse :rep*
-  [grammar
-   {t   :body
-    tfn :transform
-    :or {tfn identity}}
-   tokens]
+  [grammar {t :body} tokens]
   (loop [tokens  tokens
          results nil]
     (let [{:keys [dat buff] :as res}
           (-parse grammar (get grammar t) tokens)]
       (if (and (success? res) (not-empty tokens))
         (recur buff (cons dat results))
-        (succeed (tfn (reverse results)) buff)))))
+        (succeed (reverse results) buff)))))
 
 (defmethod -parse :rep+
-  [grammar
-   {t   :body
-    tfn :transform
-    :or {tfn identity}}
-   tokens]
+  [grammar {t :body} tokens]
   (loop [tokens tokens
          results nil]
     (let [{:keys [buff dat] :as res} (-parse grammar (get grammar t) tokens)
@@ -199,8 +165,15 @@
                (not-empty tokens))
         (recur buff results')
         (if results
-          (succeed (tfn (reverse results')) buff)
+          (succeed (reverse results') buff)
           (failure nil))))))
+
+(defmethod -parse :transform
+  [grammar {t :body f :fn} tokens]
+  (let [res (-parse grammar (get grammar t) tokens)]
+    (if (success? res)
+      (succeed (f (:dat res)) (:buff res))
+      (failure nil))))
 
 ;; Parser invocation interface
 ;;--------------------------------------------------------------------

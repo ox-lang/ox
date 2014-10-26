@@ -15,15 +15,6 @@
           r (parse g :entry [n])]
       (failure? r))))
 
-(defspec terminal-transform-ok
-  (prop/for-all [m gen/char]
-    (let [t (fn [x] (/ (max (long x) 1) 2))
-          g {:entry {:op :term :val m :transform t}}
-          r (parse g :entry [m])]
-      (and (success? r)
-           (= (:dat r)
-              (t m))))))
-
 ;; Test :pred
 ;;--------------------------------------------------------------------
 (defspec predicate-matches-only
@@ -37,16 +28,6 @@
     (let [g {:entry {:op :pred :body #(= m %1)}}
           r (parse g :entry [m])]
       (success? r))))
-
-(defspec predicate-trasform-ok
-  (prop/for-all [m gen/char]
-    (let [t (fn [x] (/ (max (long x) 1) 2))
-          g {:entry {:op        :pred,
-                     :body      #(= m %1),
-                     :transform t}}
-          r (parse g :entry [m])]
-      (= (:dat r)
-         (t m)))))
 
 ;; Test :alt
 ;;--------------------------------------------------------------------
@@ -63,19 +44,6 @@
            (success? (p [b]))
            (failure? (p [c]))))))
 
-(defspec alt-transform-ok
-  (prop/for-all [a gen/char]
-    (let [t (fn [x] (/ (max (long x) 1) 2))
-          g {:a     {:op  :term,
-                     :val a}
-             :entry {:op        :alt,
-                     :body      [:a],
-                     :transform t}}
-          r (parse g :entry [a])]
-      (and (success? r)
-           (= (:dat r)
-              (t a))))))
-
 ;; Test :conc
 ;;--------------------------------------------------------------------
 (defspec conc-matches
@@ -88,22 +56,6 @@
                      :body [:a, :b]}}
           p (partial parse g :entry)]
       (success? (p [a b])))))
-
-(defspec conc-transform-ok
-  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)]
-    (let [t  (fn [x] (/ (max (long x) 1) 2))
-          t' (partial map t)
-          g  {:a     {:op  :term,
-                      :val a}
-              :b     {:op  :term,
-                      :val b}
-              :entry {:op   :conc,
-                      :body [:a, :b]
-                      :transform t'}}
-          r  (parse g :entry [a b])]
-      (and (success? r)
-           (= (:dat r)
-              (t' [a b]))))))
 
 ;; Test :succeed
 ;;--------------------------------------------------------------------
@@ -130,17 +82,6 @@
       (and (success? (p [a b]))
            (success? (p [b]))
            (failure? (p [a]))))))
-
-(defspec opt-transform-ok
-  (prop/for-all [a gen/char]
-    (let [t (fn [x] (/ (max (long x) 1) 2))
-          g {:a     {:op  :term,
-                     :val a},
-             :entry {:op        :opt,
-                     :body      :a,
-                     :transform t}}
-          r (parse g :entry [a])]
-      (= (:dat r) (t a)))))
 
 ;; Test :rep*
 ;;--------------------------------------------------------------------
@@ -185,18 +126,6 @@
             p (partial parse g :entry)]
         (success? (p (concat as bs)))))))
 
-(defspec rep*-transform-ok
-  (prop/for-all [a  gen/char]
-    (prop/for-all [as (gen/vector (gen/return a))]
-      (let [t (partial map (fn [x] (/ (max (long x) 1) 2)))
-            g {:a     {:op  :term,
-                       :val a},
-               :entry {:op        :rep*,
-                       :body      :a,
-                       :transform t}}
-            r (parse g :entry as)]
-        (= (:dat r) (t as))))))
-
 ;; Test :rep+
 ;;--------------------------------------------------------------------
 (defspec rep+-matches-self
@@ -233,14 +162,27 @@
       (and (success? (p as))
            (success? (p (concat as bs)))))))
 
-(defspec rep+-transform-ok
-  (prop/for-all [a  gen/char]
-    (prop/for-all [as (gen/not-empty (gen/vector (gen/return a)))]
-      (let [t (partial map (fn [x] (/ (max (long x) 1) 2)))
-            g {:a     {:op  :term,
-                       :val a},
-               :entry {:op        :rep+,
-                       :body      :a,
-                       :transform t}}
-            r (parse g :entry as)]
-        (= (:dat r) (t as))))))
+;; Test :transform
+;;--------------------------------------------------------------------
+(defspec transform-fails-when-child-fails
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)]
+    (let [g {:a     {:op  :term,
+                     :val a},
+             :entry {:op   :transform,
+                     :body :a
+                     :fn   str}}]
+      (and (failure? (parse g :a [b]))
+           (failure? (parse g :entry [b]))))))
+
+(defspec transform-runs-when-child-succeeds
+  (prop/for-all [a gen/char]
+    (let [g {:a     {:op  :term,
+                     :val a},
+             :entry {:op   :transform,
+                     :body :a
+                     :fn   str}}
+          r_a (parse g :a [a])
+          r_e (parse g :entry [a])]
+      (and (success? r_a)
+           (success? r_e)
+           (= (str a) (:dat r_e))))))
