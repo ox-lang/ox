@@ -221,13 +221,14 @@
 (defspec rep+-matches-self
   (prop/for-all [a gen/char
                  n gen/nat]
-    (let [g {:a     {:op  :term,
-                     :val a},
-             :entry {:op   :rep+,
-                     :body :a}}
-          p (partial parse g :entry)
-          as (repeat (inc n) a)]
-      (success? (p as)))))
+    (let [g  {:a     {:op  :term,
+                      :val a},
+              :entry {:op   :rep+,
+                      :body :a}}
+          as (repeat (inc n) a)
+          r  (parse g :entry as)]
+      (and (success? r)
+           (= (:buff r) nil)))))
 
 (defspec rep+-rejects-zero
   (prop/for-all [a gen/char]
