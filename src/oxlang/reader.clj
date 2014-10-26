@@ -39,6 +39,7 @@
        (merge symbol)
        (compile-grammar)))
 
+;; FIXME: :DecimalIntegerLiteral should yeield a num, not just chars
 (def int-number
   (->> {:NonZeroDigit          [:pred #{\0 \1 \2 \3 \4 \5 \6 \7 \8 \9}]
         :Digit                 [:alt :NonZeroDigit [:term \0]]
@@ -62,6 +63,7 @@
         :DigitOrUnderscore     [:alt :Digit [:term \_]]}
        (compile-grammar)))
 
+;; FIXME: :HexIntegerLiteral should yield a num, not just chars
 (def hex-number
   (->> {:HexIntegerLiteral       [:conc :HexNumeral [:opt :IntegerTypeSuffix]]
 
