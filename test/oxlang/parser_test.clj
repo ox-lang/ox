@@ -147,6 +147,30 @@
            (success? (p [b]))
            (failure? (p [a]))))))
 
+(defspec opt-buff-ok
+  (prop/for-all [[a b] (distinct-n-tuple gen/char 2)
+                 cs    (gen/not-empty (gen/vector gen/char))]
+    (let [g {:a     {:op  :term,
+                     :val a},
+             :b     {:op  :term,
+                     :val b},
+             :o     {:op   :opt,
+                     :body :a},
+             :entry {:op   :conc,
+                     :body [:o :b]}}
+          p (partial parse g :entry)]
+      (and (let [r (p [a b])]
+             (and (success? r)
+                  (empty? (:buff r))))
+           
+           (let [r (p [b])]
+             (and (success? r)
+                  (empty? (:buff r))))
+
+           (let [r (p (cons b cs))]
+             (and (success? r)
+                  (= cs (:buff r))))))))
+
 ;; Test :rep*
 ;;--------------------------------------------------------------------
 (defspec rep*-matches-self
