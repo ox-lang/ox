@@ -1,6 +1,6 @@
 grammar Oxlang;
 
-file: list*;
+file: form*;
 
 form: literal
     | list
@@ -15,6 +15,15 @@ vector: '[' form* ']' ;
 
 map: '{' (form form)* '}' ;
 
+reader_macro
+    : lambda
+    | meta_data
+    | special_form
+    | regex
+    | set
+    | NAME '#' // TJP added (auto-gensym)
+    ;
+
 // TJP added '&' (gather a variable number of arguments)
 special_form: ('\'' | '`' | '~' | '~@' | '^' | '@' | '&') form ;
 
@@ -22,15 +31,10 @@ lambda: '#(' form* ')' ;
 
 meta_data: '#^' map form ;
 
+// FIXME: not complete, escape characters?
 regex: '#' STRING  ;
 
-reader_macro
-    : lambda
-    | meta_data
-    | special_form
-    | regex
-    | NAME '#' // TJP added (auto-gensym)
-    ;
+set: '#{' form* '}' ;
 
 literal
     : STRING
@@ -49,7 +53,7 @@ NUMBER : '-'? [0-9]+ ('.' [0-9]+)? ([eE] '-'? [0-9]+)? ;
 
 CHARACTER : '\\' . ;
 
-NIL : 'nil';
+fragment NIL : 'nil';
 nil : NIL ;
 
 BOOLEAN : 'true' | 'false' ;
@@ -60,16 +64,14 @@ SYMBOL: '.' | '/' | NAME ('/' NAME)? ;
 
 PARAM_NAME: '%' (('1'..'9')('0'..'9')*)? ;
 
-fragment
-NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
+fragment NAME
+    : SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 
-fragment
-SYMBOL_HEAD
+fragment SYMBOL_HEAD
     :   'a'..'z' | 'A'..'Z' | '*' | '+' | '!' | '-' | '_' | '?' | '>' | '<' | '=' | '$'
     ;
 
-fragment
-SYMBOL_REST
+fragment SYMBOL_REST
     : SYMBOL_HEAD
     | '&' // apparently this is legal in an ID: "(defn- assoc-&-binding ..." TJP
     | '0'..'9'
