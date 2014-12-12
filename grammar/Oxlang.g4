@@ -13,16 +13,16 @@ reader_macro
     : lambda
     | tag_map
     | special_form
-    | regex
-    | set
     | gensym
     ;
 
 literal
     : string
+    | regex
+    | set
+    | nil
     | NUMBER
     | CHARACTER
-    | nil
     | BOOLEAN
     | KEYWORD
     | SYMBOL
