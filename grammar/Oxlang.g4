@@ -7,7 +7,6 @@ form: literal
     | vector 
     | map 
     | reader_macro
-    | '#\'' SYMBOL // TJP added (get Var object instead of the value of a symbol)
     ;
   
 list: '(' form* ')' ;
