@@ -30,17 +30,17 @@ literal
     | CHARACTER
     | BOOLEAN
     | KEYWORD
-    | SYMBOL
     | PARAM_NAME
+    | SYMBOL
     ;
 
-quote: '\'' SYMBOL ;
+quote: '\'' form ;
 
-backtick: '`' SYMBOL ;
+backtick: '`' form ;
 
-unquote: '~' SYMBOL ;
+unquote: '~' form ;
 
-unquote_splicing: '~@' SYMBOL ;
+unquote_splicing: '~@' form ;
 
 deref: '@' form ;
 
