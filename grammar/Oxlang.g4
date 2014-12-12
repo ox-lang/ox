@@ -19,7 +19,7 @@
    crap in parens" but I guess that is LISP for you ;)
  */
 
-grammar Clojure;
+grammar Oxlang;
 
 file: list*;
   
