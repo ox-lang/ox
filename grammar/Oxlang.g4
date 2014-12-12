@@ -2,11 +2,11 @@ grammar Oxlang;
 
 file: form*;
 
-form: literal
+form: reader_macro
+    | literal
     | list
     | vector
     | map
-    | reader_macro
     ;
 
 reader_macro
@@ -15,7 +15,7 @@ reader_macro
     | special_form
     | regex
     | set
-    | NAME '#' // TJP added (auto-gensym)
+    | gensym
     ;
 
 literal
@@ -48,6 +48,9 @@ unquote_splicing: '~@' SYMBOL ;
 deref: '@' form ;
 
 tag: '^' form form ;
+
+// FIXME: fully qualified symbols not actually supported
+gensym: SYMBOL '#' ;
 
 list: '(' form* ')' ;
 
