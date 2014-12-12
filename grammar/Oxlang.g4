@@ -32,7 +32,7 @@ reader_macro
     | special_form 
     | regex 
     | var_quote
-    | SYMBOL '#' // TJP added (auto-gensym)
+    | NAME '#' // TJP added (auto-gensym)
     ; 
     
 literal
