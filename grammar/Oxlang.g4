@@ -19,7 +19,7 @@ reader_macro
     ;
 
 literal
-    : STRING
+    : string
     | NUMBER
     | CHARACTER
     | nil
@@ -65,9 +65,9 @@ lambda: '#(' form* ')' ;
 tag_map: '#^' map form ;
 
 // FIXME: not complete, escape characters?
-regex: '#' STRING  ;
+regex: '#"' ( ~'"' | '\\' '"' )* '"' ;
 
-STRING : '"' ( ~'"' | '\\' '"' )* '"' ;
+string: '"' ( ~'"' | '\\' '"' )* '"' ;
 
 NUMBER : '-'? [0-9]+ ('.' [0-9]+)? ([eE] '-'? [0-9]+)? ;
 
