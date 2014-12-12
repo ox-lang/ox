@@ -9,32 +9,14 @@ form: literal
     | reader_macro
     ;
 
-list: '(' form* ')' ;
-
-vector: '[' form* ']' ;
-
-map: '{' (form form)* '}' ;
-
 reader_macro
     : lambda
-    | meta_data
+    | tag_map
     | special_form
     | regex
     | set
     | NAME '#' // TJP added (auto-gensym)
     ;
-
-// TJP added '&' (gather a variable number of arguments)
-special_form: ('\'' | '`' | '~' | '~@' | '^' | '@' | '&') form ;
-
-lambda: '#(' form* ')' ;
-
-meta_data: '#^' map form ;
-
-// FIXME: not complete, escape characters?
-regex: '#' STRING  ;
-
-set: '#{' form* '}' ;
 
 literal
     : STRING
@@ -46,6 +28,41 @@ literal
     | SYMBOL
     | PARAM_NAME
     ;
+
+special_form
+    : quote
+    | backtick
+    | unquote
+    | unquote_splicing
+    | deref
+    | tag;
+
+quote: '\'' SYMBOL ;
+
+backtick: '`' SYMBOL ;
+
+unquote: '~' SYMBOL ;
+
+unquote_splicing: '~@' SYMBOL ;
+
+deref: '@' form ;
+
+tag: '^' form form ;
+
+list: '(' form* ')' ;
+
+vector: '[' form* ']' ;
+
+map: '{' (form form)* '}' ;
+
+set: '#{' form* '}' ;
+
+lambda: '#(' form* ')' ;
+
+tag_map: '#^' map form ;
+
+// FIXME: not complete, escape characters?
+regex: '#' STRING  ;
 
 STRING : '"' ( ~'"' | '\\' '"' )* '"' ;
 
@@ -68,12 +85,23 @@ fragment NAME
     : SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 
 fragment SYMBOL_HEAD
-    :   'a'..'z' | 'A'..'Z' | '*' | '+' | '!' | '-' | '_' | '?' | '>' | '<' | '=' | '$'
+    : 'a'..'z'
+    | 'A'..'Z'
+    | '*'
+    | '+'
+    | '!'
+    | '-'
+    | '_'
+    | '?'
+    | '>'
+    | '<'
+    | '='
+    | '$'
+    | '&'
     ;
 
 fragment SYMBOL_REST
     : SYMBOL_HEAD
-    | '&' // apparently this is legal in an ID: "(defn- assoc-&-binding ..." TJP
     | '0'..'9'
     | '.'
     ;
