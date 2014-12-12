@@ -1,56 +1,57 @@
 grammar Oxlang;
 
 file: list*;
-  
+
 form: literal
-    | list 
-    | vector 
-    | map 
+    | list
+    | vector
+    | map
     | reader_macro
     ;
-  
+
 list: '(' form* ')' ;
-  
+
 vector: '[' form* ']' ;
-  
+
 map: '{' (form form)* '}' ;
 
 // TJP added '&' (gather a variable number of arguments)
 special_form: ('\'' | '`' | '~' | '~@' | '^' | '@' | '&') form ;
-  
+
 lambda: '#(' form* ')' ;
-  
+
 meta_data: '#^' map form ;
 
 regex: '#' STRING  ;
-  
+
 reader_macro
-    : lambda 
-    | meta_data 
-    | special_form 
+    : lambda
+    | meta_data
+    | special_form
     | regex
     | NAME '#' // TJP added (auto-gensym)
-    ; 
-    
+    ;
+
 literal
     : STRING
-    | NUMBER 
+    | NUMBER
     | CHARACTER
-    | NIL
+    | nil
     | BOOLEAN
     | KEYWORD
     | SYMBOL
     | PARAM_NAME
-    ;   
-  
+    ;
+
 STRING : '"' ( ~'"' | '\\' '"' )* '"' ;
-  
+
 NUMBER : '-'? [0-9]+ ('.' [0-9]+)? ([eE] '-'? [0-9]+)? ;
 
 CHARACTER : '\\' . ;
 
 NIL : 'nil';
-  
+nil : NIL ;
+
 BOOLEAN : 'true' | 'false' ;
 
 KEYWORD : ':' SYMBOL ;
@@ -58,7 +59,7 @@ KEYWORD : ':' SYMBOL ;
 SYMBOL: '.' | '/' | NAME ('/' NAME)? ;
 
 PARAM_NAME: '%' (('1'..'9')('0'..'9')*)? ;
-  
+
 fragment
 NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 
@@ -66,14 +67,14 @@ fragment
 SYMBOL_HEAD
     :   'a'..'z' | 'A'..'Z' | '*' | '+' | '!' | '-' | '_' | '?' | '>' | '<' | '=' | '$'
     ;
-    
+
 fragment
 SYMBOL_REST
     : SYMBOL_HEAD
     | '&' // apparently this is legal in an ID: "(defn- assoc-&-binding ..." TJP
     | '0'..'9'
     | '.'
-    ;   
+    ;
 
 WS : [ \n\r\t\,] -> channel(HIDDEN) ;
 
