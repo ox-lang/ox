@@ -21,17 +21,14 @@ special_form: ('\'' | '`' | '~' | '~@' | '^' | '@' | '&') form ;
 lambda: '#(' form* ')' ;
   
 meta_data: '#^' map form ;
-  
-var_quote: '\'' '#' SYMBOL ;
-  
+
 regex: '#' STRING  ;
   
 reader_macro
     : lambda 
     | meta_data 
     | special_form 
-    | regex 
-    | var_quote
+    | regex
     | NAME '#' // TJP added (auto-gensym)
     ; 
     
