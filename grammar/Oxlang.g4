@@ -12,8 +12,13 @@ form: reader_macro
 reader_macro
     : lambda
     | tag_map
-    | special_form
     | gensym
+    | quote
+    | backtick
+    | unquote
+    | unquote_splicing
+    | deref
+    | tag
     ;
 
 literal
@@ -28,14 +33,6 @@ literal
     | SYMBOL
     | PARAM_NAME
     ;
-
-special_form
-    : quote
-    | backtick
-    | unquote
-    | unquote_splicing
-    | deref
-    | tag;
 
 quote: '\'' SYMBOL ;
 
