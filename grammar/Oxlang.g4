@@ -20,7 +20,7 @@ reader_macro
     | unquote_splicing
     | deref
     | tag
-    | discard
+    // | discard - FIXME: discard is hard, not sure it's a good idea
     | dispatch
     ;
 
