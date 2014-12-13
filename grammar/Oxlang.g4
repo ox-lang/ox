@@ -101,7 +101,14 @@ NUMBER
     ;
 
 CHARACTER
-    : '\\' ('newline' | 'space' | 'tab' | . )
+    : '\\' ( 'newline'
+        | 'space'
+        | 'tab'
+        | 'formfeed'
+        | 'backspace'
+        | 'return'
+        | 'u' [a-dA-D]?[a-fA-F]?[a-fA-F]?[a-fA-F]?
+        | . )
     ;
 
 fragment NIL
