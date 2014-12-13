@@ -29,7 +29,7 @@ literal
     | set
     | nil
     | NUMBER
-    | CHARACTER
+    | character
     | BOOLEAN
     | keyword
     | PARAM_NAME
@@ -100,18 +100,31 @@ NUMBER
     : '-'? [0-9]+ ('.' [0-9]+)? ([eE] '-'? [0-9]+)?
     ;
 
-CHARACTER
-    : '\\' ( 'newline'
-        | 'space'
-        | 'tab'
-        | 'formfeed'
-        | 'backspace'
-        | 'return'
-        | 'u' [a-dA-D]?[a-fA-F]?[a-fA-F]?[a-fA-F]?
-        | . )
+NAMED_CHAR
+    : 'newline'
+    | 'return'
+    | 'space'
+    | 'tab'
+    | 'formfeed'
+    | 'backspace'
     ;
 
-fragment NIL
+U_HEX_QUAD
+    : [a-dA-D]?
+      [a-fA-F]
+      [a-fA-F]?
+      [a-fA-F]?
+    ;
+
+unicode_char
+    : 'u' U_HEX_QUAD
+    ;
+
+character
+    : '\\' (NAMED_CHAR | unicode_char | . )
+    ;
+
+NIL
     : 'nil'
     ;
 
