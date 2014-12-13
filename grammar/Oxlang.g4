@@ -375,17 +375,30 @@ PARAM_NAME
     ;
 
 lit_symbol
-    : SYMBOL
+    : ns_symbol
+    | raw_symbol
     ;
 
-SYMBOL
+raw_symbol
+    : RAW_SYMBOL
+    ;
+
+RAW_SYMBOL
     : '.'
     | '/'
-    | NAME ('/' NAME)? '#'?
+    | NAME '#'?
+    ;
+
+ns_symbol
+    : NS_SYMBOL
+    ;
+
+NS_SYMBOL
+    : NAME '/' NAME '#' ?
     ;
 
 fragment
-NAME: SYMBOL_HEAD SYMBOL_REST* ;
+NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 
 fragment
 SYMBOL_HEAD
@@ -406,6 +419,8 @@ SYMBOL_HEAD
         | ' '
         | ','
         | '%'
+        | '~'
+        | '@'
         )
     ;
 
@@ -413,15 +428,14 @@ fragment
 SYMBOL_REST
     : SYMBOL_HEAD
     | '0'..'9'
-    | ':'~':'?
     ;
 
 lit_keyword
-    : KEYWORD
+    : KEYWORD KEYWORD? lit_symbol
     ;
 
 KEYWORD
-    : ':' ':'? SYMBOL
+    : ':'
     ;
 
 WS
