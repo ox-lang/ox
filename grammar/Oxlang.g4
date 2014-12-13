@@ -4,11 +4,11 @@ file
     : form *
     ;
 
-form: reader_macro
-    | literal
+form: literal
     | list
     | vector
     | map
+    | reader_macro 
     ;
 
 reader_macro
