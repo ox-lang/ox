@@ -122,28 +122,28 @@ PARAM_NAME
     ;
 
 // FIXME: fully qualified symbols not actually supported
-GENSYM
+gensym
     : NAME '#'
     ;
 
 symbol
     : NAME '/' NAME
-    | GENSYM
-    | SYM
+    | gensym
+    | sym
     ;
 
 keyword
     : ':' symbol
-    ; 
+    ;
 
-SYM
+sym
     : '.'
     | '/'
     | NAME
     ;
 
-fragment NAME
-    : SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)*
+NAME
+    : SYMBOL_HEAD SYMBOL_REST * ( ':' SYMBOL_REST+ ) *
     ;
 
 fragment SYMBOL_HEAD
@@ -169,9 +169,7 @@ fragment SYMBOL_REST
     ;
 
 WS
-    : [ \n\r\t\,] -> channel(HIDDEN)
-    ;
+    : [ \n\r\t\,] -> channel(HIDDEN);
 
 COMMENT
-    : ';' ~[\r\n]* -> channel(HIDDEN)
-    ;
+    : ';' ~[\r\n]* -> channel(HIDDEN);
