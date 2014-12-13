@@ -272,8 +272,17 @@ n_FloatingPointLiteral
     | n_HexadecimalFloatingPointLiteral
     ;
 
+nan: NaN;
+NaN: Sign? 'NaN';
+
+inf: Inf;
+Inf: Sign? 'Infinity';
+
 n_DecimalFloatingPointLiteral
-    : DecimalFloatingPointLiteral ;
+    : DecimalFloatingPointLiteral
+    | nan
+    | inf
+    ;
 
 n_HexadecimalFloatingPointLiteral
     : HexadecimalFloatingPointLiteral ;
