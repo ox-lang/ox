@@ -14,7 +14,6 @@ form: literal
 reader_macro
     : lambda
     | tag_map
-    | symbol
     | quote
     | backtick
     | unquote
@@ -28,10 +27,12 @@ literal
     | regex
     | set
     | nil
+    | lit_symbol
+    | lit_keyword
     | NUMBER
     | character
     | BOOLEAN
-    | keyword
+    | KEYWORD
     | PARAM_NAME
     ;
 
@@ -84,7 +85,7 @@ tag_map
     ;
 
 // FIXME: not complete, escape characters?
-fragment STR
+STR
     : '"' ( ~'"' | '\\' '"' )* '"'
     ;
 
@@ -141,51 +142,38 @@ PARAM_NAME
     : '%' (('1'..'9')('0'..'9')*)?
     ;
 
-// FIXME: fully qualified symbols not actually supported
-gensym
-    : NAME '#'
+lit_symbol
+    : SYMBOL
     ;
 
-symbol
-    : NAME '/' NAME
-    | gensym
-    | sym
-    ;
-
-keyword
-    : ':' symbol
-    ;
-
-sym
+SYMBOL
     : '.'
     | '/'
-    | NAME
+    | NAME ('/' NAME)? '#'?
     ;
 
-NAME
-    : SYMBOL_HEAD SYMBOL_REST * ( ':' SYMBOL_REST+ ) *
-    ;
+fragment
+NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 
-fragment SYMBOL_HEAD
-    : 'a'..'z'
-    | 'A'..'Z'
-    | '*'
-    | '+'
-    | '!'
-    | '-'
-    | '_'
-    | '?'
-    | '>'
-    | '<'
-    | '='
-    | '$'
-    | '&'
+fragment
+SYMBOL_HEAD
+    : ~('0'..'9' | ':' | '/')
     ;
-
-fragment SYMBOL_REST
+    
+fragment
+SYMBOL_REST
     : SYMBOL_HEAD
+    | '&' // apparently this is legal in an ID: "(defn- assoc-&-binding ..." TJP
     | '0'..'9'
     | '.'
+    ;   
+
+lit_keyword
+    : KEYWORD
+    ;
+
+KEYWORD
+    : ':' ':'? SYMBOL
     ;
 
 WS
