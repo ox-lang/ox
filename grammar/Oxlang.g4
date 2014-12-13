@@ -111,18 +111,17 @@ NAMED_CHAR
     ;
 
 U_HEX_QUAD
-    : [a-dA-D]?
-      [a-fA-F]
-      [a-fA-F]?
-      [a-fA-F]?
-    ;
-
-unicode_char
-    : 'u' U_HEX_QUAD
+    : '\\u'
+        [a-dA-D]?
+        [a-fA-F]
+        [a-fA-F]?
+        [a-fA-F]?
     ;
 
 character
-    : '\\' (NAMED_CHAR | unicode_char | . )
+    : '\\' NAMED_CHAR
+    | U_HEX_QUAD
+    | '\\' .
     ;
 
 NIL
@@ -153,7 +152,7 @@ SYMBOL
     ;
 
 fragment
-NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
+NAME: SYMBOL_HEAD SYMBOL_REST* ;
 
 fragment
 SYMBOL_HEAD
@@ -163,9 +162,8 @@ SYMBOL_HEAD
 fragment
 SYMBOL_REST
     : SYMBOL_HEAD
-    | '&' // apparently this is legal in an ID: "(defn- assoc-&-binding ..." TJP
     | '0'..'9'
-    | '.'
+    | ':'~':'?
     ;   
 
 lit_keyword
