@@ -380,21 +380,34 @@ lit_symbol
     ;
 
 raw_symbol
-    : RAW_SYMBOL
-    ;
-
-RAW_SYMBOL
-    : '.'
-    | '/'
-    | NAME '#'?
+    : special_sym
+    | gen_sym
+    | simple_sym
     ;
 
 ns_symbol
-    : NS_SYMBOL
+    : simple_sym '/' ('.' | '/' | simple_sym)
     ;
 
-NS_SYMBOL
-    : NAME '/' NAME '#' ?
+
+special_sym
+    : SPECIAL_SYM ;
+
+SPECIAL_SYM
+    : '.' | '/'
+    ;
+
+gen_sym
+    : GEN_SYMBOL ;
+
+simple_sym
+    : ANAME ;
+
+ANAME
+    : NAME ;
+
+GEN_SYMBOL
+    : ANAME '#'
     ;
 
 fragment
