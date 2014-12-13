@@ -1,6 +1,8 @@
 grammar Oxlang;
 
-file: form*;
+file
+    : form *
+    ;
 
 form: reader_macro
     | literal
@@ -12,7 +14,7 @@ form: reader_macro
 reader_macro
     : lambda
     | tag_map
-    | gensym
+    | symbol
     | quote
     | backtick
     | unquote
@@ -29,60 +31,120 @@ literal
     | NUMBER
     | CHARACTER
     | BOOLEAN
-    | KEYWORD
+    | keyword
     | PARAM_NAME
-    | SYMBOL
     ;
 
-quote: '\'' form ;
+quote
+    : '\'' form
+    ;
 
-backtick: '`' form ;
+backtick
+    : '`' form
+    ;
 
-unquote: '~' form ;
+unquote
+    : '~' form
+    ;
 
-unquote_splicing: '~@' form ;
+unquote_splicing
+    : '~@' form
+    ;
 
-deref: '@' form ;
+deref
+    : '@' form
+    ;
 
-tag: '^' form form ;
+tag
+    : '^' form form
+    ;
 
-// FIXME: fully qualified symbols not actually supported
-gensym: SYMBOL '#' ;
+list
+    : '(' form* ')'
+    ;
 
-list: '(' form* ')' ;
+vector
+    : '[' form* ']'
+    ;
 
-vector: '[' form* ']' ;
+map
+    : '{' (form form)* '}'
+    ;
 
-map: '{' (form form)* '}' ;
+set
+    : '#{' form* '}'
+    ;
 
-set: '#{' form* '}' ;
+lambda
+    : '#(' form* ')'
+    ;
 
-lambda: '#(' form* ')' ;
-
-tag_map: '#^' map form ;
+tag_map
+    : '#^' map form
+    ;
 
 // FIXME: not complete, escape characters?
-regex: '#"' ( ~'"' | '\\' '"' )* '"' ;
+fragment STR
+    : '"' ( ~'"' | '\\' '"' )* '"'
+    ;
 
-string: '"' ( ~'"' | '\\' '"' )* '"' ;
+regex
+    : '#' STR
+    ;
 
-NUMBER : '-'? [0-9]+ ('.' [0-9]+)? ([eE] '-'? [0-9]+)? ;
+string
+    : STR
+    ;
 
-CHARACTER : '\\' . ;
+NUMBER
+    : '-'? [0-9]+ ('.' [0-9]+)? ([eE] '-'? [0-9]+)?
+    ;
 
-fragment NIL : 'nil';
-nil : NIL ;
+CHARACTER
+    : '\\' ('newline' | 'space' | 'tab' | . )
+    ;
 
-BOOLEAN : 'true' | 'false' ;
+fragment NIL
+    : 'nil'
+    ;
 
-KEYWORD : ':' SYMBOL ;
+nil
+    : NIL
+    ;
 
-SYMBOL: '.' | '/' | NAME ('/' NAME)? ;
+BOOLEAN
+    : 'true'
+    | 'false'
+    ;
 
-PARAM_NAME: '%' (('1'..'9')('0'..'9')*)? ;
+PARAM_NAME
+    : '%' (('1'..'9')('0'..'9')*)?
+    ;
+
+// FIXME: fully qualified symbols not actually supported
+GENSYM
+    : NAME '#'
+    ;
+
+symbol
+    : NAME '/' NAME
+    | GENSYM
+    | SYM
+    ;
+
+keyword
+    : ':' symbol
+    ; 
+
+SYM
+    : '.'
+    | '/'
+    | NAME
+    ;
 
 fragment NAME
-    : SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
+    : SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)*
+    ;
 
 fragment SYMBOL_HEAD
     : 'a'..'z'
@@ -106,6 +168,10 @@ fragment SYMBOL_REST
     | '.'
     ;
 
-WS : [ \n\r\t\,] -> channel(HIDDEN) ;
+WS
+    : [ \n\r\t\,] -> channel(HIDDEN)
+    ;
 
-COMMENT : ';' ~[\r\n]* -> channel(HIDDEN) ;
+COMMENT
+    : ';' ~[\r\n]* -> channel(HIDDEN)
+    ;
