@@ -20,6 +20,8 @@ reader_macro
     | unquote_splicing
     | deref
     | tag
+    | discard
+    | dispatch
     ;
 
 literal
@@ -28,13 +30,13 @@ literal
     | set
     | nil
     | lit_symbol
+    | lit_param
     | lit_keyword
     | n_IntegerLiteral
     | n_FloatingPointLiteral
     | character
     | BOOLEAN
     | KEYWORD
-    | PARAM_NAME
     ;
 
 quote
@@ -98,8 +100,16 @@ string
     : STR
     ;
 
+discard
+    : '#_' form
+    ;
+
+dispatch
+    : '#' lit_symbol form
+    ;
+
 // From the JDK8 spec
-// ง3.10.1 Integer Literals
+// ยง3.10.1 Integer Literals
 n_IntegerLiteral
     : n_DecimalIntegerLiteral
     | n_HexIntegerLiteral
@@ -256,7 +266,7 @@ BinaryDigitOrUnderscore
     | '_'
     ;
 
-// ง3.10.2 Floating-Point Literals
+// ยง3.10.2 Floating-Point Literals
 n_FloatingPointLiteral
     : n_DecimalFloatingPointLiteral
     | n_HexadecimalFloatingPointLiteral
@@ -356,6 +366,10 @@ BOOLEAN
     | 'false'
     ;
 
+lit_param
+    : PARAM_NAME
+    ;
+
 PARAM_NAME
     : '%' (('1'..'9')('0'..'9')*)?
     ;
@@ -375,7 +389,24 @@ NAME: SYMBOL_HEAD SYMBOL_REST* ;
 
 fragment
 SYMBOL_HEAD
-    : ~('0'..'9' | ':' | '/')
+    : ~('0'..'9'
+        | ':'
+        | '/'
+        | '#'
+        | '\\'
+        | '('
+        | ')'
+        | '['
+        | ']'
+        | '{'
+        | '}'
+        | '\n'
+        | '\r'
+        | '\t'
+        | ' '
+        | ','
+        | '%'
+        )
     ;
 
 fragment
