@@ -168,3 +168,5 @@
 
 (defn parse-string [s]
   (-> s -antlr4-parser second -transform))
+
+;; FIXME: Add a file/resource parser
