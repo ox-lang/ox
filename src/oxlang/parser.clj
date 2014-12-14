@@ -5,6 +5,11 @@
 
 (def -antlr4-parser (antlr/parser "grammar/Oxlang.g4"))
 
+;; FIXME: This entire multimethod would be better served as a single
+;; huge explicit pattern match but I need a pattern matching imp'l
+;; first before I can do that. Since I'm bootstrapping this core.match
+;; is probably in order <3 dnolen
+
 (defmulti -transform first)
 
 (defmethod -transform :file [[_ & more]]
