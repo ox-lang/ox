@@ -27,7 +27,8 @@
  :n_IntegerLiteral
  :n_FloatingPointLiteral
  :raw_symbol
- :reader_macro)
+ :reader_macro
+ :character)
 
 (defmethod -transform :n_DecimalIntegerLiteral [[_ x]]
   (Long/parseLong x 10))
