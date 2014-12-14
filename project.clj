@@ -7,4 +7,5 @@
   :plugins [[lein-cloverage "1.0.2"]]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/test.check "0.5.9"]
+                 [org.clojure/core.match "0.3.0-alpha3"]
                  [clj-antlr "0.2.2"]])
