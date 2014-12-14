@@ -289,7 +289,12 @@ named_char
     : '\\' NAMED_CHAR ;
 
 any_char
-    : '\\.' ;
+    : '\\' ANY_CHAR
+    ;
+
+ANY_CHAR
+    : .
+    ;
 
 NAMED_CHAR
     : 'newline'
@@ -302,10 +307,10 @@ NAMED_CHAR
 
 U_HEX_QUAD
     : '\\u'
-        [a-dA-D]?
-        [a-fA-F]
-        [a-fA-F]?
-        [a-fA-F]?
+        [a-dA-D0-9]
+        [a-fA-F0-9]
+        [a-fA-F0-9]
+        [a-fA-F0-9]
     ;
 
 u_hex_quad
