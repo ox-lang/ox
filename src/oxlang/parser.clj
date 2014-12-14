@@ -128,6 +128,14 @@
         (~'quote ~target-form)
         ~map-form))))
 
+(defmethod -transform :tag [[_ _ tag form]]
+  (let [tag  (-transform tag)
+        form (-transform form)]
+    `(~'read-eval
+      (~'with-meta
+        (~'quote ~form)
+        (~'hash-map ~tag true)))))
+
 (defmethod -transform :default [x] x)
 
 (defn read-string [s]
