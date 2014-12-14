@@ -108,6 +108,9 @@
 (defmethod -transform :unquote [[_ _ form]]
   `(~'unquote ~(-transform form)))
 
+(defmethod -transform :quote [[_ _ form]]
+  (list 'quote (-transform form)))
+
 (defmethod -transform :default [x] x)
 
 (defn read-string [s]
