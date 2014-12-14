@@ -148,12 +148,12 @@ IntegerTypeSuffix
 fragment
 DecimalNumeral
     : '0'
-    | NonZeroDigit (Digits? | Underscores Digits)
+    | NonZeroDigit Digits?
     ;
 
 fragment
 Digits
-    : Digit (DigitsAndUnderscores? Digit)?
+    : Digit+
     ;
 
 fragment
@@ -168,29 +168,13 @@ NonZeroDigit
     ;
 
 fragment
-DigitsAndUnderscores
-    : DigitOrUnderscore+
-    ;
-
-fragment
-DigitOrUnderscore
-    : Digit
-    | '_'
-    ;
-
-fragment
-Underscores
-    : '_'+
-    ;
-
-fragment
 HexNumeral
     : '0' [xX] HexDigits
     ;
 
 fragment
 HexDigits
-    : HexDigit (HexDigitsAndUnderscores? HexDigit)?
+    : HexDigit+
     ;
 
 fragment
@@ -199,24 +183,13 @@ HexDigit
     ;
 
 fragment
-HexDigitsAndUnderscores
-    : HexDigitOrUnderscore+
-    ;
-
-fragment
-HexDigitOrUnderscore
-    : HexDigit
-    | '_'
-    ;
-
-fragment
 OctalNumeral
-    : '0' Underscores? OctalDigits
+    : '0' OctalDigits
     ;
 
 fragment
 OctalDigits
-    : OctalDigit (OctalDigitsAndUnderscores? OctalDigit)?
+    : OctalDigit+
     ;
 
 fragment
@@ -225,40 +198,18 @@ OctalDigit
     ;
 
 fragment
-OctalDigitsAndUnderscores
-    : OctalDigitOrUnderscore+
-    ;
-
-fragment
-OctalDigitOrUnderscore
-    : OctalDigit
-    | '_'
-    ;
-
-fragment
 BinaryNumeral
-    : '0' [bB] BinaryDigits
+    : '0' [bB] BinaryDigit BinaryDigits
     ;
 
 fragment
 BinaryDigits
-    : BinaryDigit (BinaryDigitsAndUnderscores? BinaryDigit)?
+    : BinaryDigit*
     ;
 
 fragment
 BinaryDigit
     : [01]
-    ;
-
-fragment
-BinaryDigitsAndUnderscores
-    : BinaryDigitOrUnderscore+
-    ;
-
-fragment
-BinaryDigitOrUnderscore
-    : BinaryDigit
-    | '_'
     ;
 
 // §3.10.2 Floating-Point Literals
