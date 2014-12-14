@@ -166,5 +166,5 @@
 
 (defmethod -transform :default [x] x)
 
-(defn read-string [s]
+(defn parse-string [s]
   (-> s -antlr4-parser second -transform))
