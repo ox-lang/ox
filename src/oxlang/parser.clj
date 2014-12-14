@@ -111,6 +111,15 @@
 (defmethod -transform :quote [[_ _ form]]
   (list 'quote (-transform form)))
 
+(defmethod -transform :dispatch [[_ _ target value]]
+  (let [target (-transform target)
+        value  (-transform value)]
+    `(~'read-eval
+      ((~'resolve-reader-macro
+        (~'this-ns)
+        (~' quote ~target))
+       ~value))))
+
 (defmethod -transform :default [x] x)
 
 (defn read-string [s]
