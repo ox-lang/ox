@@ -1,5 +1,5 @@
-(ns oxlang.test
-  (:require [oxlang.test :refer :all]
+(ns ox.lang.test
+  (:require [ox.lang.test :refer :all]
             [clojure.test :refer :all]
             [clojure.test.check :as tc]
             [clojure.test.check.generators :as gen]

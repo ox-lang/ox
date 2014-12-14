@@ -1,7 +1,9 @@
-(ns oxlang.parser
+(ns ox.lang.parser
   (:refer-clojure :exclude [read-string])
   (:require [clojure.string :as string]
-            [clj-antlr.core :as antlr]))
+            [clojure.core.match :refer [match]]
+            [clj-antlr.core :as antlr])
+  (:import [ox.lang Util]))
 
 (def -antlr4-parser (antlr/parser "grammar/Oxlang.g4"))
 
@@ -44,7 +46,22 @@
 (defmethod -transform :boolean [[_ x]]
   (= x "true"))
 
-;; FIXME: Add character support
+(defmethod -transform :any_char [[_ _ c]]
+  (.charAt c 0))
+
+(defmethod -transform :u_hex_quad [[_ s]]
+  (Util/readUnicodeChar s 2 4 16))
+
+(defmethod -transform :named_char [[_ _ name]]
+  (let [tbl {"newline"   \newline
+             "return"    \return
+             "space"     \space
+             "tab"       \tab
+             "formfeed"  \formfeed
+             "backspace" \backspace}]
+    (if-let [entry (find tbl name)]
+      (second entry)
+      (throw (Exception. (str "Unknown character named " name))))))
 
 ;; FIXME: Add string support
 
