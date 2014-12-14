@@ -44,6 +44,12 @@
 (defmethod -transform :boolean [[_ x]]
   (= x "true"))
 
+;; FIXME: Add character support
+
+;; FIXME: Add string support
+
+;; FIXME: Add pattern support
+
 (defmethod -transform :list [[_ _ & more]]
   (->> more
     (butlast)
