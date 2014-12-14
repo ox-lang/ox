@@ -51,12 +51,14 @@
   (->> more
     (butlast)
     (map -transform)
-    (set)))
+    (cons 'set)
+    (list 'read-eval)))
 
 (defmethod -transform :map [[_ _ & more]]
   (->> more butlast
      (map -transform)
-     (cons 'hash-map)))
+     (cons 'hash-map)
+     (list 'read-eval)))
 
 (defmethod -transform :simple_sym [[_ s]]
   (symbol s))
