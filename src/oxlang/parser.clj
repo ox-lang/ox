@@ -114,6 +114,9 @@
 (defmethod -transform :quote [[_ _ form]]
   (list 'quote (-transform form)))
 
+(defmethod -transform :deref [[_ _ target]]
+  (list 'deref (-transform target)))
+
 (defmethod -transform :dispatch [[_ _ target value]]
   (let [target (-transform target)
         value  (-transform value)]
