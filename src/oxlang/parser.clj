@@ -65,6 +65,21 @@
   (symbol (name (-transform ns))
           (name (-transform sym))))
 
+(defmethod -transform :lit_keyword [[_ _ [_ [sym-type & data]]]]
+  ;; FIXME: a real match would be ballin' here
+  (if (= sym-type :raw_symbol)
+    (let [[[_ name]] data]
+      (keyword name))
+    (let [[[_ ns] _ [_ name]] data]
+      (keyword ns name))))
+
+(defmethod -transform :macro_keyword [[_ _ _ [_ [sym-type & data]]]]
+  (if (= sym-type :raw_symbol)
+    (let [[[_ name]] data]
+      `(~'read-eval (~'keyword (~'name (~'this-ns)) ~name)))
+    (let [[[_ ns] _ [_ name]] data]
+      `(~'read-eval (~'keyword (~'name (~'resolve-ns-alias (~'this-ns) ~ns)) ~name)))))
+
 (defmethod -transform :backtick [[_ _ form]]
   `(~'backtick ~(-transform form)))
 

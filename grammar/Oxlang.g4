@@ -29,6 +29,7 @@ literal
     | set
     | nil
     | lit_symbol
+    | macro_keyword
     | lit_keyword
     | n_IntegerLiteral
     | n_FloatingPointLiteral
@@ -448,7 +449,11 @@ SYMBOL_REST
     ;
 
 lit_keyword
-    : KEYWORD KEYWORD? lit_symbol
+    : KEYWORD lit_symbol
+    ;
+
+macro_keyword
+    : KEYWORD KEYWORD lit_symbol
     ;
 
 KEYWORD
