@@ -42,6 +42,9 @@
 (defmethod -transform :n_DecimalFloatingPointLiteral [[_ x]]
   (-> x -transform Double/parseDouble))
 
+(defmethod -transform :boolean [[_ x]]
+  (= x "true"))
+
 (defmethod -transform :list [[_ _ & more]]
   (->> more
     (butlast)

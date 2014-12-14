@@ -34,7 +34,7 @@ literal
     | n_IntegerLiteral
     | n_FloatingPointLiteral
     | character
-    | BOOLEAN
+    | boolean
     | KEYWORD
     ;
 
@@ -323,6 +323,10 @@ NIL
 
 nil
     : NIL
+    ;
+
+boolean
+    : BOOLEAN
     ;
 
 BOOLEAN
