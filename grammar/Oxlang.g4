@@ -19,7 +19,6 @@ reader_macro
     | unquote_splicing
     | deref
     | tag
-    // | discard - FIXME: discard is hard, not sure it's a good idea
     | dispatch
     ;
 
@@ -93,10 +92,6 @@ regex
 
 string
     : STR
-    ;
-
-discard
-    : '#_' form
     ;
 
 dispatch
