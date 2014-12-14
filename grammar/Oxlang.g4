@@ -12,8 +12,7 @@ form: literal
     ;
 
 reader_macro
-    : lambda
-    | tag_map
+    : tag_map
     | quote
     | backtick
     | unquote
@@ -30,7 +29,6 @@ literal
     | set
     | nil
     | lit_symbol
-    | lit_param
     | lit_keyword
     | n_IntegerLiteral
     | n_FloatingPointLiteral
@@ -77,10 +75,6 @@ map
 
 set
     : '#{' form* '}'
-    ;
-
-lambda
-    : '#(' form* ')'
     ;
 
 tag_map
@@ -339,6 +333,12 @@ BinaryExponentIndicator
     : [pP]
     ;
 
+named_char
+    : '\\' NAMED_CHAR ;
+
+any_char
+    : '\\.' ;
+
 NAMED_CHAR
     : 'newline'
     | 'return'
@@ -356,10 +356,13 @@ U_HEX_QUAD
         [a-fA-F]?
     ;
 
+u_hex_quad
+    : U_HEX_QUAD ;
+
 character
-    : '\\' NAMED_CHAR
-    | U_HEX_QUAD
-    | '\\' .
+    : named_char
+    | u_hex_quad
+    | any_char
     ;
 
 NIL
@@ -373,14 +376,6 @@ nil
 BOOLEAN
     : 'true'
     | 'false'
-    ;
-
-lit_param
-    : PARAM_NAME
-    ;
-
-PARAM_NAME
-    : '%' (('1'..'9')('0'..'9')*)?
     ;
 
 lit_symbol
