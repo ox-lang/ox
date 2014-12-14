@@ -65,6 +65,15 @@
   (symbol (name (-transform ns))
           (name (-transform sym))))
 
+(defmethod -transform :backtick [[_ _ form]]
+  `(~'backtick ~(-transform form)))
+
+(defmethod -transform :unquote_splicing [[_ _ form]]
+  `(~'unquote-splicing ~(-transform form)))
+
+(defmethod -transform :unquote [[_ _ form]]
+  `(~'unquote ~(-transform form)))
+
 (defmethod -transform :default [x] x)
 
 (defn read-string [s]
