@@ -12,6 +12,11 @@
   (prop/for-all [x gen/int]
     (is (= x (parse-string (str x))))))
 
+(defspec parses-decimal-bigints
+  (prop/for-all [x gen/int]
+    (let [x (*' x 9999999)]
+      (is (= x (parse-string (str x "n")))))))
+
 (defspec parses-hex-ints
   (prop/for-all [x gen/s-pos-int]
     (= x (parse-string (format "0x%X" x)))))
