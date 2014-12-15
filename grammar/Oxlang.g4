@@ -114,7 +114,7 @@ dispatch
     ;
 
 regex
-    : '#' STRING
+    : '#' string
     ;
 
 literal
