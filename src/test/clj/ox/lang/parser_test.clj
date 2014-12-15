@@ -14,40 +14,47 @@
 
 (defspec parses-hex-ints
   (prop/for-all [x gen/s-pos-int]
-    (is (= x (parse-string (format "0x%X" x))))))
+    (= x (parse-string (format "0x%X" x)))))
 
-(def gen-float (gen/fmap float gen/ratio))
+(def gen-double
+  (gen/fmap double gen/ratio))
 
-(defspec parses-float
-  (prop/for-all [x gen-float]
-    (is (= x
-           (parse-string (str x))))
+(defspec parses-raw-double
+  (prop/for-all [x gen-double]
+    (= x (parse-string (pr-str x)))))
 
-    (is (= (* x 1000)
-           (parse-string (str x "e3"))))))
+(defspec parses-exp-double
+  (prop/for-all [x gen/int]
+    (= (-> x (* 1000) double)
+       (parse-string (str x "e3")))))
+
+(deftest parses-nan
+  (is (. (parse-string "NaN")
+         isNaN))
+
+  (is (. (parse-string "-NaN")
+         isNaN)))
+
+(deftest parses-inf
+  (is (= Double/POSITIVE_INFINITY
+         (parse-string "Infinity")))
+  
+  (is (= Double/NEGATIVE_INFINITY
+         (parse-string "-Infinity"))))
+
 
 (defspec parses-symbol
   (prop/for-all [x (gen/one-of [gen/symbol gen/symbol-ns])]
-    (is (= x
-           (parse-string (pr-str x))))))
+    (= x (parse-string (pr-str x)))))
 
-(deftest parses-nan
-  (is (= Double/NaN (parse-string "NaN"))))
+#_(defspec parses-vector
+    (prop/for-all [l (gen/recursive-gen
+                      gen/vector
+                      gen/int)]
+      (= l (parse-string (pr-str l)))))
 
-(deftest parses-inf
-  (is (= Double/POSITIVE_INFINITY (parse-string "Infinity")))
-  (is (= Double/NEGATIVE_INFINITY (parse-string "-Infinity"))))
-
-(defspec parses-vector
-  (prop/for-all [l (gen/recursive-gen
-                    gen/vector
-                    gen/int)]
-    (is (= l
-           (parse-string (pr-str l))))))
-
-(defspec parses-list
-  (prop/for-all [l (gen/recursive-gen
-                    gen/list
-                    gen/symbol)]
-    (is (= l
-           (parse-string (pr-str l))))))
+#_(defspec parses-list
+    (prop/for-all [l (gen/recursive-gen
+                      gen/list
+                      gen/symbol)]
+      (= l (parse-string (pr-str l)))))

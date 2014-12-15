@@ -1,424 +1,191 @@
+/* Reworked for grammar specificity by Reid Mckenzie. Did a bunch of
+   work so that rather than reading "a bunch of crap in parens" some
+   syntactic information is preserved and recovered. Dec. 14 2014.
+
+   Converted to ANTLR 4 by Terence Parr. Unsure of provence. I see
+   it commited by matthias.koester for clojure-eclipse project on
+   Oct 5, 2009:
+
+   https://code.google.com/p/clojure-eclipse/
+
+   Seems to me Laurent Petit had a version of this. I also see
+   Jingguo Yao submitting a link to a now-dead github project on
+   Jan 1, 2011.
+
+   https://github.com/laurentpetit/ccw/tree/master/clojure-antlr-grammar
+
+   Regardless, there are some issues perhaps related to "sugar";
+   I've tried to fix them.
+
+   This parses https://github.com/weavejester/compojure project.
+
+   I also note this is hardly a grammar; more like "match a bunch of
+   crap in parens" but I guess that is LISP for you ;)
+ */
+
 grammar Oxlang;
 
-file
-    : form *
-    ;
+file: form*;
 
 form: literal
     | list
     | vector
     | map
     | reader_macro
+    | '#\'' SYMBOL // TJP added (get Var object instead of the value of a symbol)
     ;
 
+list: '(' form* ')' ;
+
+vector: '[' form* ']' ;
+
+map: '{' (form form)* '}' ;
+
+set: '#{' form* '}' ;
+
+// TJP added '&' (gather a variable number of arguments)
+special_form: ('\'' | '`' | '~' | '~@' | '^' | '@' | '&') form ;
+
+lambda: '#(' form* ')' ;
+
+meta_data: '#^' map form ;
+
+var_quote: '\'' '#' SYMBOL ;
+
+regex: '#' STRING  ;
+
 reader_macro
-    : tag_map
-    | quote
-    | backtick
-    | unquote
-    | unquote_splicing
-    | deref
-    | tag
-    | dispatch
+    : lambda
+    | meta_data
+    | special_form
+    | regex
+    | var_quote
+    | set
+    | SYMBOL '#' // TJP added (auto-gensym)
     ;
 
 literal
     : string
-    | regex
-    | set
-    | nil
-    | lit_symbol
-    | macro_keyword
-    | lit_keyword
-    | n_IntegerLiteral
-    | n_FloatingPointLiteral
+    | number
     | character
+    | nil
     | boolean
-    | KEYWORD
+    | keyword
+    | symbol
+    | param_name
     ;
 
-quote
-    : '\'' form
+string: STRING;
+float: FLOAT;
+hex: HEX;
+bin: BIN;
+bign: BIGN;
+long: LONG;
+number
+    : float
+    | hex
+    | bin
+    | bign
+    | long
     ;
 
-backtick
-    : '`' form
-    ;
+character: CHARACTER;
+nil: NIL;
+boolean: BOOLEAN;
 
-unquote
-    : '~' form
-    ;
+keyword: macro_keyword | simple_keyword;
+simple_keyword: ':' symbol;
+macro_keyword: ':' ':' symbol;
 
-unquote_splicing
-    : '~@' form
-    ;
+symbol: ns_symbol | simple_sym;
+simple_sym: SYMBOL;
+ns_symbol: NS_SYMBOL;
 
-deref
-    : '@' form
-    ;
+param_name: PARAM_NAME;
 
-tag
-    : '^' form form
-    ;
+// Lexers
+//--------------------------------------------------------------------
 
-list
-    : '(' form* ')'
-    ;
+STRING : '"' ( ~'"' | '\\' '"' )* '"' ;
 
-vector
-    : '[' form* ']'
-    ;
-
-map
-    : '{' (form form)* '}'
-    ;
-
-set
-    : '#{' form* '}'
-    ;
-
-tag_map
-    : '#^' map form
-    ;
-
-// FIXME: not complete, escape characters?
-STR
-    : '"' ( ~'"' | '\\' '"' )* '"'
-    ;
-
-regex
-    : '#' STR
-    ;
-
-string
-    : STR
-    ;
-
-dispatch
-    : '#' lit_symbol form
-    ;
-
-// From the JDK8 spec
-// §3.10.1 Integer Literals
-n_IntegerLiteral
-    : n_DecimalIntegerLiteral
-    | n_HexIntegerLiteral
-    | n_OctalIntegerLiteral
-    | n_BinaryIntegerLiteral
-    ;
-
-n_DecimalIntegerLiteral
-    : DecimalIntegerLiteral;
-
-n_HexIntegerLiteral
-    : HexIntegerLiteral;
-
-n_OctalIntegerLiteral
-    : OctalIntegerLiteral;
-
-n_BinaryIntegerLiteral
-    : BinaryIntegerLiteral;
-
-DecimalIntegerLiteral
-    : DecimalNumeral IntegerTypeSuffix?
-    ;
-
-HexIntegerLiteral
-    : HexNumeral IntegerTypeSuffix?
-    ;
-
-OctalIntegerLiteral
-    : OctalNumeral IntegerTypeSuffix?
-    ;
-
-BinaryIntegerLiteral
-    : BinaryNumeral IntegerTypeSuffix?
+// FIXME: Doesn't deal with arbitrary read radixes, BigNums
+FLOAT
+    : '-'? [0-9]+ FLOAT_TAIL
+    | '-'? 'Infinity'
+    | '-'? 'NaN'
     ;
 
 fragment
-IntegerTypeSuffix
-    : [lL]
+FLOAT_TAIL
+    : FLOAT_DECIMAL FLOAT_EXP
+    | FLOAT_DECIMAL
+    | FLOAT_EXP
     ;
 
 fragment
-DecimalNumeral
-    : '0'
-    | NonZeroDigit Digits?
+FLOAT_DECIMAL
+    : '.' [0-9]+
     ;
 
 fragment
-Digits
-    : Digit+
+FLOAT_EXP
+    : [eE] '-'? [0-9]+
     ;
 
-fragment
-Digit
-    : '0'
-    | NonZeroDigit
+HEX: '0' [xX] [0-9a-fA-F]+ ;
+BIN: '0' [bB] [10]+ ;
+LONG: '-'? [0-9]+[lL]?;
+BIGN: '-'? [0-9]+[nN];
+
+CHARACTER : '\\' . ;
+
+NIL : 'nil';
+
+BOOLEAN : 'true' | 'false' ;
+
+SYMBOL
+    : '.'
+    | '/'
+    | NAME
     ;
 
-fragment
-NonZeroDigit
-    : [1-9]
+NS_SYMBOL
+    : NAME '/' SYMBOL
     ;
 
-fragment
-HexNumeral
-    : '0' [xX] HexDigits
-    ;
+PARAM_NAME: '%' (('1'..'9')('0'..'9')*)? ;
 
-fragment
-HexDigits
-    : HexDigit+
-    ;
-
-fragment
-HexDigit
-    : [0-9a-fA-F]
-    ;
-
-fragment
-OctalNumeral
-    : '0' OctalDigits
-    ;
-
-fragment
-OctalDigits
-    : OctalDigit+
-    ;
-
-fragment
-OctalDigit
-    : [0-7]
-    ;
-
-fragment
-BinaryNumeral
-    : '0' [bB] BinaryDigit BinaryDigits
-    ;
-
-fragment
-BinaryDigits
-    : BinaryDigit*
-    ;
-
-fragment
-BinaryDigit
-    : [01]
-    ;
-
-// §3.10.2 Floating-Point Literals
-n_FloatingPointLiteral
-    : n_DecimalFloatingPointLiteral
-    | n_HexadecimalFloatingPointLiteral
-    ;
-
-nan: NaN;
-NaN: Sign? 'NaN';
-
-inf: Inf;
-Inf: Sign? 'Infinity';
-
-n_DecimalFloatingPointLiteral
-    : DecimalFloatingPointLiteral
-    | nan
-    | inf
-    ;
-
-n_HexadecimalFloatingPointLiteral
-    : HexadecimalFloatingPointLiteral ;
-
-DecimalFloatingPointLiteral
-    : Digits '.' Digits? ExponentPart? FloatTypeSuffix?
-    | '.' Digits ExponentPart? FloatTypeSuffix?
-    | Digits ExponentPart FloatTypeSuffix?
-    | Digits FloatTypeSuffix
-    ;
-
-fragment
-ExponentPart
-    : ExponentIndicator SignedInteger
-    ;
-
-fragment
-ExponentIndicator
-    : [eE]
-    ;
-
-fragment
-SignedInteger
-    : Sign? Digits
-    ;
-
-fragment
-Sign
-    : [+-]
-    ;
-
-fragment
-FloatTypeSuffix
-    : [fFdD]
-    ;
-
-HexadecimalFloatingPointLiteral
-    : HexSignificand BinaryExponent FloatTypeSuffix?
-    ;
-
-fragment
-HexSignificand
-    : HexNumeral '.'?
-    | '0' [xX] HexDigits? '.' HexDigits
-    ;
-
-fragment
-BinaryExponent
-    : BinaryExponentIndicator SignedInteger
-    ;
-
-fragment
-BinaryExponentIndicator
-    : [pP]
-    ;
-
-named_char
-    : '\\' NAMED_CHAR ;
-
-any_char
-    : '\\' ANY_CHAR
-    ;
-
-ANY_CHAR
-    : .
-    ;
-
-NAMED_CHAR
-    : 'newline'
-    | 'return'
-    | 'space'
-    | 'tab'
-    | 'formfeed'
-    | 'backspace'
-    ;
-
-U_HEX_QUAD
-    : '\\u'
-        [a-dA-D0-9]
-        [a-fA-F0-9]
-        [a-fA-F0-9]
-        [a-fA-F0-9]
-    ;
-
-u_hex_quad
-    : U_HEX_QUAD ;
-
-character
-    : named_char
-    | u_hex_quad
-    | any_char
-    ;
-
-NIL
-    : 'nil'
-    ;
-
-nil
-    : NIL
-    ;
-
-boolean
-    : BOOLEAN
-    ;
-
-BOOLEAN
-    : 'true'
-    | 'false'
-    ;
-
-lit_symbol
-    : ns_symbol
-    | raw_symbol
-    ;
-
-raw_symbol
-    : special_sym
-    | gen_sym
-    | simple_sym
-    ;
-
-ns_symbol
-    : simple_sym '/' ('.' | '/' | simple_sym)
-    ;
-
-
-special_sym
-    : SPECIAL_SYM ;
-
-SPECIAL_SYM
-    : '.' | '/'
-    ;
-
-gen_sym
-    : GEN_SYMBOL ;
-
-simple_sym
-    : ANAME ;
-
-ANAME
-    : NAME ;
-
-GEN_SYMBOL
-    : ANAME '#'
-    ;
+// Fragments
+//--------------------------------------------------------------------
 
 fragment
 NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 
 fragment
 SYMBOL_HEAD
-    : ~('0'..'9'
-        | ':'
-        | '/'
-        | '#'
-        | '\\'
-        | '('
-        | ')'
-        | '['
-        | ']'
-        | '{'
-        | '}'
-        | '\n'
-        | '\r'
-        | '\t'
-        | ' '
-        | ','
-        | '%'
-        | '~'
-        | '@'
-        | '\''
-        | '^'
+    : ~('0' .. '9'
+        | ':' | '/' | '%' | '(' | ')' | '[' | ']' | '{' | '}' // FIXME: could be one group
+        | [ \n\r\t\,] // FIXME: could be WS
         )
     ;
 
 fragment
 SYMBOL_REST
     : SYMBOL_HEAD
+    | '&' // apparently this is legal in an ID: "(defn- assoc-&-binding ..." TJP
     | '0'..'9'
+    | '.'
     ;
 
-lit_keyword
-    : KEYWORD lit_symbol
+// Discard
+//--------------------------------------------------------------------
+
+fragment
+WS : [ \n\r\t\,] ;
+
+fragment
+COMMENT: ';' ~[\r\n]* ;
+
+TRASH
+    : ( WS | COMMENT ) -> channel(HIDDEN)
     ;
-
-macro_keyword
-    : KEYWORD KEYWORD lit_symbol
-    ;
-
-KEYWORD
-    : ':'
-    ;
-
-WS
-    : [ \n\r\t\,] -> channel(HIDDEN);
-
-COMMENT
-    : ';' ~[\r\n]* -> channel(HIDDEN);

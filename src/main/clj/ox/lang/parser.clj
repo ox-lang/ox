@@ -28,19 +28,21 @@
  :lit_symbol
  :n_IntegerLiteral
  :n_FloatingPointLiteral
- :raw_symbol
+ :symbol
+ :keyword
  :reader_macro
- :character)
+ :character
+ :number)
 
-(defmethod -transform :n_DecimalIntegerLiteral [[_ x]]
+(defmethod -transform :long [[_ x]]
   (Long/parseLong x 10))
 
-(defmethod -transform :n_HexIntegerLiteral [[_ x]]
+(defmethod -transform :hex [[_ x]]
   (-> x
     (string/replace-first #"0[xX]" "")
     (Long/parseLong 16)))
 
-(defmethod -transform :n_DecimalFloatingPointLiteral [[_ x]]
+(defmethod -transform :float [[_ x]]
   (-> x -transform Double/parseDouble))
 
 (defmethod -transform :boolean [[_ x]]
@@ -93,11 +95,11 @@
 (defmethod -transform :simple_sym [[_ s]]
   (symbol s))
 
-(defmethod -transform :ns_symbol [[_ ns _ sym]]
-  (symbol (name (-transform ns))
-          (name (-transform sym))))
+(defmethod -transform :ns_symbol [[_ s]]
+  (let [[_ ns name] (re-find #"([^/]+)/(.*)" s)]
+    (symbol ns name)))
 
-(defmethod -transform :lit_keyword [[_ _ [_ [sym-type & data]]]]
+(defmethod -transform :simple_keyword [[_ _ [_ [sym-type & data]]]]
   ;; FIXME: a real match would be ballin' here
   (if (= sym-type :raw_symbol)
     (let [[[_ name]] data]
@@ -115,7 +117,8 @@
          (~'name (~'this-ns))
          ~name)))
 
-    (let [[[_ ns] _ [_ name]] data]
+    (let [[s]         data
+          [_ ns name] (re-find #"([^/]+)/(.*)" s)]
       `(~'read-eval
         (~'keyword
          (~'name

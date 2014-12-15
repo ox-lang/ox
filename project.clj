@@ -3,8 +3,13 @@
   :url "http://github.com/oxlang/oxlang"
   :license {:name "MIX/X11 license"
             :url "http://opensource.org/licenses/MIT"}
+
   :whitelist #"oxlang.*"
-  :plugins [[lein-cloverage "1.0.2"]]
+
+  :plugins [[lein-cloverage "1.0.2"]
+            [lein-auto "0.1.1"]]
+
+  :auto {:default {:file-pattern #"\.(clj|cljs|cljx|edn|g4)$"}}
   
   :source-paths      ["src/main/clj"]
   :java-source-paths ["src/main/java"]
