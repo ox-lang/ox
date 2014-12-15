@@ -25,9 +25,6 @@
 (punt-on
  :form
  :literal
- :lit_symbol
- :n_IntegerLiteral
- :n_FloatingPointLiteral
  :symbol
  :keyword
  :reader_macro
