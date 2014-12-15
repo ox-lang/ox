@@ -47,14 +47,14 @@
   (prop/for-all [x (gen/one-of [gen/symbol gen/symbol-ns])]
     (= x (parse-string (pr-str x)))))
 
-#_(defspec parses-vector
-    (prop/for-all [l (gen/recursive-gen
-                      gen/vector
-                      gen/int)]
-      (= l (parse-string (pr-str l)))))
+(defspec parses-vector
+  (prop/for-all [l (gen/recursive-gen
+                    gen/vector
+                    gen/int)]
+    (= l (parse-string (pr-str l)))))
 
-#_(defspec parses-list
-    (prop/for-all [l (gen/recursive-gen
-                      gen/list
-                      gen/symbol)]
-      (= l (parse-string (pr-str l)))))
+(defspec parses-list
+  (prop/for-all [l (gen/recursive-gen
+                    gen/list
+                    gen/symbol)]
+    (= l (parse-string (pr-str l)))))
