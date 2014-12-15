@@ -37,6 +37,10 @@
 (defmethod -transform :long [[_ x]]
   (Long/parseLong x 10))
 
+(defmethod -transform :bign [[_ x]]
+  (let [num (.substring x 0 (dec (count x)))]
+    (BigInteger. num 10)))
+
 (defmethod -transform :hex [[_ x]]
   (-> x
     (string/replace-first #"0[xX]" "")
