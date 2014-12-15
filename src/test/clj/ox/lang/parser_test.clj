@@ -35,6 +35,11 @@
   (is (. (parse-string "-NaN")
          isNaN)))
 
+(deftest parses-bool
+  (is (true? (parse-string "true")))
+
+  (is (false? (parse-string "false"))))
+
 (deftest parses-inf
   (is (= Double/POSITIVE_INFINITY
          (parse-string "Infinity")))
