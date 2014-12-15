@@ -31,6 +31,9 @@
  :character
  :number)
 
+(defmethod -transform :forms [[_ & more]]
+  (map -transform more))
+
 (defmethod -transform :long [[_ x]]
   (Long/parseLong x 10))
 
@@ -127,13 +130,13 @@
          ~name)))))
 
 (defmethod -transform :backtick [[_ _ form]]
-  `(~'backtick ~(-transform form)))
+  (list 'backtick (-transform form)))
 
 (defmethod -transform :unquote_splicing [[_ _ form]]
-  `(~'unquote-splicing ~(-transform form)))
+  (list 'unquote-splicing (-transform form)))
 
 (defmethod -transform :unquote [[_ _ form]]
-  `(~'unquote ~(-transform form)))
+  (list 'unquote (-transform form)))
 
 (defmethod -transform :quote [[_ _ form]]
   (list 'quote (-transform form)))
