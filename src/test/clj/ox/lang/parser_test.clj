@@ -75,3 +75,9 @@
 (deftest parses-utf8-character
   (prop/for-all [c gen/char]
     (= c (parse-string (format "\\u%04X" (.charValue c))))))
+
+(deftest parses-dispatch
+  (is (= (parse-string "#foo bar")
+         '(read-eval ((resolve-reader-macro
+                       (this-ns) (quote foo))
+                      bar)))))
