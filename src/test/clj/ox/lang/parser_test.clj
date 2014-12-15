@@ -68,6 +68,10 @@
                     gen/symbol)]
     (= l (parse-string (pr-str l)))))
 
+(defspec parses-maps
+  (prop/for-all [m (gen/map gen/keyword gen/int)]
+    (parse-string (pr-str m))))
+
 (defspec parses-char
   (prop/for-all [c gen/char]
     (= c (parse-string (pr-str c)))))
