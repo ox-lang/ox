@@ -84,3 +84,15 @@
 
 (deftest parses-host-expr
   (is (parse-string "#+cljs foo")))
+
+(defspec parses-keyword
+  (prop/for-all [k (gen/one-of
+                    [gen/keyword
+                     gen/keyword-ns])]
+    (= k (parse-string (pr-str k)))))
+
+(defspec parses-macro-keyword
+  (prop/for-all [k (gen/one-of
+                    [gen/keyword
+                     gen/keyword-ns])]
+    (parse-string (str ":" (pr-str k)))))
