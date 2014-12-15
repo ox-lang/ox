@@ -58,3 +58,7 @@
                     gen/list
                     gen/symbol)]
     (= l (parse-string (pr-str l)))))
+
+(defspec parses-char
+  (prop/for-all [c gen/char]
+    (= c (parse-string (pr-str c)))))

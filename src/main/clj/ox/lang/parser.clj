@@ -48,20 +48,23 @@
 (defmethod -transform :boolean [[_ x]]
   (= x "true"))
 
-(defmethod -transform :any_char [[_ _ c]]
-  (.charAt c 0))
+(defmethod -transform :any_char [[_ ^String s]]
+  (.charAt s 1))
 
 (defmethod -transform :u_hex_quad [[_ s]]
   (Util/readUnicodeChar s 2 4 16))
 
-(defmethod -transform :named_char [[_ _ name]]
-  (let [tbl {"newline"   \newline
-             "return"    \return
-             "space"     \space
-             "tab"       \tab
-             "formfeed"  \formfeed
-             "backspace" \backspace}]
-    (if-let [entry (find tbl name)]
+(def -named-char-table
+  {"newline"   \newline
+   "return"    \return
+   "space"     \space
+   "tab"       \tab
+   "formfeed"  \formfeed
+   "backspace" \backspace})
+
+(defmethod -transform :named_char [[_ name]]
+  (let [name (.substring name 1)]
+    (if-let [entry (find -named-char-table name)]
       (second entry)
       (throw (Exception. (str "Unknown character named " name))))))
 

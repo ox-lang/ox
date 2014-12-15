@@ -32,7 +32,6 @@ form: literal
     | vector
     | map
     | reader_macro
-    | '#\'' SYMBOL // TJP added (get Var object instead of the value of a symbol)
     ;
 
 list: '(' form* ')' ;
@@ -43,25 +42,79 @@ map: '{' (form form)* '}' ;
 
 set: '#{' form* '}' ;
 
-// TJP added '&' (gather a variable number of arguments)
-special_form: ('\'' | '`' | '~' | '~@' | '^' | '@' | '&') form ;
-
-lambda: '#(' form* ')' ;
-
-meta_data: '#^' map form ;
-
-var_quote: '\'' '#' SYMBOL ;
-
-regex: '#' STRING  ;
-
 reader_macro
     : lambda
     | meta_data
-    | special_form
     | regex
     | var_quote
+    | host_expr
     | set
-    | SYMBOL '#' // TJP added (auto-gensym)
+    | tag
+    | discard
+    | dispatch
+    | deref
+    | quote
+    | backtick
+    | unquote
+    | unquote_splicing
+    | gensym
+    ;
+
+// TJP added '&' (gather a variable number of arguments)
+quote
+    : '\'' form
+    ;
+
+backtick
+    : '`' form
+    ;
+
+unquote
+    : '~' form
+    ;
+
+unquote_splicing
+    : '~@' form
+    ;
+
+tag
+    : '^' form form
+    ;
+
+deref
+    : '@' form
+    ;
+
+gensym
+    : SYMBOL '#'
+    ;
+
+lambda
+    : '#(' form* ')'
+    ;
+
+meta_data
+    : '#^' map form
+    ;
+
+var_quote
+    : '#\'' symbol
+    ;
+
+host_expr
+    : '#+' form form
+    ;
+
+discard
+    : '#_' form
+    ;
+
+dispatch
+    : '#' symbol form
+    ;
+
+regex
+    : '#' STRING
     ;
 
 literal
@@ -89,7 +142,15 @@ number
     | long
     ;
 
-character: CHARACTER;
+character
+    : named_char
+    | u_hex_quad
+    | any_char
+    ;
+named_char: CHAR_NAMED ;
+any_char: CHAR_ANY ;
+u_hex_quad: CHAR_U ;
+
 nil: NIL;
 boolean: BOOLEAN;
 
@@ -131,13 +192,24 @@ fragment
 FLOAT_EXP
     : [eE] '-'? [0-9]+
     ;
-
-HEX: '0' [xX] [0-9a-fA-F]+ ;
+fragment
+HEXD: [0-9a-fA-F] ;
+HEX: '0' [xX] HEXD+ ;
 BIN: '0' [bB] [10]+ ;
 LONG: '-'? [0-9]+[lL]?;
 BIGN: '-'? [0-9]+[nN];
 
-CHARACTER : '\\' . ;
+CHAR_U
+    : '\\' 'u'[0-9D-Fd-f] HEXD HEXD HEXD ;
+CHAR_NAMED
+    : '\\' ('newline'
+           | 'return'
+           | 'space'
+           | 'tab'
+           | 'formfeed'
+           | 'backspace' ) ;
+CHAR_ANY
+    : '\\' . ;
 
 NIL : 'nil';
 
@@ -164,7 +236,7 @@ NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 fragment
 SYMBOL_HEAD
     : ~('0' .. '9'
-        | ':' | '/' | '%' | '(' | ')' | '[' | ']' | '{' | '}' // FIXME: could be one group
+        | '#' | '~' | '@' | ':' | '/' | '%' | '(' | ')' | '[' | ']' | '{' | '}' // FIXME: could be one group
         | [ \n\r\t\,] // FIXME: could be WS
         )
     ;
@@ -172,7 +244,6 @@ SYMBOL_HEAD
 fragment
 SYMBOL_REST
     : SYMBOL_HEAD
-    | '&' // apparently this is legal in an ID: "(defn- assoc-&-binding ..." TJP
     | '0'..'9'
     | '.'
     ;
