@@ -81,3 +81,6 @@
          '(read-eval ((resolve-reader-macro
                        (this-ns) (quote foo))
                       bar)))))
+
+(deftest parses-host-expr
+  (is (parse-string "#+cljs foo")))

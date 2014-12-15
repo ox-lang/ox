@@ -155,6 +155,10 @@
         (~' quote ~target))
        ~value))))
 
+(defmethod -transform :host_expr [[_ _ cond value]]
+  ;; FIXME
+  (assert false "Unsupported!"))
+
 (defmethod -transform :tag_map [[_ _ map-form target-form]]
   (let [map-form    (-transform map-form)
         target-form (-transform target-form)]
