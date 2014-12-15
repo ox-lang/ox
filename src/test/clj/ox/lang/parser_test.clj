@@ -72,6 +72,11 @@
   (prop/for-all [m (gen/map gen/keyword gen/int)]
     (parse-string (pr-str m))))
 
+(defspec parses-sets
+  (prop/for-all [m (gen/vector gen/int)]
+    (let [s (into #{} m)]
+      (parse-string (pr-str s)))))
+
 (defspec parses-char
   (prop/for-all [c gen/char]
     (= c (parse-string (pr-str c)))))
