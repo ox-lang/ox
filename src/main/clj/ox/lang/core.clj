@@ -1,1 +1,1 @@
-(ns oxlang.core)
+(ns ox.lang.core)
