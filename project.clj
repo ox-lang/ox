@@ -4,7 +4,7 @@
   :license {:name "MIX/X11 license"
             :url "http://opensource.org/licenses/MIT"}
 
-  :whitelist #"oxlang.*"
+  :whitelist #"ox.lang.*"
 
   :plugins [[lein-cloverage "1.0.2"]
             [lein-auto "0.1.1"]]
