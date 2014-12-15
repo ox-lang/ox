@@ -202,7 +202,7 @@ BIGN: '-'? [0-9]+[nN];
 CHAR_U
     : '\\' 'u'[0-9D-Fd-f] HEXD HEXD HEXD ;
 CHAR_NAMED
-    : '\\' ('newline'
+    : '\\' ( 'newline'
            | 'return'
            | 'space'
            | 'tab'
