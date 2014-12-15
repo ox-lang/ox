@@ -157,7 +157,7 @@
   ;; FIXME
   (assert false "Unsupported!"))
 
-(defmethod -transform :tag_map [[_ _ map-form target-form]]
+(defmethod -transform :meta_data [[_ _ map-form target-form]]
   (let [map-form    (-transform map-form)
         target-form (-transform target-form)]
     `(~'read-eval
