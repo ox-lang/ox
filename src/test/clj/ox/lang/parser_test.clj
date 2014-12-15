@@ -103,3 +103,7 @@
 
 (deftest parses-quote-macros
   (is (parse-string "(`(~'foo ~@abar))")))
+
+(deftest parse-tags
+  (is (parse-string "#^{:foo :bar} foo"))
+  (is (parse-string "^foo bar")))
