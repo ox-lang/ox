@@ -96,3 +96,6 @@
                     [gen/keyword
                      gen/keyword-ns])]
     (parse-string (str ":" (pr-str k)))))
+
+(deftest parses-quote-macros
+  (is (parse-string "(`(~'foo ~@abar))")))
