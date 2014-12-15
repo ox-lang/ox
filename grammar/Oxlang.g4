@@ -236,7 +236,7 @@ NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 fragment
 SYMBOL_HEAD
     : ~('0' .. '9'
-        | '"' | '#' | '~' | '@' | ':' | '/' | '%' | '(' | ')' | '[' | ']' | '{' | '}' // FIXME: could be one group
+        | '\'' | '"' | '#' | '~' | '@' | ':' | '/' | '%' | '(' | ')' | '[' | ']' | '{' | '}' // FIXME: could be one group
         | [ \n\r\t\,] // FIXME: could be WS
         )
     ;
