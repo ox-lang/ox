@@ -25,7 +25,7 @@
 
 grammar Oxlang;
 
-file: form*;
+file: form *;
 
 form: literal
     | list
