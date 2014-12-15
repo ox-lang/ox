@@ -82,6 +82,10 @@
                        (this-ns) (quote foo))
                       bar)))))
 
+(deftest parse-deref
+  (is (= (parse-string "@foo")
+         '(deref foo))))
+
 (deftest parses-host-expr
   (is (parse-string "#+cljs foo")))
 
