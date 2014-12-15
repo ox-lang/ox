@@ -42,7 +42,6 @@
   (is (= Double/NEGATIVE_INFINITY
          (parse-string "-Infinity"))))
 
-
 (defspec parses-symbol
   (prop/for-all [x (gen/one-of [gen/symbol gen/symbol-ns])]
     (= x (parse-string (pr-str x)))))
