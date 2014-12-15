@@ -52,6 +52,10 @@
   (is (= Double/NEGATIVE_INFINITY
          (parse-string "-Infinity"))))
 
+(deftest parses-utf8-character
+  (prop/for-all [c gen/char]
+    (= c (parse-string (format "\\u%04X" (.charValue c))))))
+
 (defspec parses-symbol
   (prop/for-all [x (gen/one-of [gen/symbol gen/symbol-ns])]
     (= x (parse-string (pr-str x)))))
