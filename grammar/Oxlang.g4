@@ -34,13 +34,15 @@ form: literal
     | reader_macro
     ;
 
-list: '(' form* ')' ;
+forms: form* ;
 
-vector: '[' form* ']' ;
+list: '(' forms ')' ;
+
+vector: '[' forms ']' ;
 
 map: '{' (form form)* '}' ;
 
-set: '#{' form* '}' ;
+set: '#{' forms '}' ;
 
 reader_macro
     : lambda

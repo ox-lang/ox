@@ -73,20 +73,14 @@
 
 ;; FIXME: Add pattern support
 
-(defmethod -transform :list [[_ _ & more]]
-  (->> more
-    (butlast)
-    (map -transform)))
+(defmethod -transform :list [[_ _ forms]]
+  (->> forms -transform))
 
-(defmethod -transform :vector [[_ _ & more]]
-  (->> more
-    (butlast)
-    (mapv -transform)))
+(defmethod -transform :vector [[_ _ forms]]
+  (->> forms -transform vec))
 
-(defmethod -transform :set [[_ _ & more]]
-  (->> more
-    (butlast)
-    (map -transform)
+(defmethod -transform :set [[_ _ forms]]
+  (->> (-transform forms)
     (cons 'set)
     (list 'read-eval)))
 
