@@ -21,6 +21,12 @@
   (prop/for-all [x gen/s-pos-int]
     (= x (parse-string (format "0x%X" x)))))
 
+(defspec parses-radix-ints
+  (prop/for-all [x gen/s-pos-int
+                 r (gen/elements (range 2 (inc Character/MAX_RADIX)))]
+    (let [x (biginteger x)]
+      (= x (parse-string (str r "r" (.toString x r)))))))
+
 (def gen-double
   (gen/fmap double gen/ratio))
 
