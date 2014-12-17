@@ -136,12 +136,14 @@ hex: HEX;
 bin: BIN;
 bign: BIGN;
 long: LONG;
+rint: RINT;
 number
     : float
     | hex
     | bin
     | bign
     | long
+    | rint
     ;
 
 character
@@ -200,6 +202,7 @@ HEX: '0' [xX] HEXD+ ;
 BIN: '0' [bB] [10]+ ;
 LONG: '-'? [0-9]+[lL]?;
 BIGN: '-'? [0-9]+[nN];
+RINT: [1-9][0-9]* 'r' ('0'..'9'|'a'..'z'|'A'..'Z')+;
 
 CHAR_U
     : '\\' 'u'[0-9D-Fd-f] HEXD HEXD HEXD ;
