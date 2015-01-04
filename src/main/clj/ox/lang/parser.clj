@@ -58,6 +58,10 @@
 (defmethod -transform :u_hex_quad [[_ s]]
   (Util/readUnicodeChar s 2 4 16))
 
+(defmethod -transform :rint [[_ s]]
+  (let [[_ radix body] (re-find #"([1-9][0-9]*)r(.*)" s)]
+    (BigInteger. body (Long/parseLong radix 10))))
+
 (def -named-char-table
   {"newline"   \newline
    "return"    \return
