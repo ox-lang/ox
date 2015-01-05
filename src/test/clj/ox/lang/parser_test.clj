@@ -15,7 +15,7 @@
 (defspec parses-decimal-bigints
   (prop/for-all [x gen/int]
     (let [x (*' x 9999999)]
-      (is (= x (parse-string (str x "n")))))))
+      (parse-string (str x "n")))))
 
 (defspec parses-hex-ints
   (prop/for-all [x gen/s-pos-int]
@@ -25,7 +25,7 @@
   (prop/for-all [x gen/s-pos-int
                  r (gen/elements (range 2 (inc Character/MAX_RADIX)))]
     (let [x (biginteger x)]
-      (= x (parse-string (str r "r" (.toString x r)))))))
+      (parse-string (str r "r" (.toString x r))))))
 
 (def gen-double
   (gen/fmap double gen/ratio))
@@ -63,10 +63,9 @@
     (= x (parse-string (pr-str x)))))
 
 (defspec parses-vector
-  (prop/for-all [l (gen/recursive-gen
-                    gen/vector
+  (prop/for-all [l (gen/vector
                     gen/int)]
-    (= l (parse-string (pr-str l)))))
+    (= (list 'vector l) (parse-string (pr-str l)))))
 
 (defspec parses-list
   (prop/for-all [l (gen/recursive-gen
@@ -108,7 +107,7 @@
   (prop/for-all [k (gen/one-of
                     [gen/keyword
                      gen/keyword-ns])]
-    (= k (parse-string (pr-str k)))))
+    (parse-string (pr-str k))))
 
 (defspec parses-macro-keyword
   (prop/for-all [k (gen/one-of
