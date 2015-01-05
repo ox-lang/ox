@@ -64,6 +64,14 @@
   [env sym]
   (assert false "Unimplemented"))
 
+(defn get-value
+  "λ [Env, Symbol] → Value
+
+  Returns the value of the given symbol in the specified
+  environment."
+  [env symbol]
+  (assert false "Unimplemented"))
+
 
 
 (defn get-meta

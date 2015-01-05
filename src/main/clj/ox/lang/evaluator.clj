@@ -62,55 +62,95 @@
 
 
 
+(defn compute-fn-bindings [args vals]
+  (loop [acc {}
+         args args
+         vals vals]
+    (let [[arg & args'] args
+          [val & vals'] vals]
+      (if-not (empty? args)
+        (if (= arg '&)
+          (assoc acc (first args') vals)
+          (recur (assoc acc arg val) args' vals'))
+        acc))))
+
 (defn interpreting-eval
   "Walks a previously read-eval'd and macroexpand'd form, evaluating it by
   interpretation. Returns a pair [env, result]."
   [env form]
   (let [-e (comp second (partial interpreting-eval env))]
-    (if (list? form)
-      (let [[f & args] form]
-        (case f
-          ('apply)
-          ,,(->> args last -e
-                 (concat (map -e (butlast args)))
-                 (cons f)
-                 (recur env))
+    (cond (list? form)
+          ,,(let [[f & args] form]
+              (case f
+                ('apply)
+                ,,(let [[lambda & args]   args
+                        _                 (assert (= 'fn* (first lambda)) "Not applying a fn*!")
+                        bodies            (->> lambda rest
+                                               (sort-by #(count (first %1))))
+                        app-args          (concat (map -e (butlast args))
+                                                  (-e (last args)))
+                        body              (or (loop [bodies bodies]
+                                                (let [[[fn-args & forms :as b] & bodies] bodies]
+                                                  (if (= (count app-args)
+                                                         (count fn-args))
+                                                    b
+                                                    (when-not (empty? bodies)
+                                                      (recur bodies)))))
+                                              (last bodies))
+                        [fn-args & forms] body]
+                    (recur (->> (compute-fn-bindings fn-args app-args)
+                                (env/push-locals env))
+                           (cons 'do forms)))
 
-          ('def*)
-          ,,(let [[s m v & more] args]
-              (assert (symbol? s) "Not a binding symbol!")
-              (assert (map? m) "Metadata not a map!")
-              (assert (empty? more) "More args to def than expected!")
-              [(-> env
-                   (env/inter s v)
-                   (env/set-meta s v))
-               s])
+                ('def*)
+                ,,(let [[s m v & more] args]
+                    (assert (symbol? s) "Not a binding symbol!")
+                    (assert (map? m) "Metadata not a map!")
+                    (assert (empty? more) "More args to def than expected!")
+                    [(-> env
+                         (env/inter s v)
+                         (env/set-meta s v))
+                     s])
+
+                ('do*)
+                ,,(do (doseq [f (butlast args)]
+                        (-e f))
+                      (recur env (last args)))
+
+                ('fn*)
+                ,,[env form]
+
+                ('if*)
+                ,,[env
+                   (let [[pred left right & more] args]
+                     (if (-e pred)
+                       (-e left)
+                       (-e right)))]
+
+                ('let*)
+                ,,(let [[bindings & forms] args
+                        bindings      (->> (for [[k v] bindings]
+                                             [k (-e v)])
+                                           (into {}))]
+                    (recur (env/push-locals env bindings)
+                           (cons 'do forms)))
+
+                ('letrc*)
+                ,,(assert false "letrc isn't supported yet™")
+
+                ('quote)
+                ,,[env (second form)]
           
-          ('do*)
-          ,,(do (doseq [f (butlast args)]
-                  (-e f))
-                (recur env (last args)))
-          
-          ('fn*)
-          ,,[env form]
-          
-          ('if*)
+                :else
+                ,,(let [s (env/resolve env f)
+                        v (env/get-value env s)]
+                    (recur env (list 'apply v args)))))
+
+          (symbol? form)
           ,,[env
-             (let [[pred left right & more] args]
-               (if (-e pred)
-                 (-e left)
-                 (-e right)))]
-          
-          ('let*)
-          ,,(let [[bindings & forms] args
-                  bindings      (->> (for [[k v] bindings]
-                                       [k (-e v)])
-                                     (into {}))]
-              (recur (env/push-locals env bindings)
-                     (cons 'do forms)))
-          
-          ('letrc*)
-          ('ns)
-          ('quote)
-          :else
-          )))))
+             (->> form
+                  (env/resolve env)
+                  (env/get-value env))]
+
+          :else ;; everything else is self-evaluating
+          ,,form)))
