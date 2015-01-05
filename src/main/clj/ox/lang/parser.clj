@@ -1,11 +1,16 @@
 (ns ox.lang.parser
   (:refer-clojure :exclude [read-string])
-  (:require [clojure.string :as string]
+  (:require [clj-antlr.core :as antlr]
             [clojure.core.match :refer [match]]
-            [clj-antlr.core :as antlr])
+            [clojure.java.io :as io]
+            [clojure.string :as string])
   (:import [ox.lang Util]))
 
-(def -antlr4-parser (antlr/parser "grammar/Oxlang.g4"))
+(def -antlr4-parser
+  (-> "grammar/Oxlang.g4"
+      io/resource
+      slurp
+      antlr/parser))
 
 ;; FIXME: This entire multimethod would be better served as a single
 ;; huge explicit pattern match but I need a pattern matching imp'l
