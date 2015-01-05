@@ -102,6 +102,9 @@
 (defmethod -transform :list [[_ _ forms]]
   (->> forms -transform))
 
+(defmethod -transform :nil [_]
+  (list))
+
 (defmethod -transform :vector [[_ _ forms]]
   (->> forms -transform
        list
