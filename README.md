@@ -1,8 +1,11 @@
 # 牛: Ox, the language
-[![Master Build Status](https://travis-ci.org/oxlang/oxlang.svg?branch=master)](https://travis-ci.org/oxlang/oxlang?branch=master)
+
+Master: [![Master Build Status](https://travis-ci.org/oxlang/oxlang.svg?branch=master)](https://travis-ci.org/oxlang/oxlang?branch=master)
 [![Master Coverage Status](https://coveralls.io/repos/oxlang/oxlang/badge.png?branch=master)](https://coveralls.io/r/oxlang/oxlang?branch=master)
-[![Develop Build Status](https://travis-ci.org/oxlang/oxlang.svg?branch=master)](https://travis-ci.org/oxlang/oxlang?branch=develop)
+
+Develop: [![Develop Build Status](https://travis-ci.org/oxlang/oxlang.svg?branch=master)](https://travis-ci.org/oxlang/oxlang?branch=develop)
 [![Develop Coverage Status](https://coveralls.io/repos/oxlang/oxlang/badge.png?branch=master)](https://coveralls.io/r/oxlang/oxlang?branch=develop)
+
 [![Gittip button](http://img.shields.io/gittip/arrdem.svg)](https://www.gittip.com/arrdem/ "Support this project")
 
 Oxlang is the child of my efforts on
