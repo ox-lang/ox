@@ -45,8 +45,7 @@ map: '{' (form form)* '}' ;
 set: '#{' forms '}' ;
 
 reader_macro
-    : lambda
-    | meta_data
+    : meta_data
     | regex
     | var_quote
     | host_expr
@@ -89,10 +88,6 @@ deref
 
 gensym
     : SYMBOL '#'
-    ;
-
-lambda
-    : '#(' form* ')'
     ;
 
 meta_data
@@ -250,8 +245,6 @@ NS_SYMBOL
     : NAME '/' SYMBOL
     ;
 
-PARAM_NAME: '%' ((('1'..'9')('0'..'9')*)|'&')? ;
-
 // Fragments
 //--------------------------------------------------------------------
 
@@ -261,7 +254,7 @@ NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 fragment
 SYMBOL_HEAD
     : ~('0' .. '9'
-        | '^' | '`' | '\'' | '"' | '#' | '~' | '@' | ':' | '/' | '%' | '(' | ')' | '[' | ']' | '{' | '}' // FIXME: could be one group
+        | '^' | '`' | '\'' | '"' | '#' | '~' | '@' | ':' | '/' | '(' | ')' | '[' | ']' | '{' | '}' // FIXME: could be one group
         | [ \n\r\t\,] // FIXME: could be WS
         )
     ;
