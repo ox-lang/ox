@@ -2,7 +2,10 @@
 
 [Implementation](/resources/grammar/Oxlang.g4).
 
-Oxlang's grammar is heavily derived from Clojure's in case you can't tell.
+Oxlang's grammar is heavily derived from Clojure's in case you can't
+tell. See the
+[evaluation notes on the parser](https://github.com/oxlang/oxlang/blob/master/doc/evaluation.md#reader)
+for some philosophy on the matter.
 
 ## Datatypes
 
