@@ -1,12 +1,11 @@
 (ns ox.lang.parser-test
-  (:require
-   [ox.lang.test :refer :all]
-   [clojure.test.check :as tc]
-   [clojure.test.check.clojure-test :refer [defspec]]
-   [clojure.test.check.generators :as gen]
-   [clojure.test.check.properties :as prop]
-   [clojure.test :refer :all]
-   [ox.lang.parser :refer :all]))
+  (:require [ox.lang.test :refer :all]
+            [clojure.test.check :as tc]
+            [clojure.test.check.clojure-test :refer [defspec]]
+            [clojure.test.check.generators :as gen]
+            [clojure.test.check.properties :as prop]
+            [clojure.test :refer :all]
+            [ox.lang.parser :refer :all]))
 
 (defspec parses-decimal-ints
   (prop/for-all [x gen/int]
@@ -15,7 +14,7 @@
 (defspec parses-decimal-bigints
   (prop/for-all [x gen/int]
     (let [x (*' x 9999999)]
-      (= (list 'big-integer (str x) 10)
+      (= `(~'read-eval (~'parse-big-integer ~(str x) 10))
          (parse-string (str x "n"))))))
 
 (defspec parses-hex-ints
@@ -27,9 +26,10 @@
                  r (gen/elements (range 2 (inc Character/MAX_RADIX)))]
     (let [x (biginteger x)
           x (.toString x r)]
-      (= (list 'big-integer (str x)
-               (list 'integer (str r)))
-         (parse-string (str r "r" x))))))
+      (= `(~'read-eval
+           (~'parse-big-integer
+            ~(str x) ~r))
+    (parse-string (str r "r" x))))))
 
 (def gen-double
   (gen/fmap double gen/ratio))
@@ -37,27 +37,27 @@
 (defspec parses-raw-double
   (prop/for-all [x gen-double]
     (let [s (pr-str x)]
-      (= (list 'read-eval (list 'float s))
+      (= (list 'read-eval (list 'parse-float s))
          (parse-string s)))))
 
 (defspec parses-exp-double
   (prop/for-all [x gen/int]
     (let [s (str x "e3")]
-      (= (list 'read-eval (list 'float s))
+      (= (list 'read-eval (list 'parse-float s))
          (parse-string s)))))
 
 (deftest parses-nan
-  (is (= (list 'read-eval (list 'float "NaN"))
+  (is (= (list 'read-eval (list 'parse-float "NaN"))
          (parse-string "NaN")))
 
-  (is (= (list 'read-eval (list 'float "-NaN"))
+  (is (= (list 'read-eval (list 'parse-float "-NaN"))
          (parse-string "-NaN"))))
 
 (deftest parses-inf
-  (is (= (list 'read-eval (list 'float "Infinity"))
+  (is (= (list 'read-eval (list 'parse-float "Infinity"))
          (parse-string "Infinity")))
 
-  (is (= (list 'read-eval (list 'float "-Infinity"))
+  (is (= (list 'read-eval (list 'parse-float "-Infinity"))
          (parse-string "-Infinity"))))
 
 (deftest parses-bool
@@ -99,7 +99,9 @@
 
 (defspec parses-char
   (prop/for-all [c gen/char]
-    (= c (parse-string (pr-str c)))))
+    (let [s (str "\\" c)]
+      (= `(~'read-eval (~'parse-character ~s))
+         (parse-string s)))))
 
 (deftest parses-utf8-character
   (prop/for-all [c gen/char]
@@ -174,5 +176,8 @@
 (defspec parses-regex
   (prop/for-all [s gen/string]
     (let [s (pr-str s)]
-      (= `(~'read-eval (~'re-compile (~'read-eval (~'unquote-string ~s))))
+      (= `(~'read-eval
+           (~'re-compile
+            (~'read-eval
+             (~'unquote-string ~s))))
          (parse-string (str "#" s))))))
