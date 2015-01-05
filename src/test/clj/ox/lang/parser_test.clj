@@ -72,7 +72,9 @@
 (defspec parses-vector
   (prop/for-all [l (gen/vector
                     gen/int)]
-    (= (list 'vector l) (parse-string (pr-str l)))))
+    (= (list 'read-eval
+             (list 'vector l))
+       (parse-string (pr-str l)))))
 
 (defspec parses-list
   (prop/for-all [l (gen/recursive-gen

@@ -99,7 +99,9 @@
 
 (defmethod -transform :vector [[_ _ forms]]
   (->> forms -transform
-       list (cons 'vector)))
+       list
+       (cons 'vector)
+       (list 'read-eval)))
 
 (defmethod -transform :set [[_ _ forms]]
   (->> (-transform forms)
