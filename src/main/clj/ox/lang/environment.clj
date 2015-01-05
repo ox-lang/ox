@@ -35,18 +35,19 @@
 
     ;; map from qualified and unqualified
     ;; symbols to a binding descriptor.
-    :bindings          {'+      '(fn* ((x y) (invoke #'clojure.core/+ x y)))
-                        'apply  [:binding/special 'apply]
-                        'def*   [:binding/special 'def*]
-                        'do*    [:binding/special 'do*]
-                        'fn*    [:binding/special 'fn*]
-                        'if*    [:binding/special 'if*]
-                        'let*   [:binding/special 'let*]
-                        'letrc* [:binding/special 'letrc*]
-                        'ns     [:binding/alias   'ox.lang.bootstrap/ns]
-                        'ns*    [:binding/special 'ns*]
-                        'quote  [:binding/special 'quote]
-                        'invoke [:binding/special 'invoke]}}])
+    :bindings          {'+       (list 'fn* (list (list 'x 'y) (list 'invoke #'clojure.core/+ 'x 'y)))
+                        'println (list 'fn* (list (list 'x) (list 'invoke #'clojure.core/println 'x)))
+                        'apply   [:binding/special 'apply]
+                        'def*    [:binding/special 'def*]
+                        'do*     [:binding/special 'do*]
+                        'fn*     [:binding/special 'fn*]
+                        'if*     [:binding/special 'if*]
+                        'let*    [:binding/special 'let*]
+                        'letrc*  [:binding/special 'letrc*]
+                        'ns      [:binding/alias   'ox.lang.bootstrap/ns]
+                        'ns*     [:binding/special 'ns*]
+                        'quote   [:binding/special 'quote]
+                        'invoke  [:binding/special 'invoke]}}])
 
 (defn make-local-environment
   "λ [Env] → Env

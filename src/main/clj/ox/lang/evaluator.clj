@@ -9,7 +9,7 @@
   form given that it has already been recursively read-eval'd.
 
   (let* ((env ...))
-    (read-eval env '(read-eval FORM))
+  (read-eval env '(read-eval FORM))
   => (eval env FORM)
 
   forms which do not start with read-eval are returned unmodified."
@@ -74,15 +74,15 @@
           (recur (assoc acc arg val) args' vals'))
         acc))))
 
-(defn interpreting-eval
-  "Walks a previously read-eval'd and macroexpand'd form, evaluating it by
-  interpretation. Returns a pair [env, result]."
-  [env form]
+(declare interpreting-eval)
+
+(defn interpreting-eval-1 [env form]
   (let [-e (comp second (partial interpreting-eval env))]
-    (cond (list? form)
+    (cond (or (list? form)
+              (instance? clojure.lang.Cons form))
           ,,(let [[f & args] form]
               (case f
-                ('apply)
+                (apply)
                 ,,(let [[lambda & args]   args
                         _                 (assert (= 'fn* (first lambda)) "Not applying a fn*!")
                         bodies            (->> lambda rest
@@ -98,11 +98,12 @@
                                                       (recur bodies)))))
                                               (last bodies))
                         [fn-args & forms] body]
-                    (recur (->> (compute-fn-bindings fn-args app-args)
-                                (env/push-locals env))
-                           (cons 'do forms)))
+                    #(interpreting-eval
+                      (->> (compute-fn-bindings fn-args app-args)
+                           (env/push-locals env))
+                      `(~'do* ~@forms)))
 
-                ('def*)
+                (def*)
                 ,,(let [[s m v & more] args]
                     (assert (symbol? s) "Not a binding symbol!")
                     (assert (map? m) "Metadata not a map!")
@@ -112,37 +113,40 @@
                          (env/set-meta s v))
                      s])
 
-                ('do*)
+                (do*)
                 ,,(do (doseq [f (butlast args)]
                         (-e f))
-                      (recur env (last args)))
+                      #(interpreting-eval env (last args)))
 
-                ('fn*)
+                (fn*)
                 ,,[env form]
 
-                ('if*)
+                (if*)
                 ,,[env
                    (let [[pred left right & more] args]
                      (-e (if (-e pred) left right)))]
 
-                ('let*)
+                (let*)
                 ,,(let [[bindings & forms] args
-                        bindings      (->> (for [[k v] bindings]
-                                             [k (-e v)])
-                                           (into {}))]
-                    (recur (env/push-locals env bindings)
-                           (cons 'do forms)))
+                        bindings           (->> (for [[k v] bindings]
+                                                  [k (-e v)])
+                                                (into {}))
+                        [_ res]            (interpreting-eval
+                                            (env/push-locals env bindings)
+                                            `(~'do* ~@forms))]
+                    [env res])
 
-                ('letrc*)
+                (letrc*)
                 ,,(assert false "letrc isn't supported yet™")
 
-                ('quote)
+                (quote)
                 ,,[env (second form)]
 
-                ('invoke)
-                ,,[env (clojure.core/apply f (map -e args))]
+                (invoke)
+                ,,(let [[f & args] args]
+                    [env (clojure.core/apply f (map -e args))])
 
-                (recur env (cons 'apply (map -e form)))))
+                #(interpreting-eval env `(~'apply ~@(map -e form) '()))))
 
           (symbol? form)
           ,,(if (env/special? env form)
@@ -152,4 +156,10 @@
                         (env/get-value env))])
 
           :else ;; everything else is self-evaluating
-          ,,form)))
+          ,,[env form])))
+
+(defn interpreting-eval
+  "Walks a previously read-eval'd and macroexpand'd form, evaluating it by
+  interpretation. Returns a pair [env, result]."
+  [env form]
+  (trampoline interpreting-eval-1 env form))
