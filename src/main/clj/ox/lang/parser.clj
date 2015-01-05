@@ -90,9 +90,9 @@
       (second entry)
       (throw (Exception. (str "Unknown character named " name))))))
 
-(defmethod -transform :string [[_ & tokens]]
+(defmethod -transform :string [[_ quoted-str]]
   `(~'read-eval
-    (~'str ~@tokens)))
+    (~'unquote ~quoted-str)))
 
 (defmethod -transform :regex [[_ _ s]]
   `(~'read-eval
@@ -217,6 +217,8 @@
 
   Will generate constructor forms for all other types including:
    - Big Integers
+   - Strings
+   - Regular expressions
    - Maps
    - Vectors
    - Keywords
