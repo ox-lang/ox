@@ -140,6 +140,9 @@
 
                 ('quote)
                 ,,[env (second form)]
+
+                ('invoke)
+                ,,[env (clojure.core/apply f (map -e args))]
           
                 :else
                 ,,(let [s (env/resolve env f)

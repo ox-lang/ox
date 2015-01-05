@@ -13,6 +13,12 @@
   (and (env? x)
        (= :env/ns (first x))))
 
+(defn alias?
+  "FIXME: quick an dirty predicate"
+  [x]
+  (and (vector? x)
+       (#{:binding/alias} (first x))))
+
 (defn make-environment
   "λ [] → Env
 
@@ -20,7 +26,8 @@
   start with the empty environment."
   []
   [:env/ns
-   {:parent            nil ; link to parent environment
+   {:ns                nil ; symbol naming current namespace
+    :parent            nil ; link to parent environment
 
     :loaded-namespaces {}  ; map from symbols to the definition environment
 
@@ -28,16 +35,18 @@
 
     ;; map from qualified and unqualified
     ;; symbols to a binding descriptor.
-    :bindings          {'apply  [:binding/special 'apply]
+    :bindings          {'+      '(fn* ((x y) (invoke #'clojure.core/+ x y)))
+                        'apply  [:binding/special 'apply]
                         'def*   [:binding/special 'def*]
                         'do*    [:binding/special 'do*]
                         'fn*    [:binding/special 'fn*]
                         'if*    [:binding/special 'if*]
                         'let*   [:binding/special 'let*]
                         'letrc* [:binding/special 'letrc*]
-                        'ns     ^:macro [:binding/alias   'ox.lang.bootstrap/ns]
+                        'ns     [:binding/alias   'ox.lang.bootstrap/ns]
                         'ns*    [:binding/special 'ns*]
-                        'quote  [:binding/special 'quote]}}])
+                        'quote  [:binding/special 'quote]
+                        'invoke [:binding/special 'invoke]}}])
 
 (defn make-local-environment
   "λ [Env] → Env
@@ -55,7 +64,7 @@
   Returns a new environment where the specified symbol is bound to the given
   form value. Used for installing defs into an environment."
   [env symbol value]
-  (assert false "Unimplemented"))
+  )
 
 (defn resolve
   "λ [Env, Symbol] → Maybe[Symbol]
