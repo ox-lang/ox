@@ -119,9 +119,10 @@
   (prop/for-all [k (gen/one-of
                     [gen/keyword
                      gen/keyword-ns])]
-    (= (if (namespace k)
-         (list 'qualified-keyword (namespace k) (name k))
-         (list 'keyword (name k)))
+    (= (list 'read-eval
+             (if (namespace k)
+               (list 'qualified-keyword (namespace k) (name k))
+               (list 'keyword (name k))))
        (parse-string (pr-str k)))))
 
 (defspec parses-macro-keyword

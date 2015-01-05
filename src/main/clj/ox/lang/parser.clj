@@ -125,13 +125,14 @@
 
 (defmethod -transform :simple_keyword [[_ _ [_ [sym-type & data]]]]
   ;; FIXME: a real match would be ballin' here
-  (if (= sym-type :simple_sym)
-    (let [[name] data]
-      (list 'keyword name))
+  (list 'read-eval
+        (if (= sym-type :simple_sym)
+          (let [[name] data]
+            (list 'keyword name))
 
-    (let [[s] data
-          [_ ns name] (re-find #"([^/]+)/(.*)" s)]
-      (list 'qualified-keyword ns name))))
+          (let [[s] data
+                [_ ns name] (re-find #"([^/]+)/(.*)" s)]
+            (list 'qualified-keyword ns name)))))
 
 (defmethod -transform :macro_keyword [[_ _ _ [_ [sym-type & data]]]]
   ;; FIXME: a real match would be ballin' here
