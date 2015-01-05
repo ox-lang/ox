@@ -15,7 +15,8 @@
 (defspec parses-decimal-bigints
   (prop/for-all [x gen/int]
     (let [x (*' x 9999999)]
-      (is (= x (parse-string (str x "n")))))))
+      (= (list 'big-integer (str x) 10)
+         (parse-string (str x "n"))))))
 
 (defspec parses-hex-ints
   (prop/for-all [x gen/s-pos-int]
@@ -24,49 +25,56 @@
 (defspec parses-radix-ints
   (prop/for-all [x gen/s-pos-int
                  r (gen/elements (range 2 (inc Character/MAX_RADIX)))]
-    (let [x (biginteger x)]
-      (= x (parse-string (str r "r" (.toString x r)))))))
+    (let [x (biginteger x)
+          x (.toString x r)]
+      (= (list 'big-integer (str x)
+               (list 'integer (str r)))
+         (parse-string (str r "r" x))))))
 
 (def gen-double
   (gen/fmap double gen/ratio))
 
 (defspec parses-raw-double
   (prop/for-all [x gen-double]
-    (= x (parse-string (pr-str x)))))
+    (let [s (pr-str x)]
+      (= (list 'read-eval (list 'float s))
+         (parse-string s)))))
 
 (defspec parses-exp-double
   (prop/for-all [x gen/int]
-    (= (-> x (* 1000) double)
-       (parse-string (str x "e3")))))
+    (let [s (str x "e3")]
+      (= (list 'read-eval (list 'float s))
+         (parse-string s)))))
 
 (deftest parses-nan
-  (is (. (parse-string "NaN")
-         isNaN))
+  (is (= (list 'read-eval (list 'float "NaN"))
+         (parse-string "NaN")))
 
-  (is (. (parse-string "-NaN")
-         isNaN)))
+  (is (= (list 'read-eval (list 'float "-NaN"))
+         (parse-string "-NaN"))))
+
+(deftest parses-inf
+  (is (= (list 'read-eval (list 'float "Infinity"))
+         (parse-string "Infinity")))
+  
+  (is (= (list 'read-eval (list 'float "-Infinity"))
+         (parse-string "-Infinity"))))
 
 (deftest parses-bool
   (is (true? (parse-string "true")))
 
   (is (false? (parse-string "false"))))
 
-(deftest parses-inf
-  (is (= Double/POSITIVE_INFINITY
-         (parse-string "Infinity")))
-  
-  (is (= Double/NEGATIVE_INFINITY
-         (parse-string "-Infinity"))))
-
 (defspec parses-symbol
   (prop/for-all [x (gen/one-of [gen/symbol gen/symbol-ns])]
     (= x (parse-string (pr-str x)))))
 
 (defspec parses-vector
-  (prop/for-all [l (gen/recursive-gen
-                    gen/vector
+  (prop/for-all [l (gen/vector
                     gen/int)]
-    (= l (parse-string (pr-str l)))))
+    (= (list 'read-eval
+             (list 'vector l))
+       (parse-string (pr-str l)))))
 
 (defspec parses-list
   (prop/for-all [l (gen/recursive-gen
@@ -75,8 +83,11 @@
     (= l (parse-string (pr-str l)))))
 
 (defspec parses-maps
-  (prop/for-all [m (gen/map gen/keyword gen/int)]
-    (parse-string (pr-str m))))
+  (prop/for-all [m (gen/map gen/int gen/int)]
+    (= `(~'read-eval
+         ~(list 'hash-map
+                (or (map seq (seq m)) '())))
+       (parse-string (pr-str m)))))
 
 (defspec parses-sets
   (prop/for-all [m (gen/vector gen/int)]
@@ -108,13 +119,24 @@
   (prop/for-all [k (gen/one-of
                     [gen/keyword
                      gen/keyword-ns])]
-    (= k (parse-string (pr-str k)))))
+    (= (list 'read-eval
+             (if (namespace k)
+               (list 'qualified-keyword (namespace k) (name k))
+               (list 'keyword (name k))))
+       (parse-string (pr-str k)))))
 
 (defspec parses-macro-keyword
   (prop/for-all [k (gen/one-of
                     [gen/keyword
                      gen/keyword-ns])]
-    (parse-string (str ":" (pr-str k)))))
+    (= (if (namespace k)
+         `(~'read-eval (~'qualified-keyword
+                        (~'name (~'resolve-ns-alias (~'this-ns) ~(namespace k)))
+                        ~(name k)))
+         `(~'read-eval (~'qualified-keyword
+                        (~'name (~'this-ns))
+                        ~(name k))))
+       (parse-string (str ":" (pr-str k))))))
 
 (deftest parses-quote-macros
   (is (parse-string "(`(~'foo ~@abar))")))
@@ -122,3 +144,15 @@
 (deftest parse-tags
   (is (parse-string "#^{:foo :bar} foo"))
   (is (parse-string "^foo bar")))
+
+(defspec parses-string
+  (prop/for-all [s gen/string]
+    (let [s (pr-str s)]
+      (= `(~'read-eval (~'unquote-string ~s))
+         (parse-string s)))))
+
+(defspec parses-regex
+  (prop/for-all [s gen/string]
+    (let [s (pr-str s)]
+      (= `(~'read-eval (~'re-compile (~'read-eval (~'unquote-string ~s))))
+         (parse-string (str "#" s))))))
