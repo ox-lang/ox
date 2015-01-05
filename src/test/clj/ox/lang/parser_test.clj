@@ -114,13 +114,23 @@
   (prop/for-all [k (gen/one-of
                     [gen/keyword
                      gen/keyword-ns])]
-    (parse-string (pr-str k))))
+    (= (if (namespace k)
+         (list 'qualified-keyword (namespace k) (name k))
+         (list 'keyword (name k)))
+       (parse-string (pr-str k)))))
 
 (defspec parses-macro-keyword
   (prop/for-all [k (gen/one-of
                     [gen/keyword
                      gen/keyword-ns])]
-    (parse-string (str ":" (pr-str k)))))
+    (= (if (namespace k)
+         `(~'read-eval (~'qualified-keyword
+                        (~'name (~'resolve-ns-alias (~'this-ns) ~(namespace k)))
+                        ~(name k)))
+         `(~'read-eval (~'qualified-keyword
+                        (~'name (~'this-ns))
+                        ~(name k))))
+       (parse-string (str ":" (pr-str k))))))
 
 (deftest parses-quote-macros
   (is (parse-string "(`(~'foo ~@abar))")))

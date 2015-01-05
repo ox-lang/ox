@@ -61,7 +61,7 @@
       (Long/parseLong 16)))
 
 (defmethod -transform :float [[_ x]]
-  (-> x -transform Double/parseDouble))
+  (->> x -transform (list 'float)))
 
 (defmethod -transform :boolean [[_ x]]
   (= x "true"))
@@ -124,25 +124,25 @@
   ;; FIXME: a real match would be ballin' here
   (if (= sym-type :simple_sym)
     (let [[name] data]
-      (list 'ox.lang.keyword/->keyword name))
+      (list 'keyword name))
 
     (let [[s] data
           [_ ns name] (re-find #"([^/]+)/(.*)" s)]
-      (list 'ox.lang.keyword/->qualified-keyword ns name))))
+      (list 'qualified-keyword ns name))))
 
 (defmethod -transform :macro_keyword [[_ _ _ [_ [sym-type & data]]]]
   ;; FIXME: a real match would be ballin' here
   (if (= sym-type :simple_sym)
     (let [[name] data]
       `(~'read-eval
-        (~'keyword
+        (~'qualified-keyword
          (~'name (~'this-ns))
          ~name)))
 
     (let [[s]         data
           [_ ns name] (re-find #"([^/]+)/(.*)" s)]
       `(~'read-eval
-        (~'keyword
+        (~'qualified-keyword
          (~'name
           (~'resolve-ns-alias
            (~'this-ns)
