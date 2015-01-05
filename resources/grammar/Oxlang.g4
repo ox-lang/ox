@@ -122,7 +122,6 @@ literal
     | boolean
     | keyword
     | symbol
-    | param_name
     ;
 
 string: STRING;
@@ -160,8 +159,6 @@ macro_keyword: ':' ':' symbol;
 symbol: ns_symbol | simple_sym;
 simple_sym: SYMBOL;
 ns_symbol: NS_SYMBOL;
-
-param_name: PARAM_NAME;
 
 // Lexers
 //--------------------------------------------------------------------
