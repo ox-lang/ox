@@ -1,6 +1,8 @@
 (ns ox.lang.evaluator
-  (:refer-clojure :exclude [eval apply macroexpand-1 macroexpand])
-  (:require [ox.lang.environment :as env]))
+  (:refer-clojure :exclude [eval apply macroexpand-1 macroexpand compile])
+  (:require [clojure.java.io :as io]
+            [ox.lang.environment :as env]
+            [ox.lang.parser :as parser]))
 
 (declare eval)
 
@@ -163,3 +165,15 @@
   interpretation. Returns a pair [env, result]."
   [env form]
   (trampoline interpreting-eval-1 env form))
+
+(defn interpreting-load
+  [path]
+  (->> (str path ".oxwclj")
+       io/resource
+       slurp
+       parser/parse-file
+       (reduce (fn [env form]
+                 (first
+                  (interpreting-eval env form)))
+               (env/make-environment 'user))))
+
