@@ -171,7 +171,27 @@ param_name: PARAM_NAME;
 // Lexers
 //--------------------------------------------------------------------
 
-STRING : '"' ( ~'"' | '\\' '"' )* '"' ;
+// Java §3.10.5 String Literals
+STRING
+    : '"' StringCharacters? '"'
+    ;
+fragment
+StringCharacters
+    : StringCharacter+
+    ;
+fragment
+StringCharacter
+    : ~[""\\]
+    | EscapeSequence
+    ;
+
+// Java §3.10.6 Escape Sequences for Character and String Literals
+fragment
+EscapeSequence
+    : '\\' [btnfr"'\\]
+    | CHAR_U
+    | CHAR_NAMED
+    ;
 
 // FIXME: Doesn't deal with arbitrary read radixes, BigNums
 FLOAT
