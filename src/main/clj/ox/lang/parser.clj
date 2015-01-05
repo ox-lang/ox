@@ -193,17 +193,19 @@
   (let [map-form    (-transform map-form)
         target-form (-transform target-form)]
     `(~'read-eval
-      (~'with-meta
-        (~'quote ~target-form)
-        ~map-form))))
+      (~'let* ((res# (~'quote ~target-form)))
+              (~'with-meta res#
+                (~'merge (~'meta res#)
+                         ~map-form))))))
 
 (defmethod -transform :tag [[_ _ tag form]]
   (let [tag  (-transform tag)
         form (-transform form)]
     `(~'read-eval
-      (~'with-meta
-        (~'quote ~form)
-        (~'hash-map ~tag true)))))
+      (~'let* ((res# (~'quote ~form)))
+              (~'with-meta res#
+                (~'merge (~'meta res#)
+                         (~'hash-map ((~tag true)))))))))
 
 (defn parse-string
   "Oxlang multi-form parser for reading from strings.
