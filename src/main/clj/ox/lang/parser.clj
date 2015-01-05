@@ -113,7 +113,8 @@
        (map -transform)
        (partition 2)
        list
-       (cons 'hash-map)))
+       (cons 'hash-map)
+       (list 'read-eval)))
 
 (defmethod -transform :simple_sym [[_ s]]
   (symbol s))

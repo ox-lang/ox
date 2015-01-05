@@ -83,8 +83,11 @@
     (= l (parse-string (pr-str l)))))
 
 (defspec parses-maps
-  (prop/for-all [m (gen/map gen/keyword gen/int)]
-    (parse-string (pr-str m))))
+  (prop/for-all [m (gen/map gen/int gen/int)]
+    (= `(~'read-eval
+         ~(list 'hash-map
+                (or (map seq (seq m)) '())))
+       (parse-string (pr-str m)))))
 
 (defspec parses-sets
   (prop/for-all [m (gen/vector gen/int)]
