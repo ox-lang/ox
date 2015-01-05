@@ -51,14 +51,18 @@
 (defmethod -transform :long [[_ x]]
   (Long/parseLong x 10))
 
-(defmethod -transform :bign [[_ x]]
-  (let [num (.substring x 0 (dec (count x)))]
-    (list 'big-integer num 10)))
-
 (defmethod -transform :hex [[_ x]]
   (-> x
       (string/replace-first #"0[xX]" "")
       (Long/parseLong 16)))
+
+(defmethod -transform :bign [[_ x]]
+  (let [num (.substring x 0 (dec (count x)))]
+    (list 'big-integer num 10)))
+
+(defmethod -transform :rint [[_ s]]
+  (let [[_ radix body] (re-find #"([1-9][0-9]*)r(.*)" s)]
+    (list 'big-integer body (list 'integer radix))))
 
 (defmethod -transform :float [[_ x]]
   (->> x -transform (list 'float) (list 'read-eval)))
@@ -71,10 +75,6 @@
 
 (defmethod -transform :u_hex_quad [[_ s]]
   (Util/readUnicodeChar s 2 4 16))
-
-(defmethod -transform :rint [[_ s]]
-  (let [[_ radix body] (re-find #"([1-9][0-9]*)r(.*)" s)]
-    (list 'big-integer body (list 'integer radix))))
 
 (def -named-char-table
   {"newline"   \newline
@@ -90,9 +90,14 @@
       (second entry)
       (throw (Exception. (str "Unknown character named " name))))))
 
-;; FIXME: Add string support
+(defmethod -transform :string [[_ & tokens]]
+  `(~'read-eval
+    (~'str ~@tokens)))
 
-;; FIXME: Add pattern support
+(defmethod -transform :regex [[_ _ s]]
+  `(~'read-eval
+    (~'re-compile
+     ~(-transform s))))
 
 (defmethod -transform :list [[_ _ forms]]
   (->> forms -transform))
@@ -206,9 +211,12 @@
   Will construct:
    - Symbols
    - Lists
+   - Integers
+   - Characters
+   - Booleans
 
   Will generate constructor forms for all other types including:
-   - Numbers
+   - Big Integers
    - Maps
    - Vectors
    - Keywords
