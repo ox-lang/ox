@@ -92,7 +92,7 @@
 
 (defmethod -transform :string [[_ quoted-str]]
   `(~'read-eval
-    (~'unquote ~quoted-str)))
+    (~'unquote-string ~quoted-str)))
 
 (defmethod -transform :regex [[_ _ s]]
   `(~'read-eval

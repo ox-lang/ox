@@ -144,3 +144,15 @@
 (deftest parse-tags
   (is (parse-string "#^{:foo :bar} foo"))
   (is (parse-string "^foo bar")))
+
+(defspec parses-string
+  (prop/for-all [s gen/string]
+    (let [s (pr-str s)]
+      (= `(~'read-eval (~'unquote-string ~s))
+         (parse-string s)))))
+
+(defspec parses-regex
+  (prop/for-all [s gen/string]
+    (let [s (pr-str s)]
+      (= `(~'read-eval (~'re-compile (~'read-eval (~'unquote-string ~s))))
+         (parse-string (str "#" s))))))
