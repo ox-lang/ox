@@ -82,6 +82,9 @@
                     gen/symbol)]
     (= l (parse-string (pr-str l)))))
 
+(deftest parses-nil
+  (is (= '() (parse-string "nil"))))
+
 (defspec parses-maps
   (prop/for-all [m (gen/map gen/int gen/int)]
     (= `(~'read-eval
