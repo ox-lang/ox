@@ -14,11 +14,11 @@ real motivational information.
 ## Usage
 
 As of this writing, Oxlang is just a parser and a test suite. See
-[the parser docs](/docs/parser.md) for some information and examples
+[the parser docs](/doc/parser.md) for some information and examples
 of the parser in action. If you want to play with it, the parser is
 implemented in `ox.lang.parser`.
 
-[See the docs](/docs/README.md) for my notes on what Oxlang is and
+[See the docs](/doc/README.md) for my notes on what Oxlang is and
 will be. [The issue tracker](https://github.com/oxlang/oxlang/issues)
 is also being used to keep notes on what's up with Oxlang.
 
