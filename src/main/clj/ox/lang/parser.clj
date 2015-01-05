@@ -158,8 +158,11 @@
        ~value))))
 
 (defmethod -transform :host_expr [[_ _ cond value]]
-  ;; FIXME
-  (assert false "Unsupported!"))
+  (let [cond  (-transform cond)
+        value (-transform value)]
+    `(~'read-eval
+      (~'when (~'eval-feature-expr '~cond)
+        ~value))))
 
 (defmethod -transform :meta_data [[_ _ map-form target-form]]
   (let [map-form    (-transform map-form)
