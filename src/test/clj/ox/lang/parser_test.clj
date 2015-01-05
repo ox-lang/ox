@@ -15,7 +15,8 @@
 (defspec parses-decimal-bigints
   (prop/for-all [x gen/int]
     (let [x (*' x 9999999)]
-      (parse-string (str x "n")))))
+      (= (list 'big-integer (str x) 10)
+         (parse-string (str x "n"))))))
 
 (defspec parses-hex-ints
   (prop/for-all [x gen/s-pos-int]
