@@ -145,6 +145,11 @@
   (prop/for-all [s gen/symbol]
     (is (= (list 'backtick s)
            (parse-string (str "`" (pr-str s)))))))
+
+(defspec parses-unquote-splicing
+  (prop/for-all [s gen/symbol]
+    (is (= (list 'unquote-splicing s)
+           (parse-string (str "~@" s))))))
   
 
 (deftest parse-tags
