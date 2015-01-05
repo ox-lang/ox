@@ -56,7 +56,7 @@
 (deftest parses-inf
   (is (= (list 'read-eval (list 'float "Infinity"))
          (parse-string "Infinity")))
-  
+
   (is (= (list 'read-eval (list 'float "-Infinity"))
          (parse-string "-Infinity"))))
 
@@ -150,7 +150,11 @@
   (prop/for-all [s gen/symbol]
     (is (= (list 'unquote-splicing s)
            (parse-string (str "~@" s))))))
-  
+
+(defspec parses-unqote
+  (prop/for-all [s gen/symbol]
+    (is (= (list 'unquote s)
+           (parse-string (str "~" s))))))
 
 (deftest parse-tags
   (is (parse-string "#^{:foo :bar} foo"))
