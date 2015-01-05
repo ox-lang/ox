@@ -123,9 +123,7 @@
                 ('if*)
                 ,,[env
                    (let [[pred left right & more] args]
-                     (if (-e pred)
-                       (-e left)
-                       (-e right)))]
+                     (-e (if (-e pred) left right)))]
 
                 ('let*)
                 ,,(let [[bindings & forms] args
@@ -143,17 +141,15 @@
 
                 ('invoke)
                 ,,[env (clojure.core/apply f (map -e args))]
-          
-                :else
-                ,,(let [s (env/resolve env f)
-                        v (env/get-value env s)]
-                    (recur env (list 'apply v args)))))
+
+                (recur env (cons 'apply (map -e form)))))
 
           (symbol? form)
-          ,,[env
-             (->> form
-                  (env/resolve env)
-                  (env/get-value env))]
+          ,,(if (env/special? env form)
+              [env form] ;; self-evaluate
+              [env (->> form
+                        (env/resolve env)
+                        (env/get-value env))])
 
           :else ;; everything else is self-evaluating
           ,,form)))

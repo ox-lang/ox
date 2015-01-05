@@ -24,9 +24,9 @@
 
   Returns the empty environment. Analyzing or evaluating any namespace must
   start with the empty environment."
-  []
+  [ns]
   [:env/ns
-   {:ns                nil ; symbol naming current namespace
+   {:ns                ns  ; symbol naming current namespace
     :parent            nil ; link to parent environment
 
     :loaded-namespaces {}  ; map from symbols to the definition environment
@@ -71,7 +71,12 @@
 
   Resolves the given symbol in the current environment."
   [env sym]
-  (assert false "Unimplemented"))
+  (let [bindings (:bindings env)]
+    (loop [sym sym]
+      (let [entry (get bindings sym)]
+        (if (alias? entry)
+          (recur (second entry))
+          sym)))))
 
 (defn get-value
   "λ [Env, Symbol] → Value
@@ -79,7 +84,18 @@
   Returns the value of the given symbol in the specified
   environment."
   [env symbol]
-  (assert false "Unimplemented"))
+  (if-let [val (-> env second (get :bindings) (get symbol))] val
+          (if-let [parent (:parent (second env))]
+            (get-value parent symbol)
+            (assert false (str symbol " is not bound in any enclosing scope!")))))
+
+
+(defn special?
+  "FIXME: quick and dirty predicate"
+  [env symbol]
+  (if-let [x (get-value env (resolve env symbol))]
+    (and (vector? x)
+         (#{:binding/special} (first x)))))
 
 
 
@@ -109,7 +125,7 @@
   Pushes local bindings, returning a new environment with the pushed
   local bindings."
   [env bindings]
-  (assert false "Unimplemented"))
+  [:env/locals {:parent env :bindings bindings}])
 
 (defn pop-locals
   "λ [Env] → Env
