@@ -156,6 +156,11 @@
     (is (= (list 'unquote s)
            (parse-string (str "~" s))))))
 
+(defspec parse-quote
+  (prop/for-all [s gen/symbol]
+    (is (= (list 'quote s)
+           (parse-string (str "'" s))))))
+
 (deftest parse-tags
   (is (parse-string "#^{:foo :bar} foo"))
   (is (parse-string "^foo bar")))
