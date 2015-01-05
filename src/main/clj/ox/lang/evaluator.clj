@@ -66,13 +66,13 @@
   "Walks a previously read-eval'd and macroexpand'd form, evaluating it by
   interpretation. Returns a pair [env, result]."
   [env form]
-  (let [r (comp second (partial interpreting-eval env))]
+  (let [-e (comp second (partial interpreting-eval env))]
     (if (list? form)
       (let [[f & args] form]
         (case f
           ('apply)
-          ,,(->> args last r
-                 (concat (map r (butlast args)))
+          ,,(->> args last -e
+                 (concat (map -e (butlast args)))
                  (cons f)
                  (recur env))
 
@@ -87,11 +87,28 @@
                s])
           
           ('do*)
-          ,,
+          ,,(do (doseq [f (butlast args)]
+                  (-e f))
+                (recur env (last args)))
           
           ('fn*)
-          ('if)
+          ,,[env form]
+          
+          ('if*)
+          ,,[env
+             (let [[pred left right & more] args]
+               (if (-e pred)
+                 (-e left)
+                 (-e right)))]
+          
           ('let*)
+          ,,(let [[bindings & forms] args
+                  bindings      (->> (for [[k v] bindings]
+                                       [k (-e v)])
+                                     (into {}))]
+              (recur (env/push-locals env bindings)
+                     (cons 'do forms)))
+          
           ('letrc*)
           ('ns)
           ('quote)

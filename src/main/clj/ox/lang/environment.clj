@@ -87,11 +87,11 @@
 
 
 (defn push-locals
-  "λ [Env, (Seq (Symbol . Form))] → Env
+  "λ [Env, {[Symbol Form]}] → Env
 
   Pushes local bindings, returning a new environment with the pushed
   local bindings."
-  [env symbol form]
+  [env bindings]
   (assert false "Unimplemented"))
 
 (defn pop-locals
