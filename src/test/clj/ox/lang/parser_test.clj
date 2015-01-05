@@ -37,33 +37,33 @@
 (defspec parses-raw-double
   (prop/for-all [x gen-double]
     (let [s (pr-str x)]
-      (= (list 'float s)
+      (= (list 'read-eval (list 'float s))
          (parse-string s)))))
 
 (defspec parses-exp-double
   (prop/for-all [x gen/int]
     (let [s (str x "e3")]
-      (= (list 'float s)
+      (= (list 'read-eval (list 'float s))
          (parse-string s)))))
 
 (deftest parses-nan
-  (is (= (parse-string "NaN")
-         (list 'float "NaN")))
+  (is (= (list 'read-eval (list 'float "NaN"))
+         (parse-string "NaN")))
 
-  (is (= (parse-string "-NaN")
-         (list 'float "-NaN"))))
+  (is (= (list 'read-eval (list 'float "-NaN"))
+         (parse-string "-NaN"))))
+
+(deftest parses-inf
+  (is (= (list 'read-eval (list 'float "Infinity"))
+         (parse-string "Infinity")))
+  
+  (is (= (list 'read-eval (list 'float "-Infinity"))
+         (parse-string "-Infinity"))))
 
 (deftest parses-bool
   (is (true? (parse-string "true")))
 
   (is (false? (parse-string "false"))))
-
-(deftest parses-inf
-  (is (= (list 'float "Infinity")
-         (parse-string "Infinity")))
-  
-  (is (= (list 'float "-Infinity")
-         (parse-string "-Infinity"))))
 
 (defspec parses-symbol
   (prop/for-all [x (gen/one-of [gen/symbol gen/symbol-ns])]

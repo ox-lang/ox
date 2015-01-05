@@ -61,7 +61,7 @@
       (Long/parseLong 16)))
 
 (defmethod -transform :float [[_ x]]
-  (->> x -transform (list 'float)))
+  (->> x -transform (list 'float) (list 'read-eval)))
 
 (defmethod -transform :boolean [[_ x]]
   (= x "true"))
