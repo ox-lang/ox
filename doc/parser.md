@@ -142,10 +142,12 @@ Var quoting `#'foo/bar` may be supported. See oxlang/oxlang#11.
 
 Clojure style metadata via `^foo` and `#^{foo true}` is supported.
 
-Reader discard via `#_` is supported, but may be dropped see oxlang/oxlang#5.
+Reader discard via `#_` is supported, but may be dropped see
+[#5](https://github.com/oxlang/oxlang/issues/5).
 
 Feature expressions ala `#+clj`, `#+ox`, `#+(or ox pixie)` are
-supported, but may be dropped see oxlang/oxlang#
+supported, but may be dropped see
+[#5](https://github.com/oxlang/oxlang/issues/5)
 
 EDN style data readers are supported ala `#user/foo "my foo input"`,
 or `#uuid "7823e36b-45e5-440c-a18a-fa094e64d2e2"`.
