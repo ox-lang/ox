@@ -231,4 +231,9 @@
   [s]
   (-> s -antlr4-parser second -transform))
 
+(defn parse-file
+  "Oxlang multiple form parser for reading from files."
+  [s]
+  (->> s -antlr4-parser rest (map -transform)))
+
 ;; FIXME: Add a file/resource parser
