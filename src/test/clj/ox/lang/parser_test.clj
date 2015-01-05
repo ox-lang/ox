@@ -141,8 +141,11 @@
                         ~(name k))))
        (parse-string (str ":" (pr-str k))))))
 
-(deftest parses-quote-macros
-  (is (parse-string "(`(~'foo ~@abar))")))
+(defspec parses-backtick
+  (prop/for-all [s gen/symbol]
+    (is (= (list 'backtick s)
+           (parse-string (str "`" (pr-str s)))))))
+  
 
 (deftest parse-tags
   (is (parse-string "#^{:foo :bar} foo"))
