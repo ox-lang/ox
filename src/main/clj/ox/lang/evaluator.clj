@@ -173,15 +173,19 @@
 
 (defn interpreting-load
   [path]
-  (->> (str path ".oxwclj")
+  (->> (str path ".ox")
        io/resource
+       io/file
        slurp
        parser/parse-file
        (reduce (fn [env form]
-                 (->> form
-                      (read-eval env)
-                      (macroexpand env)
-                      (interpreting-eval env)
-                      first))
+                 (try
+                   (let [-e (partial interpreting-eval env)
+                         -p (fn [x] (println x) x)]
+                     (->> form
+                          (read-eval -e env)
+                          (macroexpand -e env)
+                          (interpreting-eval env)
+                          first))
+                   (catch Exception e env)))
                (env/make-environment 'user))))
-
