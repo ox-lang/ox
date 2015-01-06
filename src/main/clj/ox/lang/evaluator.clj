@@ -80,8 +80,9 @@
 
 (defn interpreting-eval-1 [env form]
   (let [-e (comp second (partial interpreting-eval env))]
-    (cond (or (list? form)
-              (instance? clojure.lang.Cons form))
+    (cond (and (seq? form)
+               (not (vector? form))
+               (not (map? form)))
           ,,(let [[f & args] form]
               (case f
                 (apply)
@@ -89,7 +90,7 @@
                         _                 (assert (= 'fn* (first lambda)) "Not applying a fn*!")
                         bodies            (->> lambda rest
                                                (sort-by #(count (first %1))))
-                        app-args          (concat (map -e (butlast args))
+                        app-args          (concat (mapv -e (butlast args))
                                                   (-e (last args)))
                         body              (or (loop [bodies bodies]
                                                 (let [[[fn-args & forms :as b] & bodies] bodies]
@@ -143,7 +144,7 @@
 
                 (list*)
                 ,,[env
-                   (concat (map -e (butlast args))
+                   (concat (mapv -e (butlast args))
                            (-e (last args)))]
 
                 (quote)
@@ -151,7 +152,7 @@
 
                 (invoke)
                 ,,(let [[f & args] args]
-                    [env (clojure.core/apply f (map -e args))])
+                    [env (clojure.core/apply f (mapv -e args))])
 
                 #(interpreting-eval env `(~'apply ~@(map -e form) '()))))
 
