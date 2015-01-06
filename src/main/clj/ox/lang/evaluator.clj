@@ -79,6 +79,7 @@
 (declare interpreting-eval)
 
 (defn interpreting-eval-1 [env form]
+  (println "[eval]" form)
   (let [-e (comp second (partial interpreting-eval env))]
     (cond (and (seq? form)
                (not (vector? form))
