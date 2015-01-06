@@ -1,4 +1,5 @@
 (ns ox.lang.environment
+  (:require [clojure.java.io :as io])
   (:refer-clojure :exclude [resolve]))
 
 (defn env?
@@ -25,6 +26,21 @@
   (and (vector? x)
        (#{:binding/value} (first x))))
 
+(def base-env
+  [:env/base
+   {:bindings
+    {'apply   [:binding/special 'apply]
+     'def*    [:binding/special 'def*]
+     'do*     [:binding/special 'do*]
+     'fn*     [:binding/special 'fn*]
+     'if*     [:binding/special 'if*]
+     'let*    [:binding/special 'let*]
+     'letrc*  [:binding/special 'letrc*]
+     'ns      [:binding/alias   'ox.lang.bootstrap/ns]
+     'ns*     [:binding/special 'ns*]
+     'quote   [:binding/special 'quote]
+     'invoke  [:binding/special 'invoke]}}])
+
 (defn make-environment
   "λ [] → Env
 
@@ -32,28 +48,16 @@
   start with the empty environment."
   [ns]
   [:env/ns
-   {:ns                ns  ; symbol naming current namespace
-    :parent            nil ; link to parent environment
+   {:ns                ns            ; symbol naming current namespace
+    :parent            base-env      ; link to parent environment
 
-    :loaded-namespaces {}  ; map from symbols to the definition environment
+    :loaded-namespaces {}            ; map from symbols to the definition environment
 
-    :imports           #{} ; set of imported classes
+    :imports           #{}           ; set of imported classes
 
     ;; map from qualified and unqualified
     ;; symbols to a binding descriptor.
-    :bindings          {'+       [:binding/value (list 'fn* (list (list 'x 'y) (list 'invoke #'clojure.core/+ 'x 'y)))]
-                        'println [:binding/value (list 'fn* (list (list 'x)    (list 'invoke #'clojure.core/println 'x)))]
-                        'apply   [:binding/special 'apply]
-                        'def*    [:binding/special 'def*]
-                        'do*     [:binding/special 'do*]
-                        'fn*     [:binding/special 'fn*]
-                        'if*     [:binding/special 'if*]
-                        'let*    [:binding/special 'let*]
-                        'letrc*  [:binding/special 'letrc*]
-                        'ns      [:binding/alias   'ox.lang.bootstrap/ns]
-                        'ns*     [:binding/special 'ns*]
-                        'quote   [:binding/special 'quote]
-                        'invoke  [:binding/special 'invoke]}}])
+    :bindings          {}}])
 
 (defn make-local-environment
   "λ [Env] → Env

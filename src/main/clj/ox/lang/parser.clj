@@ -206,7 +206,7 @@
                          (~'hash-map ((~tag true)))))))))
 
 (defn parse-string
-  "Oxlang multi-form parser for reading from strings.
+  "Oxlang single-form parser for reading from strings.
 
   Will construct:
    - Symbols
