@@ -98,7 +98,7 @@
   (->> forms -transform))
 
 (defmethod -transform :nil [_]
-  (list))
+  nil)
 
 (defmethod -transform :vector [[_ _ forms]]
   (->> forms -transform

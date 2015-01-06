@@ -108,7 +108,7 @@
                 (def*)
                 ,,(let [[s m v & more] args]
                     (assert (symbol? s) "Not a binding symbol!")
-                    (assert (map? m) "Metadata not a map!")
+                    (assert (or (nil? m) (map? m)) "Metadata not a mapv!")
                     (assert (empty? more) "More args to def than expected!")
                     [(-> env
                          (env/inter s v)

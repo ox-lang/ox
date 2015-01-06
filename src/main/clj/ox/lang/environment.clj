@@ -35,6 +35,7 @@
      'fn*     [:binding/special 'fn*]
      'if*     [:binding/special 'if*]
      'let*    [:binding/special 'let*]
+     'list*   [:binding/special 'list*]
      'letrc*  [:binding/special 'letrc*]
      'ns      [:binding/alias   'ox.lang.bootstrap/ns]
      'ns*     [:binding/special 'ns*]
