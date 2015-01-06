@@ -141,6 +141,11 @@
                 (letrc*)
                 ,,(assert false "letrc isn't supported yet™")
 
+                (list*)
+                ,,[env
+                   (concat (map -e (butlast args))
+                           (-e (last args)))]
+
                 (quote)
                 ,,[env (second form)]
 
