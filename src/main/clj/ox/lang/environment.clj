@@ -1,30 +1,7 @@
 (ns ox.lang.environment
-  (:require [clojure.java.io :as io])
+  (:require [clojure.java.io :as io]
+            [ox.lang.environment.types :as t])
   (:refer-clojure :exclude [resolve]))
-
-(defn env?
-  "FIXME: quick and dirty predicate"
-  [x]
-  (and (vector? x)
-       (#{:env/local :env/ns} (first x))))
-
-(defn ns?
-  "FIXME: quick and dirty predicate"
-  [x]
-  (and (env? x)
-       (= :env/ns (first x))))
-
-(defn alias?
-  "FIXME: quick an dirty predicate"
-  [x]
-  (and (vector? x)
-       (#{:binding/alias} (first x))))
-
-(defn value?
-  "FIXME: quick and dirty predicate"
-  [x]
-  (and (vector? x)
-       (#{:binding/value} (first x))))
 
 (def base-env
   [:env/base
@@ -76,7 +53,7 @@
   Returns a new environment where the specified symbol is bound to the given
   form value. Used for installing defs into an environment."
   [env sym value]
-  {:pre [(ns? env)]}
+  {:pre [(t/ns? env)]}
   (let [ns   (-> env second :ns)
         qsym (symbol (name ns) (name sym))]
     (-> env
@@ -96,7 +73,7 @@
   Resolves the given symbol in the current environment."
   [env sym]
   (let [entry (get-entry env sym)]
-    (if (alias? entry)
+    (if (t/alias? entry)
       (recur env (second entry))
       sym)))
 
@@ -107,7 +84,7 @@
   environment."
   [env symbol]
   (let [entry (get-entry env symbol)]
-    (assert (value? entry))
+    (assert (t/value? entry))
     (second entry)))
 
 (defn special?
