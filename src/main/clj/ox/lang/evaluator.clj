@@ -173,7 +173,10 @@
        slurp
        parser/parse-file
        (reduce (fn [env form]
-                 (first
-                  (interpreting-eval env form)))
+                 (->> form
+                      (read-eval env)
+                      (macroexpand env)
+                      (interpreting-eval env)
+                      first))
                (env/make-environment 'user))))
 

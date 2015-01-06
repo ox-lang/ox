@@ -9,9 +9,10 @@
   :plugins [[lein-cloverage "1.0.2"]
             [lein-auto "0.1.1"]]
 
-  :auto {:default {:file-pattern #"\.(clj|cljs|cljx|edn|g4)$"}}
+  :auto {:default {:file-pattern #"\.(clj|cljs|cljx|edn|g4|ox)$"}}
   
-  :source-paths      ["src/main/clj"]
+  :source-paths      ["src/main/clj"
+                      "src/main/ox"]
   :java-source-paths ["src/main/java"]
   :test-paths        ["src/test/clj"]
 
