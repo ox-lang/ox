@@ -132,19 +132,27 @@
   [env symbol]
   (meta (get-value env symbol)))
 
+(defn alter-meta
+  "λ [Env, Symbol, Map] → Env
+
+  Returns an updated environment where the metadata of the given
+  symbol has been altered to equal the argument map."
+  [env symbol updater]
+  {:pre [(do (get-entry env symbol) true)]}
+  (let [s        (resolve env symbol)
+        bindings (-> env second (get :bindings))]
+    (if-let [[k v] (find bindings s)]
+      (update-in env [1 :bindings s] #(with-meta v (updater (meta v))))
+      (assoc-in env [1 :parent]      (alter-meta (-> env second :parent)
+                                                 symbol updater)))))
+
 (defn set-meta
   "λ [Env, Symbol, Map] → Env
 
   Returns an updated environment where the metadata of the given
   symbol has been altered to equal the argument map."
   [env symbol meta]
-  {:pre [(do (get-entry env symbol) true)]}
-  (let [s        (resolve env symbol)
-        bindings (-> env second (get :bindings))]
-    (if-let [[k v] (find bindings s)]
-      (assoc-in env [1 :bindings s] (with-meta v meta))
-      (assoc-in env [1 :parent]     (set-meta (-> env second :parent)
-                                              symbol meta)))))
+  (alter-meta env symbol (constantly meta)))
 
 
 
