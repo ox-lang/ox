@@ -58,37 +58,32 @@
 
 (defmethod -transform :bign [[_ x]]
   (let [num (.substring x 0 (dec (count x)))]
-    (list 'big-integer num 10)))
+    `(~'read-eval (~'parse-big-integer ~num 10))))
 
 (defmethod -transform :rint [[_ s]]
   (let [[_ radix body] (re-find #"([1-9][0-9]*)r(.*)" s)]
-    (list 'big-integer body (list 'integer radix))))
+    `(~'read-eval (~'parse-big-integer ~body ~(-transform [:long radix])))))
 
 (defmethod -transform :float [[_ x]]
-  (->> x -transform (list 'float) (list 'read-eval)))
+  `(~'read-eval
+    (~'parse-float
+     ~(-transform x))))
 
 (defmethod -transform :boolean [[_ x]]
   (= x "true"))
 
 (defmethod -transform :any_char [[_ ^String s]]
-  (.charAt s 1))
+  `(~'read-eval
+    (~'parse-character ~s)))
 
-(defmethod -transform :u_hex_quad [[_ s]]
-  (Util/readUnicodeChar s 2 4 16))
-
-(def -named-char-table
-  {"newline"   \newline
-   "return"    \return
-   "space"     \space
-   "tab"       \tab
-   "formfeed"  \formfeed
-   "backspace" \backspace})
+(defmethod -transform :u_hex_quad [[_ ^String s]]
+  `(~'read-eval
+    (~'parse-hex-character ~(.substring 2 4 s))))
 
 (defmethod -transform :named_char [[_ name]]
   (let [name (.substring name 1)]
-    (if-let [entry (find -named-char-table name)]
-      (second entry)
-      (throw (Exception. (str "Unknown character named " name))))))
+    `(~'read-eval
+      (~'parse-named-character ~name))))
 
 (defmethod -transform :string [[_ quoted-str]]
   `(~'read-eval
@@ -103,7 +98,7 @@
   (->> forms -transform))
 
 (defmethod -transform :nil [_]
-  (list))
+  nil)
 
 (defmethod -transform :vector [[_ _ forms]]
   (->> forms -transform
@@ -211,17 +206,17 @@
                          (~'hash-map ((~tag true)))))))))
 
 (defn parse-string
-  "Oxlang multi-form parser for reading from strings.
+  "Oxlang single-form parser for reading from strings.
 
   Will construct:
    - Symbols
    - Lists
    - Integers
-   - Characters
    - Booleans
 
   Will generate constructor forms for all other types including:
    - Big Integers
+   - Characters
    - Strings
    - Regular expressions
    - Maps
@@ -235,5 +230,10 @@
   macroexpansion or other manipulation occurs."
   [s]
   (-> s -antlr4-parser second -transform))
+
+(defn parse-file
+  "Oxlang multiple form parser for reading from files."
+  [s]
+  (->> s -antlr4-parser rest (map -transform)))
 
 ;; FIXME: Add a file/resource parser
