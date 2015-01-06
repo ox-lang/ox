@@ -29,7 +29,7 @@
 (def base-env
   [:env/base
    {:bindings
-    {'apply   [:binding/special 'apply]
+    {'apply*  [:binding/special 'apply*]
      'def*    [:binding/special 'def*]
      'do*     [:binding/special 'do*]
      'fn*     [:binding/special 'fn*]

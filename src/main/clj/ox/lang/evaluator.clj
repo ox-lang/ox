@@ -86,7 +86,7 @@
                (not (map? form)))
           ,,(let [[f & args] form]
               (case f
-                (apply)
+                (apply*)
                 ,,(let [[lambda & args]   args
                         _                 (assert (= 'fn* (first lambda)) "Not applying a fn*!")
                         bodies            (->> lambda rest
@@ -155,7 +155,7 @@
                 ,,(let [[f & args] args]
                     [env (clojure.core/apply f (mapv -e args))])
 
-                #(interpreting-eval env `(~'apply ~@(map -e form) '()))))
+                #(interpreting-eval env `(~'apply* ~(-e f) ~@args nil))))
 
           (symbol? form)
           ,,(if (env/special? env form)
