@@ -65,7 +65,7 @@
 
 
 (defn compute-fn-bindings [args vals]
-  (loop [acc {}
+  (loop [acc  {}
          args args
          vals vals]
     (let [[arg & args'] args
@@ -79,7 +79,8 @@
 (declare interpreting-eval)
 
 (defn interpreting-eval-1 [env form]
-  (println "[eval]" form)
+  ;; FIXME: environments should support options, add a eval-printing? option
+  ;; (println "[eval]" form)
   (let [-e (comp second (partial interpreting-eval env))]
     (cond (and (seq? form)
                (not (vector? form))
@@ -173,23 +174,26 @@
   [env form]
   (trampoline interpreting-eval-1 env form))
 
-
+(defn eval-form
+  "Analyzes, macroexpands and interprets a single form in the given
+  environment, returning a pair [env, result]."
+  [eval env form]
+  (->> form
+       (read-eval eval env)
+       (macroexpand eval env)
+       (eval env)))
+
+(defn read-eval [eval env form]
+  (try
+    (-> (eval-form (partial eval env)) first)
+    (catch Exception e
+      (.printStackTrace e)
+      env)))
 
 (defn interpreting-load
   [path]
   (->> (str path ".ox")
-       io/resource
-       io/file
-       slurp
+       io/resource io/file slurp
        parser/parse-file
-       (reduce (fn [env form]
-                 (try
-                   (let [-e (partial interpreting-eval env)
-                         -p (fn [x] (println x) x)]
-                     (->> form
-                          (read-eval -e env)
-                          (macroexpand -e env)
-                          (interpreting-eval env)
-                          first))
-                   (catch Exception e env)))
+       (reduce (partial read-eval interpreting-eval)
                (env/make-environment 'user))))
