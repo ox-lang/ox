@@ -4,6 +4,9 @@
             [ox.lang.environment :as env]
             [clojure.test :refer :all]))
 
+(deftest fix-test
+  (is (= 6 (fix #(min 6 (inc %1)) 0))))
+
 (deftest eval-if-test
   (let [env (env/make-environment 'user)]
     (is (= [env 2]
