@@ -1,23 +1,21 @@
-; ns ox.lang.bootstrap
+(ns ox.lang.bootstrap
+  (require ox.lang.booleans))
 
-(def* list nil
-  (fn* ((& xs)
-        (list* xs))))
+;; FIXME: this one is hard, IBoolean?
 
-(def* first nil
-  (fn* ((x)
-	(apply* (fn* ((x & more) x)) x))))
+(def map nil
+  (λ (((f ← ((x ← a) → b), xs ← nil) → nil)
+      nil)
 
-(def* second nil
-  (fn* ((x)
-        (apply* (fn* ((x y & more) y)) x))))
+     (((f ← ((x ← a) → b), xs ← (Seq a)) → (Seq b))
+      (let* ((x   (first xs))
+             (xs' (rest xs)))
+            (cons (f x)
+                  (map-1 f xs'))))))
 
-(def* rest nil
-  (fn* ((x)
-        (apply* (fn* ((x & more) more)) x))))
+(def foldr nil
+  (λ (((f ← ((x ← a, y ← b) → a), i ← a, xs ← nil) → a)
+      i)
 
-(def* keyword nil
-  (fn* ((n)
-        (list 'keyword/unqualified n))
-       ((ns n)
-        (list 'keyword/qualified ns n))))
+     (((f ← ((x ← a, y ← b) → a), i ← a, xs ← (Seq b)) → a)
+      (foldr (f i) (first xs) (rest xs)))))
