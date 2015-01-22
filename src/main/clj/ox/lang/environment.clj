@@ -1,23 +1,24 @@
+;; -*- mode: clojure; mode: org-link-minor; -*-
 (ns ox.lang.environment
   (:require [clojure.java.io :as io]
             [ox.lang.environment.types :as t])
   (:refer-clojure :exclude [resolve]))
 
+;; [[file:../../../../../doc/notes.org::*Special forms][Special forms]]
 (def base-env
   [:env/base
    {:bindings
-    {'apply*  [:binding/special 'apply*]
-     'def*    [:binding/special 'def*]
-     'do*     [:binding/special 'do*]
-     'fn*     [:binding/special 'fn*]
-     'if*     [:binding/special 'if*]
-     'let*    [:binding/special 'let*]
-     'list*   [:binding/special 'list*]
-     'letrc*  [:binding/special 'letrc*]
-     'ns      [:binding/alias   'ox.lang.bootstrap/ns]
-     'ns*     [:binding/special 'ns*]
-     'quote   [:binding/special 'quote]
-     'invoke  [:binding/special 'invoke]}}])
+    {'def*    [:binding/special 'def*]    ;; [[file:../../../../../doc/notes.org::*def*][def*]]
+     'do*     [:binding/special 'do*]     ;; [[file:../../../../../doc/notes.org::*do*][do*]]
+     'fn*     [:binding/special 'fn*]     ;; [[file:../../../../../doc/notes.org::*fn*][fn*]]
+     'lambda* [:binding/special 'lambda*] ;; [[file:../../../../../doc/notes.org::*lambda*][lambda*]]
+     'if*     [:binding/special 'if*]     ;; [[file:../../../../../doc/notes.org::*if*][if*]]
+     'let*    [:binding/special 'let*]    ;; [[file:../../../../../doc/notes.org::*let*][let*]]
+     'list*   [:binding/special 'list*]   ;; [[file:../../../../../doc/notes.org::*list*][list*]]
+     'letrc*  [:binding/special 'letrc*]  ;; [[file:../../../../../doc/notes.org::*letrc*][letrc*]]
+     'quote   [:binding/special 'quote]   ;; [[file:../../../../../doc/notes.org::*quote][quote]]
+     'ns*     [:binding/special 'ns*]     ;; [[file:../../../../../doc/notes.org::*ns*][ns*]]
+     'ns      [:binding/alias   'ox.lang.bootstrap/ns]}}])
 
 (defn make-environment
   "λ [] → Env
