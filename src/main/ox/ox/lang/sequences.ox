@@ -6,7 +6,7 @@
 ;; FIXME: concat
 
 (def Pair nil
-  (lambda* ((l ← Type, r ← Type) → Type)
+  (λ ((l ← Type, r ← Type) → Type)
     (Record
      (left ← l)
      (right ← r))))
