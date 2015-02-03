@@ -10,4 +10,6 @@ a sketch for debate only.
 The idea with this sketch was to simply provide a simple but still
 imperative lambda calculus. This sketch is more a first attempt at a
 clojure inspired Lisp that could become self hosting than a serious
-proposal.
+proposal. However some elements such as the parser grammar and the
+evaluation model sketched in this implementation are candidates for
+sharing with other sketches so the material is retained.
