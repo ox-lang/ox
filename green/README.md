@@ -1,10 +1,34 @@
-## \*empty-env\*
+# 牛 - Green proposal
+
+This proposal assumes the parser grammar and read-eval model of the
+[Straw man](/straw/) proposal without modification. The goal of this
+proposal was to explore exactly what special forms would be required
+to specify a more minimal and portable form of the straw proposal.
+
+This proposal deliberately does not privilege the evaluation context
+or environment. Note that the `def*` and type manipulation forms are
+merely common functions that manipulate (`assoc` into) the compilation
+environment to create and manipulate module level bindings rather than
+being privileged forms with compiler support as in Clojure.
+
+This comes at the price putting all the evaluation context
+(importantly including the `gensym` counter) within the state monad
+including all the consequences of that with regards to use and update
+model. In order to make this style of programming with multiple
+interleaved updates on multiple values and no side-effects special
+sugar along the lines of Haskell's `do` notation is probably in
+order. However while additional support for usability may be in order
+the essentials of this proposal do not require it.
+
+## Special forms
+
+### \*empty-env\*
 
 Special symbol evaluating to the "empty" (base) environment. Not
 actually empty, contains whatever the implementation needs as far as
 the special forms go.
 
-## module
+### module
 
 ```Clojure
 (module *empty-env* ;; implicit
@@ -29,7 +53,7 @@ Since the value of evaling a file is the value of evaling the last
 this structure (see `load`) will eval to the module environment which
 another context can use bits of (see `require`).
 
-## ns*
+### ns*
 
 ```clojure
 (ns* <namespace>
@@ -42,7 +66,7 @@ Constructs a namespace (compilation context) value with a name,
 docstring and metadata attributes, returning that namespace as a
 value.
 
-## ns
+### ns
 
 ```Clojure
 (module (ns demo) ;; implicit require ox.core
@@ -53,7 +77,7 @@ value.
 
 Macro around `ns*` that provides the familiar Clojure creature comforts.
 
-## load*
+### load*
 
 Operation from a environment and a string naming a file to an
 environment. While technically usable at the top level if you want to
@@ -73,7 +97,7 @@ detected in the file specified as the loading target or any of its
 dependencies in which case full or selective reloading must occur as
 appropriate.
 
-## require*
+### require*
 
 This is hard. Require needs to be a special form because otherwise how
 do you require in anything at all? Implemented atop load as a function
@@ -81,7 +105,7 @@ that parses the require DSL and then links stuff out of the "other"
 env into the "current" env returning a new current env. Top level as a
 result.
 
-## def*
+### def*
 
 ```Clojure
 (def* <top-env>   ;; Non-nillable.
@@ -98,7 +122,7 @@ here. I'll get to that in a minute. Operation from a namespace to an
 Note that the `<ns-val>` as produced by either `ns*` or `def*` is an
 `env` for the purposes of `eval`.
 
-## deftype*
+### deftype*
 
 ```Clojure
 (deftype* <top-env>
@@ -116,7 +140,7 @@ complete specifications of the protocol methods. This should
 macroexpand to a `deftype*` followed by the appropriate `extend-type*`
 forms.
 
-## defprotocol*
+### defprotocol*
 
 ```Clojure
 (defprotocol* <top-env>
@@ -131,7 +155,7 @@ on the type of the first (leftmost) argument. As with the other `def*`
 forms goes from an environment to a new environment which has the new
 protocol value bound and named in.
 
-## extend-type*
+### extend-type*
 
 ```Clojure
 (extend-type* <top-env> <type-name> <proto-name>
@@ -146,7 +170,7 @@ environment in which implementations of each protocol method for the
 given type are known. Expected to be the target of the `deftype` and
 `extend-type` macros.
 
-## eval
+### eval
 
 ```Clojure
 (eval <env>
@@ -155,7 +179,7 @@ given type are known. Expected to be the target of the `deftype` and
 
 Does exactly what you'd expect.
 
-## fn*
+### fn*
 
 ```Clojure
 (fn* <name> ;; Non-nillable but need not be used
@@ -173,7 +197,7 @@ can cross arities and does so with TCO. TCO is expected.
 
 An open question is whether syntactic closures are supported/allowed.
 
-## let*
+### let*
 
 ```Clojure
 (let* ( (<sym> <expr>)
@@ -190,7 +214,7 @@ extending the wrapping `env` (or `ns*` level `env`).
 
 An open question is all at once vs sequential binding computation.
 
-## letrc*
+### letrc*
 
 ```Clojure
 (letrc* ( (<sym> <expr>)
@@ -203,7 +227,7 @@ An open question is all at once vs sequential binding computation.
 Again from Scheme, same as `let*` except that bindings are all at once
 and may refer to each other.
 
-## if*
+### if*
 
 ```Clojure
 (if* <expr>
@@ -218,11 +242,11 @@ provide `if`, `if-not`, `when` and `when-not` macros where ifs only
 cover the two armed cases and when only covers single armed cases. It
 shall be a compile error to evaluate a single armed `if*`.
 
-## quote
+### quote
 
 Doesn't need an explanation.
 
-## eval
+### eval
 
 ```Clojure
 (eval <env> <form>)
@@ -233,7 +257,7 @@ environments may be returned as results. Local environments may not be
 returned as results. Needs to be in `*empty-env*` so that `module` can
 use it.
 
-## macroexpand
+### macroexpand
 
 ```Clojure
 (macroexpand <env> <form>)
@@ -244,6 +268,6 @@ specified environment until expansion reaches a fixed point, then
 returns the fully expanded form. Must return a form evaluatable by
 `eval`. Needs to be in `*empty-env*` so that `module` can use it.
 
-## \*env\*
+### \*env\*
 
 Evaluates to the current environment in any context. Immutable.
