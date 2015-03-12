@@ -17,8 +17,8 @@ The developers can be found on Freenode's #oxlang channel.
 
 There are also mailing lists:
 
-- [Dev list](http://librelist.com/browser/dev.oxlang/)
-- [User list](http://librelist.com/browser/general.oxlang/)
+- [Dev list](http://librelist.com/browser/oxlang.dev/)
+- [User list](http://librelist.com/browser/oxlang.general/)
 
 ## Contributing
 
