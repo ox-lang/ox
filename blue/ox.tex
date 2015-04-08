@@ -173,7 +173,7 @@ characters terminated by but not including either whitespace or a delimiter for
 some other expression. The set of strings (character sequences) which constitute
 valid symbols is referred to as \verb|Names|, and are defined by the pattern
 \begin{verbatim}
-(/+)|([^\^\[\]\(\)\{\}#:"';\\s\d,^][^\^\[\]\(\)\{\}#:"';\\s,^]+)
+(/+)|([^\^\[\]\(\)\{\}#:"';\\s\d,\\][^\^\[\]\(\)\{\}#:"';\\s,\\]+)
 \end{verbatim}
 
 Examples of valid symbols include: \verb|a|, \verb|foo|, \verb|FooBarBazQux|,
