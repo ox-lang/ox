@@ -154,12 +154,14 @@ syntactic element.
 \section{Numbers}
 
 
-FIXME
+Integers (\verb|0x|, \verb|0b|, \verb|0o|, implicit base 10), Longs, Bignums,
+Floats, Ratios.
 
 \section{Characters}
 
 
-FIXME
+Characters are reader notation for the byte string representing a textual
+glyph. Characters begin with the \verb|\| character,\牛
 
 \section{Symbols}
 
@@ -184,8 +186,6 @@ which does not constitute either multiple symbols or forms.
 Note that the strings \verb|/foo|, \verb|'foo|, \verb|foo[]bar|, \verb|foo^bar|,
 \verb|bar(qux)baz|, \verb|12a34| and soforth are not valid symbols and in fact
 are all multiple forms.
-
-\end{lstlisting}
 
 \subsection{Qualified symbols}
 An qualified symbol is logically of a tuple \verb|<namespace, name>| written
