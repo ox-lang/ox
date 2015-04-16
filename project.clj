@@ -17,6 +17,7 @@
   :test-paths        ["src/test/clj"]
 
   :dependencies [[org.clojure/clojure "1.6.0"]
+                 [me.arrdem/guten-tag "0.1.0-SNAPSHOT"]
                  [org.clojure/test.check "0.5.9"]
                  [org.clojure/core.match "0.3.0-alpha3"]
                  [clj-antlr "0.2.2"]])
