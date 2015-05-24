@@ -58,41 +58,35 @@
 
 (defmethod -transform :bign [[_ x]]
   (let [num (.substring x 0 (dec (count x)))]
-    `(~'read-eval (~'parse-big-integer ~num 10))))
+    `('parse-big-integer ~num 10)))
 
 (defmethod -transform :rint [[_ s]]
   (let [[_ radix body] (re-find #"([1-9][0-9]*)r(.*)" s)]
-    `(~'read-eval (~'parse-big-integer ~body ~(-transform [:long radix])))))
+    `(~'parse-big-integer ~body ~(-transform [:long radix]))))
 
 (defmethod -transform :float [[_ x]]
-  `(~'read-eval
-    (~'parse-float
-     ~(-transform x))))
+  `(~'parse-float
+    ~(-transform x)))
 
 (defmethod -transform :boolean [[_ x]]
   (= x "true"))
 
 (defmethod -transform :any_char [[_ ^String s]]
-  `(~'read-eval
-    (~'parse-character ~s)))
+  `(~'parse-character ~s))
 
 (defmethod -transform :u_hex_quad [[_ ^String s]]
-  `(~'read-eval
-    (~'parse-hex-character ~(.substring 2 4 s))))
+  `(~'parse-hex-character ~(.substring 2 4 s)))
 
 (defmethod -transform :named_char [[_ name]]
   (let [name (.substring name 1)]
-    `(~'read-eval
-      (~'parse-named-character ~name))))
+    `(~'parse-named-character ~name)))
 
 (defmethod -transform :string [[_ quoted-str]]
-  `(~'read-eval
-    (~'unquote-string ~quoted-str)))
+  `(~'unquote-string ~quoted-str))
 
 (defmethod -transform :regex [[_ _ s]]
-  `(~'read-eval
-    (~'re-compile
-     ~(-transform s))))
+  `(~'re-compile
+    ~(-transform s)))
 
 (defmethod -transform :list [[_ _ forms]]
   (->> forms -transform))
@@ -103,21 +97,18 @@
 (defmethod -transform :vector [[_ _ forms]]
   (->> forms -transform
        list
-       (cons 'vector)
-       (list 'read-eval)))
+       (cons 'vector)))
 
 (defmethod -transform :set [[_ _ forms]]
   (->> (-transform forms)
-       (cons 'set)
-       (list 'read-eval)))
+       (cons 'set)))
 
 (defmethod -transform :map [[_ _ & more]]
   (->> more butlast
        (map -transform)
        (partition 2)
        list
-       (cons 'hash-map)
-       (list 'read-eval)))
+       (cons 'hash-map)))
 
 (defmethod -transform :simple_sym [[_ s]]
   (symbol s))
@@ -128,33 +119,30 @@
 
 (defmethod -transform :simple_keyword [[_ _ [_ [sym-type & data]]]]
   ;; FIXME: a real match would be ballin' here
-  (list 'read-eval
-        (if (= sym-type :simple_sym)
-          (let [[name] data]
-            (list 'keyword name))
+  (if (= sym-type :simple_sym)
+    (let [[name] data]
+      (list 'keyword name))
 
-          (let [[s] data
-                [_ ns name] (re-find #"([^/]+)/(.*)" s)]
-            (list 'qualified-keyword ns name)))))
+    (let [[s] data
+          [_ ns name] (re-find #"([^/]+)/(.*)" s)]
+      (list 'qualified-keyword ns name))))
 
 (defmethod -transform :macro_keyword [[_ _ _ [_ [sym-type & data]]]]
   ;; FIXME: a real match would be ballin' here
   (if (= sym-type :simple_sym)
     (let [[name] data]
-      `(~'read-eval
-        (~'qualified-keyword
-         (~'name (~'this-ns))
-         ~name)))
+      `(~'qualified-keyword
+        (~'name (~'this-ns))
+        ~name))
 
     (let [[s]         data
           [_ ns name] (re-find #"([^/]+)/(.*)" s)]
-      `(~'read-eval
-        (~'qualified-keyword
-         (~'name
-          (~'resolve-ns-alias
-           (~'this-ns)
-           ~ns))
-         ~name)))))
+      `(~'qualified-keyword
+        (~'name
+         (~'resolve-ns-alias
+          (~'this-ns)
+          ~ns))
+        ~name))))
 
 (defmethod -transform :backtick [[_ _ form]]
   (list 'backtick (-transform form)))
@@ -174,36 +162,33 @@
 (defmethod -transform :dispatch [[_ _ target value]]
   (let [target (-transform target)
         value  (-transform value)]
-    `(~'read-eval
-      ((~'resolve-reader-macro
-        (~'this-ns)
-        (~' quote ~target))
-       ~value))))
+    `((~'resolve-reader-macro
+       (~'this-ns)
+       (~' quote ~target))
+      ~value)))
 
 (defmethod -transform :host_expr [[_ _ cond value]]
   (let [cond  (-transform cond)
         value (-transform value)]
-    `(~'read-eval
-      (~'when (~'eval-feature-expr '~cond)
-        ~value))))
+    `(~'when (~'eval-feature-expr '~cond)
+       ~value)))
 
 (defmethod -transform :meta_data [[_ _ map-form target-form]]
   (let [map-form    (-transform map-form)
         target-form (-transform target-form)]
-    `(~'read-eval
-      (~'let* ((res# (~'quote ~target-form)))
-              (~'with-meta res#
-                (~'merge (~'meta res#)
-                         ~map-form))))))
+    `(~'let* ((res# (~'quote ~target-form)))
+             (~'with-meta res#
+               (~'merge (~'meta res#)
+                        ~map-form)))))
 
 (defmethod -transform :tag [[_ _ tag form]]
   (let [tag  (-transform tag)
         form (-transform form)]
-    `(~'read-eval
-      (~'let* ((res# (~'quote ~form)))
-              (~'with-meta res#
-                (~'merge (~'meta res#)
-                         (~'hash-map ((~tag true)))))))))
+    `(~'let* ((res# (~'quote ~form)))
+             (~'with-meta res#
+               (~'merge (~'meta res#)
+                        (~'hash-map ((~tag true))))))))
+
 
 (defn parse-string
   "Oxlang single-form parser for reading from strings.
