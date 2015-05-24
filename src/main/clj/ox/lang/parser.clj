@@ -58,7 +58,7 @@
 
 (defmethod -transform :bign [[_ x]]
   (let [num (.substring x 0 (dec (count x)))]
-    `('parse-big-integer ~num 10)))
+    `(~'parse-big-integer ~num 10)))
 
 (defmethod -transform :rint [[_ s]]
   (let [[_ radix body] (re-find #"([1-9][0-9]*)r(.*)" s)]
@@ -159,14 +159,6 @@
 (defmethod -transform :deref [[_ _ target]]
   (list 'deref (-transform target)))
 
-(defmethod -transform :dispatch [[_ _ target value]]
-  (let [target (-transform target)
-        value  (-transform value)]
-    `((~'resolve-reader-macro
-       (~'this-ns)
-       (~' quote ~target))
-      ~value)))
-
 (defmethod -transform :host_expr [[_ _ cond value]]
   (let [cond  (-transform cond)
         value (-transform value)]
@@ -189,6 +181,10 @@
                (~'merge (~'meta res#)
                         (~'hash-map ((~tag true))))))))
 
+(defmethod -transform :record [[_ _ tag map _]]
+  (list 'record
+        (-transform tag)
+        (-transform map)))
 
 (defn parse-string
   "Oxlang single-form parser for reading from strings.
@@ -207,12 +203,7 @@
    - Maps
    - Vectors
    - Keywords
-   - Sets
-
-  Read-evaluation is implemented by the emission of (read-eval) forms embedded
-  in the result. Clients using this function are responsable for executing the
-  appropriate read evaluation routine(s) to process these forms before
-  macroexpansion or other manipulation occurs."
+   - Sets"
   [s]
   (-> s -antlr4-parser second -transform))
 
