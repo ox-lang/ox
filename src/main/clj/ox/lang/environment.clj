@@ -1,24 +1,23 @@
-;; -*- mode: clojure; mode: org-link-minor; -*-
 (ns ox.lang.environment
   (:require [clojure.java.io :as io]
             [ox.lang.environment.types :as t])
   (:refer-clojure :exclude [resolve]))
 
-;; [[file:../../../../../doc/notes.org::*Special forms][Special forms]]
 (def base-env
-  [:env/base
-   {:bindings
-    {'def*    [:binding/special 'def*]    ;; [[file:../../../../../doc/notes.org::*def*][def*]]
-     'do*     [:binding/special 'do*]     ;; [[file:../../../../../doc/notes.org::*do*][do*]]
-     'fn*     [:binding/special 'fn*]     ;; [[file:../../../../../doc/notes.org::*fn*][fn*]]
-     'lambda* [:binding/special 'lambda*] ;; [[file:../../../../../doc/notes.org::*lambda*][lambda*]]
-     'if*     [:binding/special 'if*]     ;; [[file:../../../../../doc/notes.org::*if*][if*]]
-     'let*    [:binding/special 'let*]    ;; [[file:../../../../../doc/notes.org::*let*][let*]]
-     'list*   [:binding/special 'list*]   ;; [[file:../../../../../doc/notes.org::*list*][list*]]
-     'letrc*  [:binding/special 'letrc*]  ;; [[file:../../../../../doc/notes.org::*letrc*][letrc*]]
-     'quote   [:binding/special 'quote]   ;; [[file:../../../../../doc/notes.org::*quote][quote]]
-     'ns*     [:binding/special 'ns*]     ;; [[file:../../../../../doc/notes.org::*ns*][ns*]]
-     'ns      [:binding/alias   'ox.lang.bootstrap/ns]}}])
+  (t/->env
+   )[:env/base
+     {:bindings
+      {'def*    [:binding/special 'def*]
+       'do*     [:binding/special 'do*]
+       'fn*     [:binding/special 'fn*]
+       'lambda* [:binding/special 'lambda*]
+       'if*     [:binding/special 'if*]
+       'let*    [:binding/special 'let*]
+       'list*   [:binding/special 'list*]
+       'letrc*  [:binding/special 'letrc*]
+       'quote   [:binding/special 'quote]
+       'ns*     [:binding/special 'ns*]
+       'ns      [:binding/alias   'ox.lang.bootstrap/ns]}}])
 
 (defn make-environment
   "λ [] → Env
@@ -26,6 +25,7 @@
   Returns the empty environment. Analyzing or evaluating any namespace must
   start with the empty environment."
   [ns]
+  {:pre [(t/ns? ns)]}
   [:env/ns
    {:ns                ns            ; symbol naming current namespace
     :parent            base-env      ; link to parent environment
@@ -54,12 +54,13 @@
   Returns a new environment where the specified symbol is bound to the given
   form value. Used for installing defs into an environment."
   [env sym value]
-  {:pre [(t/ns? env)]}
-  (let [ns   (-> env second :ns)
+  {:pre [(t/ns? env)
+         ]}
+  (let [ns   (-> env :ns)
         qsym (symbol (name ns) (name sym))]
     (-> env
-        (assoc-in [1 :bindings sym]  ^:no-export [:binding/alias qsym])
-        (assoc-in [1 :bindings qsym] [:binding/value value]))))
+        (assoc-in [:bindings sym]  ^:no-export [:binding/alias qsym])
+        (assoc-in [:bindings qsym] [:binding/value value]))))
 
 (defn get-entry
   [env symbol]
