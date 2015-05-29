@@ -1,25 +1,14 @@
-(ns ox.lang.environment.types)
+(ns ox.lang.environment.types
+  (:require [guten-tag.core :refer [deftag]]))
 
-(defn env?
-  "FIXME: quick and dirty predicate"
-  [x]
-  (and (vector? x)
-       (#{:env/local :env/ns} (first x))))
+(deftag env
+  [e])
 
-(defn ns?
-  "FIXME: quick and dirty predicate"
-  [x]
-  (and (env? x)
-       (= :env/ns (first x))))
+(deftag ns
+  [n])
 
-(defn alias?
-  "FIXME: quick an dirty predicate"
-  [x]
-  (and (vector? x)
-       (#{:binding/alias} (first x))))
+(deftag alias
+  [sym])
 
-(defn value?
-  "FIXME: quick and dirty predicate"
-  [x]
-  (and (vector? x)
-       (#{:binding/value} (first x))))
+(deftag value
+  [v])
