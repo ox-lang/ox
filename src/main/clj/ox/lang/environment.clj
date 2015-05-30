@@ -3,51 +3,6 @@
             [ox.lang.environment.types :as t])
   (:refer-clojure :exclude [resolve]))
 
-(def base-env
-  (t/->env
-   )[:env/base
-     {:bindings
-      {'def*    [:binding/special 'def*]
-       'do*     [:binding/special 'do*]
-       'fn*     [:binding/special 'fn*]
-       'lambda* [:binding/special 'lambda*]
-       'if*     [:binding/special 'if*]
-       'let*    [:binding/special 'let*]
-       'list*   [:binding/special 'list*]
-       'letrc*  [:binding/special 'letrc*]
-       'quote   [:binding/special 'quote]
-       'ns*     [:binding/special 'ns*]
-       'ns      [:binding/alias   'ox.lang.bootstrap/ns]}}])
-
-(defn make-environment
-  "λ [] → Env
-
-  Returns the empty environment. Analyzing or evaluating any namespace must
-  start with the empty environment."
-  [ns]
-  {:pre [(t/ns? ns)]}
-  [:env/ns
-   {:ns                ns            ; symbol naming current namespace
-    :parent            base-env      ; link to parent environment
-
-    :loaded-namespaces {}            ; map from symbols to the definition environment
-
-    :imports           #{}           ; set of imported classes
-
-    ;; map from qualified and unqualified
-    ;; symbols to a binding descriptor.
-    :bindings          {}}])
-
-(defn make-local-environment
-  "λ [Env] → Env
-
-  Returns a new local environment with no bindings, having the argument
-  environment as a parent."
-  [env]
-  [:env/local
-   {:parent   env
-    :bindings {}}])
-
 (defn inter
   "λ [Env, Symbol, Form] → Env
 
