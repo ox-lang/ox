@@ -8,21 +8,34 @@
 
   Returns a new environment where the specified symbol is bound to the given
   form value. Used for installing defs into an environment."
-  [env sym value]
-  {:pre [(t/ns? env)
-         (symbol? sym)]}
-  (let [ns   (-> env :ns)
-        qsym (symbol (name ns) (name sym))]
-    (-> env
-        (assoc-in [:bindings sym]  ^:no-export [:binding/alias qsym])
-        (assoc-in [:bindings qsym] [:binding/value value]))))
+  ([env [k v]]
+   (inter env k v))
+  
+  ([env sym value]
+   {:pre [(t/ns? env)
+          (symbol? sym)]}
+   (let [ns   (-> env second :ns)
+         _    (assert (symbol? ns))
+         qsym (symbol (name ns) (name sym))]
+     (-> env second
+         (assoc-in [:bindings sym]  (t/->alias qsym))
+         (assoc-in [:bindings qsym] (t/->value value))
+         (#(vector (first env) %))))))
 
 (defn get-entry
   [env symbol]
-  (if-let [val (-> env second (get :bindings) (get symbol))] val
-          (if-let [parent (:parent (second env))]
-            (get-entry parent symbol)
-            (assert false (str symbol " is not bound in any enclosing scope!")))))
+  (when (and env symbol)
+    (or (-> env
+            second
+            (get :bindings)
+            (get symbol))
+        
+        (get-entry (:parent (second env))
+                   symbol)
+
+        (-> (str symbol " is not bound in any enclosing scope!")
+            (Exception.)
+            (throw)))))
 
 (defn resolve
   "λ [Env, Symbol] → Maybe[Symbol]
@@ -41,8 +54,9 @@
   environment."
   [env symbol]
   (let [entry (get-entry env symbol)]
-    (assert (t/value? entry))
-    (second entry)))
+    (if (t/alias? entry)
+      (recur env (second entry))
+      (second entry))))
 
 (defn special?
   "FIXME: quick and dirty predicate"
@@ -66,6 +80,8 @@
   [env symbol]
   (meta (get-value env symbol)))
 
+;; FIXME: probably shouldn't use real Clojure metadata here. Adding a metadata
+;; part to bindings and defs would probably go over better inthe long run.
 (defn alter-meta
   "λ [Env, Symbol, Map] → Env
 
@@ -77,8 +93,8 @@
         bindings (-> env second (get :bindings))]
     (if-let [[k v] (find bindings s)]
       (update-in env [1 :bindings s] #(with-meta v (updater (meta v))))
-      (assoc-in env [1 :parent]      (alter-meta (-> env second :parent)
-                                                 symbol updater)))))
+      (assoc-in  env [1 :parent]      (alter-meta (-> env second :parent)
+                                                  symbol updater)))))
 
 (defn set-meta
   "λ [Env, Symbol, Map] → Env
@@ -119,4 +135,7 @@
   Indicates whether a given symbol is bound to a macro in the given
   environment."
   [env symbol]
-  (:macro (get-meta env (resolve env symbol))))
+  (->> symbol
+       (resolve env)
+       (get-meta env)
+       :macro))
