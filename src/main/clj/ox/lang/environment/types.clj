@@ -44,7 +44,8 @@
   Returns the empty environment. Analyzing or evaluating any namespace must
   start with the empty environment."
   [ns]
-  {:pre [(symbol? ns)]}
+  {:pre  [(symbol? ns)]
+   :post [(ns? %)]}
   [:env/ns
    {:ns                ns            ; symbol naming current namespace
     :parent            base-env      ; link to parent environment
@@ -62,28 +63,65 @@
 ;;;; local type
 ;;;;;;;;;;;;;;;;;;;;
 
-(declare local? env?)
+(declare local? env? dynamic?)
 
 (def-tag-check local? :env/local
   (comp env?  :parent second)
-  (comp map? :bindings second))
+  (comp map? :bindings second)
+  #(every? symbol?
+           (keys (:bindings (second %))))
+  #(every? (comp not namespace)
+           (keys (:bindings (second %)))))
 
 (defn ->local
   "λ [Env] → Env
+  λ [Env, Bindings] → Env
 
   Returns a new local environment with no bindings, having the argument
-  environment as a parent."
-  [parent]
-  {:pre [(or (local? parent)
-             (ns? parent))]}
-  [:env/local
-   {:parent   parent
-    :bindings {}}])
+  environment as a parent or with the specified legitimate bindings."
+  ([parent]
+   (->local parent {}))
+  ([parent bindings]
+   {:pre  [(or (local? parent)
+               (dynamic? parent)
+               (ns? parent))
+           (every? symbol?
+                   (keys bindings))
+           (every? (comp not namespace)
+                   (keys bindings))]
+    :post [(local? %)]}
+   [:env/local
+    {:parent   parent
+     :bindings bindings}]))
+
+(def-tag-check dynamic? :env/dynamic
+  (comp env?  :parent second)
+  (comp map? :bindings second)
+  #(every? symbol?
+           (keys (:bindings (second %))))
+  #(every? namespace
+           (keys (:bindings (second %)))))
+
+(defn ->dynamic
+  "λ [Env] → Env
+  λ [Env, Bindings] → Env
+
+  Returns a new environment stack entry containing local bindings intended for
+  binding dynamic vars. That bound vars are dynamic is not validated here."
+  ([env]
+   (->dynamic env {}))
+  ([env bindings]
+   {:pre [(every? symbol? (keys bindings))
+          (every? namespace (keys bindings))]
+    :post [(dynamic? %)]}
+   [:env/dynamic
+    {:parent   env
+     :bindings bindings}]))
 
 ;;;; env type
 ;;;;;;;;;;;;;;;;;;;;
 
-(def env? (some-fn ns? local? base?))
+(def env? (some-fn ns? local? base? dynamic?))
 
 ;; Types to do with bindings in environments
 
@@ -93,8 +131,17 @@
   (and (vector? x)
        (#{:binding/alias} (first x))))
 
+(defn ->alias
+  [x]
+  {:pre [(symbol? x)]}
+  [:binding/alias x])
+
 (defn value?
   "FIXME: quick and dirty predicate"
   [x]
   (and (vector? x)
        (#{:binding/value} (first x))))
+
+(defn ->value
+  [x]
+  [:binding/value x])
