@@ -8,7 +8,6 @@
   parse-string is the only public element in this namespace."
   (:refer-clojure :exclude [read-string])
   (:require [clj-antlr.core :as antlr]
-            [clojure.core.match :refer [match]]
             [clojure.java.io :as io]
             [clojure.string :as string])
   (:import [ox.lang Util]))
@@ -145,19 +144,19 @@
         ~name))))
 
 (defmethod -transform :backtick [[_ _ form]]
-  (list 'backtick (-transform form)))
+  `(~'backtick ~(-transform form)))
 
 (defmethod -transform :unquote_splicing [[_ _ form]]
-  (list 'unquote-splicing (-transform form)))
+  `(~'unquote-splicing ~(-transform form)))
 
 (defmethod -transform :unquote [[_ _ form]]
-  (list 'unquote (-transform form)))
+  `(~'unquote ~(-transform form)))
 
 (defmethod -transform :quote [[_ _ form]]
-  (list 'quote (-transform form)))
+  `(~'quote ~(-transform form)))
 
 (defmethod -transform :deref [[_ _ target]]
-  (list 'deref (-transform target)))
+  `(~'deref ~(-transform target)))
 
 (defmethod -transform :host_expr [[_ _ cond value]]
   (let [cond  (-transform cond)
@@ -182,34 +181,44 @@
                         (~'hash-map ((~tag true))))))))
 
 (defmethod -transform :record [[_ _ tag map _]]
-  (list 'record
-        (-transform tag)
-        (-transform map)))
+  `(~'record
+    ~(-transform tag)
+    ~(-transform map)))
+
+(defmethod -transform :pair [[_ l forms r]]
+  (list 'parse-pair (list 'tuple l r)
+        (-transform forms)))
 
 (defn parse-string
   "Oxlang single-form parser for reading from strings.
 
   Will construct:
-   - Symbols
-   - Lists
-   - Integers
-   - Booleans
+  - Symbols
+  - Lists
+  - Integers
+  - Booleans
 
   Will generate constructor forms for all other types including:
-   - Big Integers
-   - Characters
-   - Strings
-   - Regular expressions
-   - Maps
-   - Vectors
-   - Keywords
-   - Sets"
+  - Big Integers
+  - Characters
+  - Strings
+  - Regular expressions
+  - Maps
+  - Vectors
+  - Keywords
+  - Sets"
   [s]
-  (-> s -antlr4-parser second -transform))
+  (-> s
+      -antlr4-parser
+      second
+      -transform))
 
 (defn parse-file
   "Oxlang multiple form parser for reading from files."
   [s]
-  (->> s -antlr4-parser rest (map -transform)))
+  (->> s
+       -antlr4-parser
+       rest
+       (map -transform)))
 
 ;; FIXME: Add a file/resource parser

@@ -31,6 +31,8 @@ form: literal
     | list
     | vector
     | map
+    | record
+    | pair
     | reader_macro
     ;
 
@@ -40,19 +42,38 @@ list: '(' forms ')' ;
 
 vector: '[' forms ']' ;
 
+record: '#[' ns_symbol map ']' ;
+
 map: '{' (form form)* '}' ;
 
 set: '#{' forms '}' ;
 
+pair: '〈' forms '〉'
+    | '⁅' forms '⁆'
+    | '⌊' forms '⌋'
+    | '⌈' forms '⌉'
+    | '⟦' forms '⟧'
+    | '〈' forms '〉'
+    | '⟪' forms '⟫'
+    | '⟬' forms '⟭'
+    | '⦃' forms '⦄'
+    | '⦇' forms '⦈'
+    | '⦉' forms '⦊'
+    | '⦑' forms '⦒'
+    | '⧘' forms '⧙'
+    | '⧚' forms '⧛'
+    | '⸨' forms '⸩'
+    | '﹙' forms '﹚'
+    | '⁽' forms '⁾'
+    | '₍' forms '₎'
+    ;
+
 reader_macro
     : meta_data
     | regex
-    | var_quote
     | host_expr
     | set
     | tag
-    | discard
-    | dispatch
     | deref
     | quote
     | backtick
@@ -61,7 +82,6 @@ reader_macro
     | gensym
     ;
 
-// TJP added '&' (gather a variable number of arguments)
 quote
     : '\'' form
     ;
@@ -94,20 +114,8 @@ meta_data
     : '#^' map form
     ;
 
-var_quote
-    : '#\'' symbol
-    ;
-
 host_expr
     : '#+' form form
-    ;
-
-discard
-    : '#_' form
-    ;
-
-dispatch
-    : '#' symbol form
     ;
 
 regex
@@ -220,11 +228,11 @@ CHAR_U
     : '\\' 'u'[0-9D-Fd-f] HEXD HEXD HEXD ;
 CHAR_NAMED
     : '\\' ( 'newline'
-           | 'return'
-           | 'space'
-           | 'tab'
-           | 'formfeed'
-           | 'backspace' ) ;
+	   | 'return'
+	   | 'space'
+	   | 'tab'
+	   | 'formfeed'
+	   | 'backspace' ) ;
 CHAR_ANY
     : '\\' . ;
 
@@ -251,9 +259,30 @@ NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 fragment
 SYMBOL_HEAD
     : ~('0' .. '9'
-        | '^' | '`' | '\'' | '"' | '#' | '~' | '@' | ':' | '/' | '(' | ')' | '[' | ']' | '{' | '}' // FIXME: could be one group
-        | [ \n\r\t\,] // FIXME: could be WS
-        )
+      	| '〈' | '〉'
+	| '⁅' | '⁆'
+    	| '⌊' | '⌋'
+    	| '⌈' | '⌉'
+    	| '⟦' | '⟧'
+    	| '〈' | '〉'
+    	| '⟪' | '⟫'
+    	| '⟬' | '⟭'
+    	| '⦃' | '⦄'
+    	| '⦇' | '⦈'
+    	| '⦉' | '⦊'
+    	| '⦑' | '⦒'
+    	| '⧘' | '⧙'
+    	| '⧚' | '⧛'
+    	| '⸨' | '⸩'
+    	| '﹙' | '﹚'
+    	| '⁽' | '⁾'
+    	| '₍' | '₎'
+	| '(' | ')'
+	| '[' | ']'
+	| '{' | '}'
+    	| '^' | '`' | '\'' | '"' | '#' | '~' | '@' | ':' | '/' // FIXME: could be one group
+	| [ \n\r\t\,] // FIXME: could be WS
+	)
     ;
 
 fragment
