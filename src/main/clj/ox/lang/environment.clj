@@ -23,7 +23,12 @@
          (#(vector (first env) %))))))
 
 (defn get-entry
+  "λ [Env, Symbol] → Maybe[Binding]
+
+  Walks the environment stack, returning the environment entry (not the value)
+  packaging the bound value."
   [env symbol]
+  {:pre [(symbol? symbol)]}
   (when (and env symbol)
     (or (-> env
             second
