@@ -1,5 +1,4 @@
-(ns ox.lang.environment.types
-  (:require [ox.lang.types :as t]))
+(ns ox.lang.environment.types)
 
 (defmacro def-tag-check [name tag & preds]
   `(defn ~name [~'x]
@@ -45,7 +44,7 @@
   Returns the empty environment. Analyzing or evaluating any namespace must
   start with the empty environment."
   [ns]
-  {:pre [(t/ns? ns)]}
+  {:pre [(symbol? ns)]}
   [:env/ns
    {:ns                ns            ; symbol naming current namespace
     :parent            base-env      ; link to parent environment

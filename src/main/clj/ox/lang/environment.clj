@@ -10,7 +10,7 @@
   form value. Used for installing defs into an environment."
   [env sym value]
   {:pre [(t/ns? env)
-         ]}
+         (symbol? sym)]}
   (let [ns   (-> env :ns)
         qsym (symbol (name ns) (name sym))]
     (-> env
