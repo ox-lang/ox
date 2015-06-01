@@ -1,42 +1,75 @@
-(ns ox.lang.environment.types)
+(ns ox.lang.environment.types
+  (:require [clj-tuple :refer [vector]])
+  (:refer-clojure :exclude [vector]))
 
-(defmacro def-tag-check [name tag & preds]
+(defmacro def-tag-check [name tag & tests]
   `(defn ~name [~'x]
      (and (vector? ~'x)
           (= ~tag (first ~'x))
-          ~@(for [p preds] (list p 'x)))))
+          (let [~'% ~'x]
+            ~@(or tests '(true))))))
+
+;; Types to do with bindings in environments
+
+(def-tag-check alias? :binding/alias
+  (let [v (second %)]
+    (and (symbol? v)
+         (namespace v))))
+
+(defn ->alias
+  [x]
+  {:pre  [(symbol? x)]
+   :post [(alias? %)]}
+  (vector :binding/alias x))
+
+(def-tag-check value? :binding/value)
+
+(defn ->value
+  [x]
+  {:post [(value? %)]}
+  (vector :binding/value x))
+
+(def-tag-check special? :binding/special
+  (-> % second symbol?))
+
+(defn ->special
+  [x]
+  {:post [(special? %)]}
+  (vector :binding/special x))
+
 
 ;; Types to do with environments
 
 
 (def base-env
-  [:env/base
-   {:bindings
-    {'def*    [:binding/special 'def*]
-     'do*     [:binding/special 'do*]
-     'fn*     [:binding/special 'fn*]
-     'lambda* [:binding/special 'lambda*]
-     'if*     [:binding/special 'if*]
-     'let*    [:binding/special 'let*]
-     'list*   [:binding/special 'list*]
-     'letrc*  [:binding/special 'letrc*]
-     'quote   [:binding/special 'quote]
-     'ns*     [:binding/special 'ns*]
-     'ns      [:binding/alias   'ox.lang.bootstrap/ns]}}])
+  (->> {:bindings
+        {'def*    (->special 'def*)
+         'do*     (->special 'do*)
+         'fn*     (->special 'fn*)
+         'lambda* (->special 'lambda*)
+         'if*     (->special 'if*)
+         'let*    (->special 'let*)
+         'list*   (->special 'list*)
+         'letrc*  (->special 'letrc*)
+         'quote   (->special 'quote)
+         'ns*     (->special 'ns*)
+         'ns      (->alias 'ox.lang.bootstrap/ns)}}
+       (vector :env/base)))
 
 (def-tag-check base? :env/base
-  (comp map? second)
-  (comp map? :bindings second))
+  (-> % second map?)
+  (-> % second :bindings  map?))
 
 ;;;; ns type
 ;;;;;;;;;;;;;;;;;;;;
 
 (def-tag-check ns? :env/ns
-  (comp map? second)
-  (comp :ns  second)
-  (comp :loaded-namespaces second)
-  (comp :imports second)
-  (comp :bindings second))
+  (let [v (second %)]
+    (and (map? v)
+         (:ns v)
+         (:loaded-namespaces v)
+         (:imports v)
+         (:bindings v))))
 
 (defn ->ns
   "λ [ns] → Env
@@ -66,12 +99,14 @@
 (declare local? env? dynamic?)
 
 (def-tag-check local? :env/local
-  (comp env?  :parent second)
-  (comp map? :bindings second)
-  #(every? symbol?
-           (keys (:bindings (second %))))
-  #(every? (comp not namespace)
-           (keys (:bindings (second %)))))
+  (let [v        (second %)
+        bindings (:bindings v)]
+    (and (-> v :parent env?)
+         (-> v :bindings map?)
+         (every? symbol?
+                 (keys bindings))
+         (every? (comp not namespace)
+                 (keys bindings)))))
 
 (defn ->local
   "λ [Env] → Env
@@ -95,12 +130,12 @@
      :bindings bindings}]))
 
 (def-tag-check dynamic? :env/dynamic
-  (comp env?  :parent second)
-  (comp map? :bindings second)
-  #(every? symbol?
-           (keys (:bindings (second %))))
-  #(every? namespace
-           (keys (:bindings (second %)))))
+  (let [v                         (second %)
+        {:keys [parent bindings]} v]
+    (and (env? parent)
+         (map? bindings)
+         (every? symbol? (keys bindings))
+         (every? namespace (keys bindings)))))
 
 (defn ->dynamic
   "λ [Env] → Env
@@ -122,26 +157,3 @@
 ;;;;;;;;;;;;;;;;;;;;
 
 (def env? (some-fn ns? local? base? dynamic?))
-
-;; Types to do with bindings in environments
-
-(defn alias?
-  "FIXME: quick an dirty predicate"
-  [x]
-  (and (vector? x)
-       (#{:binding/alias} (first x))))
-
-(defn ->alias
-  [x]
-  {:pre [(symbol? x)]}
-  [:binding/alias x])
-
-(defn value?
-  "FIXME: quick and dirty predicate"
-  [x]
-  (and (vector? x)
-       (#{:binding/value} (first x))))
-
-(defn ->value
-  [x]
-  [:binding/value x])
