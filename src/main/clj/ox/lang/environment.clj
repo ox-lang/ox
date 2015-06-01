@@ -74,7 +74,7 @@
   metadata, fails if the symbol is not bound in the given
   environment."
   [env symbol]
-  (meta (get-value env symbol)))
+  (meta (get-entry env symbol)))
 
 ;; FIXME: probably shouldn't use real Clojure metadata here. Adding a metadata
 ;; part to bindings and defs would probably go over better inthe long run.
