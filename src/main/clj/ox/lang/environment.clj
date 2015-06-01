@@ -64,16 +64,6 @@
       (recur env (second entry))
       (second entry))))
 
-(defn special?
-  "FIXME: quick and dirty predicate"
-  [env symbol]
-  (let [x (->> symbol
-               (resolve env)   ;; must return a valid new symbol or fail
-               (get-entry env))]
-    (boolean
-     (and (vector? x)
-          (#{:binding/special} (first x))))))
-
 
 
 (defn get-meta
