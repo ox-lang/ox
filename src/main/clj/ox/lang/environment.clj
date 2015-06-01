@@ -1,10 +1,11 @@
 (ns ox.lang.environment
   (:require [clojure.java.io :as io]
-            [ox.lang.environment.types :as t])
-  (:refer-clojure :exclude [resolve]))
+            [ox.lang.environment.types :as t]
+            [clj-tuple :refer [vector]])
+  (:refer-clojure :exclude [resolve vector]))
 
 (defn inter
-  "λ [Env, Symbol, Form] → Env
+  "λ [Env, Symbol, Value] → Env
 
   Returns a new environment where the specified symbol is bound to the given
   form value. Used for installing defs into an environment."
@@ -112,24 +113,52 @@
 
 
 (defn push-locals
-  "λ [Env, {[Symbol Form]}] → Env
+  "λ [Env, {[Symbol Value]}] → Env
 
   Pushes local bindings, returning a new environment with the pushed
   local bindings."
   [env bindings]
-  [:env/locals {:parent env
-                :bindings
-                (->> (for [[k v] bindings]
-                       [k [:binding/value v]])
-                     (into {}))}])
+  (->> (for [[k v] bindings]
+         (vector k (t/->value v)))
+       (into {})
+       (t/->local env)))
 
-(defn pop-locals
+(defn dynamic?
+  "λ [Env, Symbol] → Bool
+
+  Indicates whether a given symbol's binding is dynamic (and thus rebindable)
+  rather than being static."
+  [env symbol]
+  (->> symbol
+       (resolve env)
+       (get-meta env)
+       :dynamic))
+
+(defn push-dynamics
+  "λ [Env, {[Symbol Value]}] → Env
+
+  Pushes dynamic bindings of fully qualified dynamic symbols."
+  [env bindings]
+  {:pre [(t/env? env)
+         (every? symbol?
+                 (keys bindings))
+         (every? namespace
+                 (keys bindings))
+         (every? (partial dynamic? env)
+                 (keys bindings))]}
+  (->> (for [[k v] bindings]
+         (vector k (t/->value v)))
+       (t/->dynamic env)))
+
+(defn pop-bindings
   "λ [Env] → Env
 
-  Pops the last set of pushed local bindings, returning the parent environment."
+  Pops the last set of pushed bindings whether local, dynamic or otherwise,
+  returning the parent environment."
   [env]
-  {:pre [(vector? env)
-         (= :env/local (first env))]}
+  {:pre [(t/env? env)
+         (or (t/local? env)
+             (t/dynamic? env))]}
   (-> env second :parent))
 
 
