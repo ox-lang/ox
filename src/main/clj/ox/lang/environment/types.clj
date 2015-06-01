@@ -146,7 +146,9 @@
   ([env]
    (->dynamic env {}))
   ([env bindings]
-   {:pre [(every? symbol? (keys bindings))
+   {:pre [(env? env)
+          (map? bindings)
+          (every? symbol? (keys bindings))
           (every? namespace (keys bindings))]
     :post [(dynamic? %)]}
    [:env/dynamic
