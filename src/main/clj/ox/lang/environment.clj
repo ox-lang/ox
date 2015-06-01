@@ -94,11 +94,11 @@
   Returns an updated environment where the metadata of the given
   symbol has been altered to equal the argument map."
   [env symbol updater]
-  {:pre [(do (get-entry env symbol) true)]}
+  {:pre [(get-entry env symbol)]}
   (let [s        (resolve env symbol)
         bindings (-> env second (get :bindings))]
     (if-let [[k v] (find bindings s)]
-      (update-in env [1 :bindings s] #(with-meta v (updater (meta v))))
+      (update-in env [1 :bindings k] #(with-meta v (updater (meta v))))
       (assoc-in  env [1 :parent]      (alter-meta (-> env second :parent)
                                                   symbol updater)))))
 
