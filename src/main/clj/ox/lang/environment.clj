@@ -79,7 +79,7 @@
 ;; FIXME: probably shouldn't use real Clojure metadata here. Adding a metadata
 ;; part to bindings and defs would probably go over better inthe long run.
 (defn alter-meta
-  "λ [Env, Symbol, Map] → Env
+  "λ [Env, Symbol, λ[Map] → Map] → Env
 
   Returns an updated environment where the metadata of the given
   symbol has been altered to equal the argument map."
@@ -88,7 +88,7 @@
   (let [s        (resolve env symbol)
         bindings (-> env second (get :bindings))]
     (if-let [[k v] (find bindings s)]
-      (update-in env [1 :bindings k] #(with-meta v (updater (meta v))))
+      (update-in env [1 :bindings k] #(with-meta % (updater (meta %))))
       (assoc-in  env [1 :parent]      (alter-meta (-> env second :parent)
                                                   symbol updater)))))
 
