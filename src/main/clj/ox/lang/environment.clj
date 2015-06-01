@@ -137,7 +137,10 @@
          (every? (partial dynamic? env)
                  (keys bindings))]}
   (->> (for [[k v] bindings]
-         (vector k (t/->value v)))
+         (vector k (with-meta (t/->value v)
+                     (merge (get-meta env k)
+                            (meta v)))))
+       (into {})
        (t/->dynamic env)))
 
 (defn pop-bindings
