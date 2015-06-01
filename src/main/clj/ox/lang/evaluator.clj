@@ -41,7 +41,7 @@
   [eval env tree]
   (if (and (list? tree)
            (symbol? (first tree))
-           (true? (:macro (env/get-meta (first tree)))))
+           (true? (env/macro? env (first tree))))
     (eval env tree)
     tree))
 
