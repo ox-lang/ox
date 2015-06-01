@@ -52,9 +52,12 @@
                        (env/get-value env %)) visible-globals)))))))
 
 (deftest push-dynamics-test
-  (let [env (-> (env.t/->ns 'test)
-                (env/inter '*foo* 1)
-                (env/alter-meta 'test/*foo* #(assoc % :dynamic true)))]
+  (let [env  (-> (env.t/->ns 'test)
+                 (env/inter '*foo* 1)
+                 (env/alter-meta 'test/*foo* #(assoc % :dynamic true)))
+        env1 (env/push-dynamics env {'test/*foo* 2})
+        env2 (env/push-dynamics env1 {'test/*foo* 3})]
     (is (env/dynamic? env 'test/*foo*))
     (is (= 1 (env/get-value env 'test/*foo*)))
-    (is (= 2 (env/get-value (env/push-dynamics env {'test/*foo* 2}))))))
+    (is (= 2 (env/get-value env1 'test/*foo*)))
+    (is (= 3 (env/get-value env2 'test/*foo*)))))
