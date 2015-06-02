@@ -1,6 +1,7 @@
 (ns ox.lang.evaluator
   (:refer-clojure :exclude [eval apply macroexpand-1 macroexpand compile])
   (:require [clojure.java.io :as io]
+            [clojure.core.match :refer [match]]
             [ox.lang.environment :as env]
             [ox.lang.parser :as parser]))
 
@@ -63,24 +64,45 @@
          (fix (partial macroexpand-1 eval env)))
     tree))
 
-(def mapl (comp list* map))
+(defn apply
+  "λ [λ[Env, Form] → [Env, Form], Env, f & args] → [Env, Form]
 
-(defn -analyze-form
+  Applies f in the given environment with args, as computed interpreted
+  assembled or what have you by the provided eval function.
+
+  Returns a new [env value] pair."
+  [eval env f & args]
+  )
+
+(defn interpreting-eval
   [env form]
+  (let [*e (partial interpreting-eval env)
+        *a (partial apply env)])
   (cond (list? form)
-        ,,true
-  
+        ,,(match [form]
+            ;; FIXME: is there a better way to handle special forms
+            ;; than hardcoding them here? multimethod maybe? Idunno.
+            
+            ;; FIXME: case of def*
+            ;; FIXME: case of do*
+            ;; FIXME: case of fn*
+            ;; FIXME: case of lambda*
+            ;; FIXME: case of if*
+            ;; FIXME: case of let*
+            ;; FIXME: case of list*
+            ;; FIXME: case of letrc*
+            ;; FIXME: case of quote
+            ;; FIXME: case of ns*
+
+            :else
+            ,,[env nil])
+
         (symbol? form)
-        ,,true
+        ,,[env (env/get-value env form)]
 
-        true
-        ,,true))
-
-(defn analyze-form
-  "Walks the given form qualifying all used globals (defs) and renaming locals
-  to an explicit SSA form."
-  [env form]
-  (trampoline (partial -analyze-form env) form))
+        :else
+        ,,[env form])
+  )
 
 (defn eval-form
   "Analyzes, macroexpands and interprets a single form in the given
