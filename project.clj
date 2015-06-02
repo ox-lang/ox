@@ -17,6 +17,8 @@
   :test-paths        ["src/test/clj"]
 
   :dependencies [[org.clojure/clojure "1.6.0"]
+                 [org.clojure/core.match "0.3.0-alpha4"
+                  :exclusions [org.clojure/clojure]]
                  [org.clojure/test.check "0.5.9"
                   :exclusions [org.clojure/clojure]]
                  [org.clojure/core.match "0.3.0-alpha3"
