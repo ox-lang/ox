@@ -76,6 +76,7 @@
 (defn apply
   [eval env f args])
 
+;; FIXME: trampoline? How did I do that before...
 (defn interpreting-eval
   [env form]
   (let [e (partial interpreting-eval env)]
