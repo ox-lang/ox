@@ -1,6 +1,7 @@
 (ns ox.lang.evaluator
   (:refer-clojure :exclude [eval apply macroexpand-1 macroexpand compile])
   (:require [clojure.java.io :as io]
+            [clojure.core.match :refer [match]]
             [ox.lang.environment :as env]
             [ox.lang.parser :as parser]))
 
@@ -63,24 +64,86 @@
          (fix (partial macroexpand-1 eval env)))
     tree))
 
-(def mapl (comp list* map))
+(defn update-vals
+  [m f & args]
+  (->> (for [[k v] m]
+         [k (apply f v args)])
+       (into {})))
 
-(defn -analyze-form
+(defn analyze
+  [eval env form])
+
+(defn apply
+  [eval env f args])
+
+(defn interpreting-eval
   [env form]
-  (cond (list? form)
-        ,,true
-  
-        (symbol? form)
-        ,,true
+  (let [e (partial interpreting-eval env)]
+    (cond (symbol? form)
+          ,,[env (env/get-value env form)]
 
-        true
-        ,,true))
+          (list? form)
+          ,,(match [form]
+              [(['def* name meta value] :seq)]
+              ,,[(env/inter env name meta value) nil]
 
-(defn analyze-form
-  "Walks the given form qualifying all used globals (defs) and renaming locals
-  to an explicit SSA form."
-  [env form]
-  (trampoline (partial -analyze-form env) form))
+              ;; FIXME: how are fn* and lambda* distinct?
+              ;; FIXME: compile here?
+              ;; FIXME: type infer here?
+              ;; FIXME: SSA rewrite here?
+              [([(:or 'fn* 'lambda*) & forms] :seq)]
+              ,,[env form]
+
+              ;; Note that quote only takes one trailing form!
+              [(['quote x] :seq)]
+              ,,[env x]
+
+              [(['do* & forms] :seq)]
+              ,,(loop [env         env
+                       [f & forms] forms
+                       *1          nil]
+                  (if (not (empty? forms))
+                    (let [[e' v] (interpreting-eval env f)]
+                      (recur e' forms v))
+                    [env *1]))
+
+              [(['if* e l r] :seq)]
+              ,,(let [[env' x] (interpreting-eval env e)]
+                  (if x
+                    (interpreting-eval env' l)
+                    (interpreting-eval env' r)))
+
+              ;; Note that let* only takes one trailing form!
+              ;;
+              ;; Note that bindings are an all at once deal! the macro let will
+              ;; have to deal with doing data analysis. Maybe. I dunno yet.
+              ;;
+              ;; Note that we
+              ;; return (pop-bindings (first (eval (push-bindings)))). This
+              ;; means that nested inter and soforth will work just
+              ;; dandy. Whether this is a feature or not is a subject for
+              ;; debate. Def under def, or defs in fns are a problem.
+              [(['let* bindings form] :seq)]
+              ,,(let [[e' r] (interpreting-eval (env/push-locals env (update-vals e bindings)) form)]
+                  [(env/pop-bindings e') r])
+
+              ;; FIXME: unsupported! unneeded?
+              [(['letrc* bindings form] :seq)]
+              ,,[env nil]
+
+              ;; FIXME: unsupported! What does it even do?
+              [(['ns* name directives] :seq)]
+              ,,[env nil]
+
+              :else
+              ,,(apply interpreting-eval env
+                       (e (first form))
+                       (map e (rest form))))
+
+          ;; FIXME: Clojure has a whole bunch of stuff which behaves like a
+          ;; function, keep or chuck? this imp'l chucks.
+          :else
+          ,,[env form])))
 
 (defn eval-form
   "Analyzes, macroexpands and interprets a single form in the given
