@@ -66,53 +66,81 @@
   [eval env f args]
   nil)
 
+(defn eval-all
+  [eval env forms]
+  nil)
+
 ;; FIXME: trampoline? How did I do that before...
+;;
+;; FIXME: do I need different interpreters for pure and impure code?
+;; probably... I don't want say a def in a lambda context to actually work.
 (defn interpreting-eval
-  [env form]
-  (let [e (partial interpreting-eval env)]
-    (cond (symbol? form)
-          ,,(vector env (env/get-value env form))
+  [vm env form]
+  (cond (symbol? form)
+        ,,(vector env (env/get-value env form))
 
-          (list? form)
-          ,,(case (first form)
-              (def*)
-              ,,(let [[_ name meta val] form]
-                  (vector (env/inter env name meta val) nil))
+        (list? form)
+        ,,(case (first form)
+            (def*)
+            ,,(let [[_ name meta val] form]
+                (vector (env/inter env name meta val) nil))
 
-              (do*)
-              ,,nil
+            (do)
+            ,,(loop [env         env
+                     *1          nil
+                     [f & forms] (rest form)]
+                (let [[e' *1 :as res] (interpreting-eval env f)]
+                  (if-not (empty? forms)
+                    (recur e' *1 forms)
+                    res)))
 
-              (fn*)
-              ,,nil
+            ;; FIXME: for now, lambda* and fn* do the same thing which is just
+            ;; to return the function term unmodified. The interpreting apply
+            ;; will do the leg work.
+            ;;
+            ;; FIXME: lambda* is supposed to be a "pure" context in which you
+            ;; can't do IO or defs or whatever. That needs to be enforced.
+            (fn* lambda*)
+            ,,(vector env form)
 
-              (lambda*)
-              ,,nil
+            (if*)
+            ,,(let [_                  (assert (= 4 (count form)) "if* requires test, rhs and hls!")
+                    [_if expr lhs rhs] form
+                    [e' *1]            (interpreting-eval env expr)]
+                (interpreting-eval e' (if *1 lhs rhs)))
 
-              (if*)
-              ,,nil
+            ;; FIXME: how even do I
+            (let*)
+            ,,nil
 
-              (let*)
-              ,,nil
+            ;; FIXME: how even do I
+            (letrc*)
+            ,,nil
 
-              (letrc*)
-              ,,nil
+            ;; FIXME: all at once or one at a time? The naive implementation
+            ;; is all at once...
+            (list*)
+            ,,nil
 
-              (list*)
-              ,,nil
+            (quote)
+            ,,(do (assert (= 2 (count form)) "quote only quotes one form!")
+                  (vector env (second form)))
 
-              (quote)
-              ,,nil
+            (ns*)
+            ,,nil
 
-              (ns*)
-              ,,nil
-              
-              :else
-              ,,(vector env nil))
 
-          ;; FIXME: Clojure has a whole bunch of stuff which behaves like a
-          ;; function, keep or chuck? this imp'l chucks.
-          :else
-          ,,[env form])))
+            ;; General case of invocation.
+            ;; `(apply (eval (first f)) (map eval (rest f)))`
+            ;; or whatever that translates to given all the environment stuff that I have to deal with here.
+            :else
+            ,,(let []
+                (apply vm interpreting-eval)))
+
+        ;; FIXME: Clojure has a whole bunch of stuff which behaves like a
+        ;; function, keep or chuck? this imp'l chucks.
+        :else
+        ,,(vector env form)))
 
 (defn eval-form
   "Analyzes, macroexpands and interprets a single form in the given
