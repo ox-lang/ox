@@ -1,5 +1,5 @@
 (ns ox.lang.util-test
-  (:require [test.clj.ox.lang.util :refer :all]
+  (:require [ox.lang.util :refer :all]
             [clojure.test :refer :all]))
 
 (deftest fix-test
