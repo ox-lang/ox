@@ -1,11 +1,12 @@
 (ns ox.lang.evaluator
-  (:refer-clojure :exclude [eval apply macroexpand-1 macroexpand compile])
-  (:require [clojure.java.io :as io]
+  (:refer-clojure :exclude [eval apply macroexpand-1 macroexpand compile vector])
+  (:require [clj-tuple :refer [vector]]
+            [clojure.java.io :as io]
             [clojure.core.match :refer [match]]
             [ox.lang.environment :as env]
-            [ox.lang.parser :as parser]))
-
-(declare eval)
+            [ox.lang
+             [parser :as parser]
+             [util :refer :all]]))
 
 (defn read-eval-1
   "Implementation detail of read-eval. This form computes the read-eval of a
@@ -46,13 +47,6 @@
     (eval env tree)
     tree))
 
-(defn fix [f x]
-  (loop [x x]
-    (let [x' (f x)]
-      (if-not (= x x')
-        (recur x')
-        x))))
-
 (defn macroexpand
   "Walks a previously read-eval'd tree, expanding macros occuring in the tree
   via macroexpand-1. Children are expanded first until they reach a fixed point,
@@ -74,35 +68,81 @@
   [eval env f & args]
   )
 
+(defn eval-all
+  [eval env forms]
+  nil)
+
+;; FIXME: trampoline? How did I do that before...
+;;
+;; FIXME: do I need different interpreters for pure and impure code?
+;; probably... I don't want say a def in a lambda context to actually work.
 (defn interpreting-eval
-  [env form]
-  (let [*e (partial interpreting-eval env)
-        *a (partial apply env)])
-  (cond (list? form)
-        ,,(match [form]
-            ;; FIXME: is there a better way to handle special forms
-            ;; than hardcoding them here? multimethod maybe? Idunno.
-            
-            ;; FIXME: case of def*
-            ;; FIXME: case of do*
-            ;; FIXME: case of fn*
-            ;; FIXME: case of lambda*
-            ;; FIXME: case of if*
-            ;; FIXME: case of let*
-            ;; FIXME: case of list*
-            ;; FIXME: case of letrc*
-            ;; FIXME: case of quote
-            ;; FIXME: case of ns*
+  [vm env form]
+  (cond (symbol? form)
+        ,,(vector env (env/get-value env form))
 
+        (list? form)
+        ,,(case (first form)
+            (def*)
+            ,,(let [[_ name meta val] form]
+                (vector (env/inter env name meta val) nil))
+
+            (do)
+            ,,(loop [env         env
+                     *1          nil
+                     [f & forms] (rest form)]
+                (let [[e' *1 :as res] (interpreting-eval env f)]
+                  (if-not (empty? forms)
+                    (recur e' *1 forms)
+                    res)))
+
+            ;; FIXME: for now, lambda* and fn* do the same thing which is just
+            ;; to return the function term unmodified. The interpreting apply
+            ;; will do the leg work.
+            ;;
+            ;; FIXME: lambda* is supposed to be a "pure" context in which you
+            ;; can't do IO or defs or whatever. That needs to be enforced.
+            (fn* lambda*)
+            ,,(vector env form)
+
+            (if*)
+            ,,(let [_                  (assert (= 4 (count form)) "if* requires test, rhs and hls!")
+                    [_if expr lhs rhs] form
+                    [e' *1]            (interpreting-eval env expr)]
+                (interpreting-eval e' (if *1 lhs rhs)))
+
+            ;; FIXME: how even do I
+            (let*)
+            ,,nil
+
+            ;; FIXME: how even do I
+            (letrc*)
+            ,,nil
+
+            ;; FIXME: all at once or one at a time? The naive implementation
+            ;; is all at once...
+            (list*)
+            ,,nil
+
+            (quote)
+            ,,(do (assert (= 2 (count form)) "quote only quotes one form!")
+                  (vector env (second form)))
+
+            (ns*)
+            ,,nil
+
+
+            ;; General case of invocation.
+            ;; `(apply (eval (first f)) (map eval (rest f)))`
+            ;; or whatever that translates to given all the environment stuff that I have to deal with here.
             :else
-            ,,[env nil])
+            ,,(let []
+                (apply vm interpreting-eval)))
 
-        (symbol? form)
-        ,,[env (env/get-value env form)]
-
+        ;; FIXME: Clojure has a whole bunch of stuff which behaves like a
+        ;; function, keep or chuck? this imp'l chucks.
         :else
-        ,,[env form])
-  )
+        ,,(vector env form)))
 
 (defn eval-form
   "Analyzes, macroexpands and interprets a single form in the given

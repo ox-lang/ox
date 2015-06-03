@@ -13,6 +13,9 @@
    (inter env k v))
   
   ([env sym value]
+   (inter env sym nil value))
+
+  ([env sym meta value]
    {:pre [(t/ns? env)
           (symbol? sym)]}
    (let [ns   (-> env second :ns)
@@ -20,7 +23,7 @@
          qsym (symbol (name ns) (name sym))]
      (-> env second
          (assoc-in [:bindings sym]  (t/->alias qsym))
-         (assoc-in [:bindings qsym] (t/->value value))
+         (assoc-in [:bindings qsym] (with-meta (t/->value value) meta))
          (#(vector (first env) %))))))
 
 (defn get-entry
