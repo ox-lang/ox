@@ -1,7 +1,11 @@
 (ns ox.lang.util)
 
-(defn fix
-  [f & xs])
+(defn fix [f x]
+  (loop [x x]
+    (let [x' (f x)]
+      (if-not (= x x')
+        (recur x')
+        x))))
 
 (defn update-vals
   [m f & args]
