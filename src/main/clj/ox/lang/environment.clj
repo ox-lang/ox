@@ -11,7 +11,7 @@
   form value. Used for installing defs into an environment."
   ([env [k v]]
    (inter env k v))
-  
+
   ([env sym value]
    (inter env sym nil value))
 
@@ -38,7 +38,7 @@
             second
             (get :bindings)
             (get symbol))
-        
+
         (get-entry (:parent (second env))
                    symbol)
 
