@@ -89,7 +89,7 @@
   Walks the binding tree to find the namespace with this name (if any) and if
   found returns that namespace. Otherwise throws an exception."
   [env name]
-  (if-let [glob (get-global env)]
+  (if-let [glob (get-global-env env)]
     (let [nss (-> glob second :namespaces)]
       (if-let [ns (get nss name)]
         ns
