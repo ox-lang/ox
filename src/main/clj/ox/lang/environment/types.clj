@@ -59,6 +59,28 @@
   (-> % second map?)
   (-> % second :bindings  map?))
 
+(declare ns?)
+
+;;;; global type
+;;;;;;;;;;;;;;;;;;;;
+(def-tag-check global? :env/global
+  (let [{:keys [name namespaces parent] :as v} (second %)]
+    (and (map? v)
+         (symbol? name)
+         (re-find #"(\w+\.?)+"
+                  (clojure.core/name name))
+         (every? ns? namespaces)
+         (base? parent))))
+
+(defn ->global [name nss]
+  {:pre  [(symbol? name)
+          (every? ns? nss)]
+   :post [(global? %)]}
+  (->> {:name       name
+        :namespaces nss
+        :parent     base-env}
+       (vector :env/global)))
+
 ;;;; ns type
 ;;;;;;;;;;;;;;;;;;;;
 
