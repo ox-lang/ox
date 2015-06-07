@@ -37,7 +37,6 @@
   {:post [(special? %)]}
   (vector :binding/special x))
 
-
 ;; Types to do with environments
 
 
