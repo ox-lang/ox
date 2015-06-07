@@ -101,6 +101,24 @@
         Exception.
         throw)))
 
+(defn rebase
+  "λ [Env, Env] → Env
+
+  Function from an 'old' and a 'new' environment which rebases the 'old'
+  environment atop the 'new' environment. The old environment may be of any
+  type, the new environment must be a global environment. Produces a new
+  environment with all the same 'local' structure as the 'old' environment and
+  the 'global' structure of the 'new' environment.
+
+  This is useful for code loading because it allows for the
+  expression (logically) of handing off the 'current' continuation to have new
+  code loaded in it, and then continue with a 'new' continuation which has all
+  the new state from the loaded code."
+  [old new]
+  (if (t/ns? old)
+    (assoc-in old [1 :parent] new)
+    (update-in old [1 :parent] rebase new)))
+
 
 
 (defn get-meta
