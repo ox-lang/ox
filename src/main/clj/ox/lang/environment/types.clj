@@ -93,6 +93,7 @@
          (:imports v)
          (:bindings v))))
 
+;; FIXME: this needs to root on a global env now. No longer standalone.
 (defn ->ns
   "λ [ns] → Env
 
