@@ -69,6 +69,38 @@
       (recur env (second entry))
       (second entry))))
 
+(defn get-global-env
+  "λ [Env] → Global
+
+  Walks the parent environment links to find the global environment, then
+  returns that. If the argument cannot be walked to give a global environment,
+  returns nil.
+
+  FIXME: nil or asertion error? the API is inconsistent here."
+  [env]
+  {:pre [(not (t/base? env))]}
+  (if (t/global? env)
+    env
+    (recur (-> env second :parent))))
+
+(defn get-ns
+  "λ [Env, Symbol] → Ns
+
+  Walks the binding tree to find the namespace with this name (if any) and if
+  found returns that namespace. Otherwise throws an exception."
+  [env name]
+  (if-let [glob (get-global env)]
+    (let [nss (-> glob second :namespaces)]
+      (if-let [ns (get nss name)]
+        ns
+        (-> "Could not locate the namespace '%s' in the global environment!"
+            (format (str name))
+            Exception.
+            throw)))
+    (-> "Could not locate the global environment!"
+        Exception.
+        throw)))
+
 
 
 (defn get-meta
