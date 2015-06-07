@@ -26,49 +26,6 @@
          (assoc-in [:bindings qsym] (with-meta (t/->value value) meta))
          (#(vector (first env) %))))))
 
-(defn get-entry
-  "λ [Env, Symbol] → Binding
-
-  Walks the environment stack, returning the environment entry (not the value)
-  packaging the bound value or else throwing an exception."
-  [env symbol]
-  {:pre [(symbol? symbol)]}
-  (when (and env symbol)
-    (if-not (t/global? env)
-      (or (-> env
-              second
-              (get :bindings)
-              (get symbol))
-
-          (get-entry (-> env second :parent) symbol)
-
-          (-> (str symbol " is not bound in any enclosing scope!")
-              (Exception.)
-              (throw)))
-
-      (recur (-> env second :parent) symbol))))
-
-(defn resolve
-  "λ [Env, Symbol] → Maybe[Symbol]
-
-  Resolves the given symbol in the current environment."
-  [env sym]
-  (let [entry (get-entry env sym)]
-    (if (t/alias? entry)
-      (recur env (second entry))
-      sym)))
-
-(defn get-value
-  "λ [Env, Symbol] → Value
-
-  Returns the value of the given symbol in the specified
-  environment."
-  [env symbol]
-  (let [entry (get-entry env symbol)]
-    (if (t/alias? entry)
-      (recur env (second entry))
-      (second entry))))
-
 (defn get-global-env
   "λ [Env] → Global
 
@@ -118,6 +75,60 @@
   (if (t/ns? old)
     (assoc-in old [1 :parent] new)
     (update-in old [1 :parent] rebase new)))
+
+(defn get-entry
+  "λ [Env, Symbol] → Binding
+
+  Walks the environment stack, returning the environment entry (not the value)
+  packaging the bound value or else throwing an exception."
+  [env symbol]
+  {:pre [(symbol? symbol)]}
+  (if-let [ns (namespace symbol)]
+    ;; It is a qualified symbol
+    (let [ns (get-ns env ns)]
+      ;; get into the target namespace and recur with an unqualified symbol
+      (recur ns (name symbol)))
+
+    ;; It is not a qualified symbol
+    (when (and env symbol)
+      (if-not (t/global? env)
+        (or
+         ;; Try to get a binding out of the current context
+         (-> env
+             second
+             (get :bindings)
+             (get symbol))
+
+         ;; Try to get a binding out of the parent context
+         (get-entry (-> env second :parent) symbol)
+
+         ;; All else failing die
+         (-> (str symbol " is not bound in any enclosing scope!")
+             (Exception.)
+             (throw)))
+
+        (recur (-> env second :parent) symbol)))))
+
+(defn resolve
+  "λ [Env, Symbol] → Maybe[Symbol]
+
+  Resolves the given symbol in the current environment."
+  [env sym]
+  (let [entry (get-entry env sym)]
+    (if (t/alias? entry)
+      (recur env (second entry))
+      sym)))
+
+(defn get-value
+  "λ [Env, Symbol] → Value
+
+  Returns the value of the given symbol in the specified
+  environment."
+  [env symbol]
+  (let [entry (get-entry env symbol)]
+    (if (t/alias? entry)
+      (recur env (second entry))
+      (second entry))))
 
 
 
