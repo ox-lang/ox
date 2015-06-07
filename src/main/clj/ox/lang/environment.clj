@@ -34,17 +34,19 @@
   [env symbol]
   {:pre [(symbol? symbol)]}
   (when (and env symbol)
-    (or (-> env
-            second
-            (get :bindings)
-            (get symbol))
+    (if-not (t/global? env)
+      (or (-> env
+              second
+              (get :bindings)
+              (get symbol))
 
-        (get-entry (:parent (second env))
-                   symbol)
+          (get-entry (-> env second :parent) symbol)
 
-        (-> (str symbol " is not bound in any enclosing scope!")
-            (Exception.)
-            (throw)))))
+          (-> (str symbol " is not bound in any enclosing scope!")
+              (Exception.)
+              (throw)))
+
+      (recur (-> env second :parent) symbol))))
 
 (defn resolve
   "λ [Env, Symbol] → Maybe[Symbol]
