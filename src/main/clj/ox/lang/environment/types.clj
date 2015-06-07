@@ -63,6 +63,7 @@
 
 ;;;; global type
 ;;;;;;;;;;;;;;;;;;;;
+
 (def-tag-check global? :env/global
   (let [{:keys [name namespaces parent] :as v} (second %)]
     (and (map? v)
