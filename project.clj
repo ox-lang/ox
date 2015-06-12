@@ -23,7 +23,7 @@
                   :exclusions [org.clojure/clojure]]
                  [org.clojure/core.match "0.3.0-alpha3"
                   :exclusions [org.clojure/clojure]]
-                 [me.arrdem/guten-tag "0.1.0"
+                 [me.arrdem/guten-tag "0.1.1"
                   :exclusions [org.clojure/clojure]]
                  [clj-tuple "0.2.1"
                   :exclusions [org.clojure/clojure]]
