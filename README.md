@@ -1,8 +1,6 @@
 # 牛: Ox, the language
 
 [![Build Status](https://travis-ci.org/ox-lang/ox.svg?branch=master)](https://travis-ci.org/ox-lang/ox)
-[![Coverage Status](https://coveralls.io/repos/ox-lang/ox/badge.png?branch=master)](https://coveralls.io/r/ox-lang/ox?branch=master)
-
 
 Ox is the child of my efforts on [Oxcart](https://github.com/oxlang/oxcart), in that Ox is an experiment aimed at building a simpler, static lisp in a spirit like that of Clojure.
 See [my blog posts](http://arrdem.com/2014/09/10/ox:_a_preface/) for some real motivational information.
