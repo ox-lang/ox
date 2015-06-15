@@ -14,7 +14,7 @@
           env kvs))
 
 (defspec inter-resolve-tests
-  (let [e0 (env.t/->ns 'test)]
+  (let [e0 env.t/empty-user]
     (prop/for-all [ks (gen/not-empty (gen/list gen/symbol))]
       (let [kvs          (map vector ks (range))
             expected-env (into {} kvs)
@@ -24,7 +24,7 @@
                          (env/get-value env %)) ks))))))
 
 (defspec push-locals-tests
-  (let [e0 (env.t/->ns 'test)]
+  (let [e0 env.t/empty-user]
     (prop/for-all [cks (gen/not-empty (gen/list gen/symbol))
                    pks (gen/not-empty (gen/list gen/symbol))]
       (let [pkvs         (map vector pks (range))
@@ -52,7 +52,7 @@
                        (env/get-value env %)) visible-globals)))))))
 
 (deftest push-dynamics-test
-  (let [env  (-> (env.t/->ns 'test)
+  (let [env  (-> env.t/empty-user
                  (env/inter '*foo* 1)
                  (env/alter-meta 'test/*foo* #(assoc % :dynamic true)))
         env1 (env/push-dynamics env {'test/*foo* 2})

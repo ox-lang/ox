@@ -18,13 +18,18 @@
   ([env sym meta value]
    {:pre [(t/ns? env)
           (symbol? sym)]}
-   (let [ns   (-> env second :ns)
+   (let [ns   (:name env)
          _    (assert (symbol? ns))
          qsym (symbol (name ns) (name sym))]
-     (-> env second
+     (-> env
          (assoc-in [:bindings sym]  (t/->alias qsym))
-         (assoc-in [:bindings qsym] (with-meta (t/->value value) meta))
-         (#(vector (first env) %))))))
+         (assoc-in [:bindings qsym] (t/->value meta value))))))
+
+(defn get-parent
+  [x]
+  {:pre  [(t/env? x)]
+   :post [(t/env? %)]}
+  (:parent x))
 
 (defn get-global-env
   "λ [Env] → Global
@@ -38,7 +43,7 @@
   {:pre [(not (t/base? env))]}
   (if (t/global? env)
     env
-    (recur (-> env second :parent))))
+    (recur (get-parent env))))
 
 (defn get-ns
   "λ [Env, Symbol] → Ns
@@ -47,7 +52,7 @@
   found returns that namespace. Otherwise throws an exception."
   [env name]
   (if-let [glob (get-global-env env)]
-    (let [nss (-> glob second :namespaces)]
+    (let [nss (-> glob :namespaces)]
       (if-let [ns (get nss name)]
         ns
         (-> "Could not locate the namespace '%s' in the global environment!"
@@ -73,7 +78,7 @@
   the new state from the loaded code."
   [old new]
   (if (t/ns? old)
-    (assoc-in old [1 :parent] new)
+    (assoc-in  old [1 :parent] new)
     (update-in old [1 :parent] rebase new)))
 
 (defn get-entry
@@ -94,20 +99,17 @@
       (if-not (t/global? env)
         (or
          ;; Try to get a binding out of the current context
-         (-> env
-             second
-             (get :bindings)
-             (get symbol))
+         (get-in env [:bindings symbol])
 
          ;; Try to get a binding out of the parent context
-         (get-entry (-> env second :parent) symbol)
+         (get-entry (get-parent env) symbol)
 
          ;; All else failing die
          (-> (str symbol " is not bound in any enclosing scope!")
              (Exception.)
              (throw)))
 
-        (recur (-> env second :parent) symbol)))))
+        (recur (get-parent env) symbol)))))
 
 (defn resolve
   "λ [Env, Symbol] → Maybe[Symbol]
@@ -152,10 +154,10 @@
   [env symbol updater]
   {:pre [(get-entry env symbol)]}
   (let [s        (resolve env symbol)
-        bindings (-> env second (get :bindings))]
+        bindings (:bindings env)]
     (if-let [[k v] (find bindings s)]
-      (update-in env [1 :bindings k] #(with-meta % (updater (meta %))))
-      (assoc-in  env [1 :parent]      (alter-meta (-> env second :parent)
+      (update-in env [1 :bindings k] #(with-meta % (updater (meta %)))) ;; FIXME: use in-binding metadata
+      (assoc-in  env [1 :parent]      (alter-meta (get-parent env)
                                                   symbol updater)))))
 
 (defn set-meta
@@ -174,8 +176,10 @@
   Pushes local bindings, returning a new environment with the pushed
   local bindings."
   [env bindings]
+  {:pre [(t/env? env)
+         (every? symbol? (keys bindings))]}
   (->> (for [[k v] bindings]
-         (vector k (t/->value v)))
+         (vector k (t/->value nil v))) ;; FIXME: should have line information for the form, source expr & c
        (into {})
        (t/->local env)))
 
@@ -218,7 +222,7 @@
   {:pre [(t/env? env)
          (or (t/local? env)
              (t/dynamic? env))]}
-  (-> env second :parent))
+  (get-parent env))
 
 
 
