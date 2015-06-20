@@ -43,7 +43,7 @@
 
          ;; Are qualified globals handled correctly
          (every? #(= (get pinters %)
-                     (env/get-value env (symbol "test" (name %)))) pks)
+                     (env/get-value env (symbol "user" (name %)))) pks)
 
          ;; Are unqualified unaliased globals handled correctly. We know that
          ;; locals cover globals just fine from the first every?
@@ -52,12 +52,17 @@
                        (env/get-value env %)) visible-globals)))))))
 
 (deftest push-dynamics-test
-  (let [env  (-> env.t/empty-user
-                 (env/inter '*foo* 1)
-                 (env/alter-meta 'test/*foo* #(assoc % :dynamic true)))
-        env1 (env/push-dynamics env {'test/*foo* 2})
-        env2 (env/push-dynamics env1 {'test/*foo* 3})]
-    (is (env/dynamic? env 'test/*foo*))
-    (is (= 1 (env/get-value env 'test/*foo*)))
-    (is (= 2 (env/get-value env1 'test/*foo*)))
-    (is (= 3 (env/get-value env2 'test/*foo*)))))
+  (let [k    'user/*foo*
+        env  (-> env.t/empty-user
+                 (env/inter '*foo* {:dynamic true} 1))
+        env1 (env/push-dynamics env {k 2})
+        env2 (env/push-dynamics env {k 3})]
+    ;; basic sanity checks
+    (is (env/dynamic? env k))
+    (is (env/dynamic? env1 k))
+    (is (env/dynamic? env2 k))
+
+    ;; value checks
+    (is (= 1 (env/get-value env k)))
+    (is (= 2 (env/get-value env1 k)))
+    (is (= 3 (env/get-value env2 k)))))
