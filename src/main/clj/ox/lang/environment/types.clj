@@ -14,6 +14,8 @@
 (deftag binding/special [name]
   (symbol? name))
 
+(def binding? (some-fn alias? value? special?))
+
 ;; Types to do with environments
 
 
@@ -53,7 +55,7 @@
          (symbol? name)
          (not (namespace name))
          (every? symbol? (keys bindings))
-         (every? ns? (vals bindings))]})
+         (every? binding? (vals bindings))]})
 
 ;; FIXME: do I need some other non-local context?
 
