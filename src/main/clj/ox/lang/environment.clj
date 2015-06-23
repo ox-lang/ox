@@ -1,8 +1,51 @@
 (ns ox.lang.environment
   (:require [clojure.java.io :as io]
+            [clojure.core.match :refer [match]]
             [ox.lang.environment.types :as t]
             [clj-tuple :refer [vector]])
-  (:refer-clojure :exclude [resolve vector]))
+  (:refer-clojure :exclude [resolve vector alias]))
+
+(defn e!
+  [& xs]
+  (throw (Exception. (apply format xs))))
+
+(declare get-value)
+
+(defn install
+  "λ [Env, Symbol, Value] → Env1
+
+  Returns a new environment with the given symbol bound as if by a global def to
+  the given value. The value must be a Binding value as from env.types."
+  ([env sym value]
+   {:pre  [(t/env? env)
+           (symbol? sym)
+           (t/binding? value)]
+    :post [(t/env? %)]}
+   (match [(seq env) (namespace sym) (name sym)]
+
+     [([:env/base _] :seq) _ _]
+     ,,(e! "Cannot inter into the base environment!")
+
+     [([:env/global _] :seq) nil _]
+     ,,(if-let [*ns* (get-value env 'ox.lang.bootstrap/*ns*)]
+         (install env (symbol (name *ns*) (name sym)) meta value)
+         (e! "Cannot inter into the global environment without a target namespace!"))
+
+     [([:env/global _] :seq) _ nil]
+     ,,(e! "Cannot inter into the global environment without a name!")
+
+     [([:env/global _] :seq) ns name]
+     ,,(do (try (get-value env (symbol (clojure.core/namespace sym)))
+                (catch Exception e
+                  (e! "Cannot inter into uninitialized namespace '%s'"
+                      (clojure.core/name (clojure.core/namespace sym)))))
+
+           (-> env
+               (assoc-in [:bindings sym] value)
+               (update-in [:bindings (symbol (namespace sym)) :val :defs] #(conj (set %1) %2) sym)))
+
+     [[(:or :env/local :env/dynamic) _] _ _]
+     ,,(update-in env [:parent] install sym value))))
 
 (defn inter
   "λ [Env, Symbol, Value] → Env
@@ -16,14 +59,30 @@
    (inter env sym nil value))
 
   ([env sym meta value]
-   {:pre [(t/ns? env)
-          (symbol? sym)]}
-   (let [ns   (:name env)
-         _    (assert (symbol? ns))
-         qsym (symbol (name ns) (name sym))]
-     (-> env
-         (assoc-in [:bindings sym]  (t/->alias qsym))
-         (assoc-in [:bindings qsym] (t/->value meta value))))))
+   {:pre  [(t/env? env)
+           (symbol? sym)
+           (namespace sym)
+           (name sym)]
+    :post [(t/env? %)]}
+   (install env sym (t/->value meta value))))
+
+(defn alias
+  "λ [Env, Symbol, Symbol] → Env
+
+  Creates an alias from one fully qualified symbol to another, returning a new
+  environment with the specified alias installed.
+
+  Note that no checking is done to ensure that aliases are acyclic or of bounded
+  depth. This is especially important since the various resolution operations
+  impose depth bounds."
+  [env l r]
+  {:pre  [(t/env? env)
+          (symbol? l)
+          (namespace l)
+          (symbol? r)
+          (namespace r)]
+   :post [(t/env? %)]}
+  (install env l (t/->alias r)))
 
 (defn get-parent
   [x]
@@ -45,24 +104,6 @@
     env
     (recur (get-parent env))))
 
-(defn get-ns
-  "λ [Env, Symbol] → Ns
-
-  Walks the binding tree to find the namespace with this name (if any) and if
-  found returns that namespace. Otherwise throws an exception."
-  [env name]
-  (if-let [glob (get-global-env env)]
-    (let [nss (-> glob :namespaces)]
-      (if-let [ns (get nss name)]
-        ns
-        (-> "Could not locate the namespace '%s' in the global environment!"
-            (format (str name))
-            Exception.
-            throw)))
-    (-> "Could not locate the global environment!"
-        Exception.
-        throw)))
-
 (defn rebase
   "λ [Env, Env] → Env
 
@@ -77,62 +118,93 @@
   code loaded in it, and then continue with a 'new' continuation which has all
   the new state from the loaded code."
   [old new]
-  (if (t/ns? old)
-    (assoc-in  old [1 :parent] new)
-    (update-in old [1 :parent] rebase new)))
+  (if (t/global? old)
+    (assoc-in  old [:parent] new)
+    (update-in old [:parent] rebase new)))
 
-(defn get-entry
+(defn get-binding
   "λ [Env, Symbol] → Binding
 
   Walks the environment stack, returning the environment entry (not the value)
-  packaging the bound value or else throwing an exception."
+  packaging the bound value or else throwing an exception. Note that this
+  function returns the _first_ binding, not the _final_ binding. It will _not_
+  chase aliases. To find the _final_ binding (or the visible root binding) use
+  get-entry instead."
   [env symbol]
-  {:pre [(symbol? symbol)]}
-  (if-let [ns (namespace symbol)]
-    ;; It is a qualified symbol
-    (let [ns (get-ns env ns)]
-      ;; get into the target namespace and recur with an unqualified symbol
-      (recur ns (name symbol)))
+  {:pre  [(t/env? env)
+          (symbol? symbol)]}
+  (try
+    (or
+     ;; Try to get a binding out of the current context
+     (get-in env [:bindings symbol])
 
-    ;; It is not a qualified symbol
-    (when (and env symbol)
-      (if-not (t/global? env)
-        (or
-         ;; Try to get a binding out of the current context
-         (get-in env [:bindings symbol])
+     ;; Try to get a binding out of the parent context
+     (get-binding (get-parent env) symbol)
 
-         ;; Try to get a binding out of the parent context
-         (get-entry (get-parent env) symbol)
+     ;; All else failing die
+     (e! "Symbol '%s' is not bound in any enclosing scope!" (str symbol)))
 
-         ;; All else failing die
-         (-> (str symbol " is not bound in any enclosing scope!")
-             (Exception.)
-             (throw)))
+    (catch AssertionError e
+      (e! "Symbol '%s' is not bound in any enclosing scope!" (str symbol)))))
 
-        (recur (get-parent env) symbol)))))
+(defn get-entry
+  "λ [Env, Symbol] → Maybe[Binding]
+  λ [Env, Symbol, Depth] → Maybe[Binding]
+
+  Walks the environment stack and any alias bindings encountered up to a
+  configurable alias limit (depth 3 by default) returning the root binding."
+  ([env sym]
+   (get-entry env sym 3))
+
+  ([env sym n]
+   (if (zero? n)
+     (e! "Binding depth error! Symbol '%s' could not be resolved within specified depth!"
+         (str sym))
+     (let [b (get-binding env sym)]
+       (if (t/alias? b)
+         (try (get-entry env (:name b) (dec n))
+              (catch Exception e
+                (e! "Binding depth error! Symbol '%s' could not be resolved within specified depth!"
+                    (str sym))))
+         b)))))
 
 (defn resolve
   "λ [Env, Symbol] → Maybe[Symbol]
+  λ [Env, Symbol, Depth] → Maybe[Symbol]
 
-  Resolves the given symbol in the current environment."
-  [env sym]
-  (let [entry (get-entry env sym)]
-    (if (t/alias? entry)
-      (recur env (second entry))
-      sym)))
+  Walks the environment stack and any alias bindings until the root binding
+  symbol is identified then returns that symbol. As with get-entry, searches to
+  a depth limit before failing (default depth of 3)."
+  ([env sym]
+   (resolve env sym 3))
+
+  ([env sym n]
+   (if (zero? n)
+     (e! "Binding depth error! Symbol '%s' could not be resolved within specified depth!"
+         (str sym))
+     (let [entry (get-binding env sym)]
+       (if (t/alias? entry)
+         (try (resolve env (:name entry) (dec n))
+              (catch Exception e
+                (e! "Binding depth error! Symbol '%s' could not be resolved within specified depth!"
+                    (str sym))))
+         sym)))))
 
 (defn get-value
   "λ [Env, Symbol] → Value
+  λ [Env, Symbol, Depth] → Value  
 
-  Returns the value of the given symbol in the specified
-  environment."
-  [env symbol]
-  (let [entry (get-entry env symbol)]
-    (if (t/alias? entry)
-      (recur env (second entry))
-      (second entry))))
+  Returns the value of the given symbol in the specified environment. As with
+  get-entry takes an optional depth parameter (defaults to 3)."
+  ([env symbol]
+   (get-value env symbol 3))
+
+  ([env symbol n]
+   (let [entry (get-entry env symbol n)]
+     (:val entry))))
 
 
+;; Metadata
 
 (defn get-meta
   "λ [Env, Symbol] → Map
@@ -142,7 +214,7 @@
   metadata, fails if the symbol is not bound in the given
   environment."
   [env symbol]
-  (meta (get-entry env symbol)))
+  (:meta (get-entry env symbol)))
 
 ;; FIXME: probably shouldn't use real Clojure metadata here. Adding a metadata
 ;; part to bindings and defs would probably go over better inthe long run.
@@ -151,14 +223,15 @@
 
   Returns an updated environment where the metadata of the given
   symbol has been altered to equal the argument map."
-  [env symbol updater]
-  {:pre [(get-entry env symbol)]}
+  [env symbol updater & args]
   (let [s        (resolve env symbol)
         bindings (:bindings env)]
     (if-let [[k v] (find bindings s)]
-      (update-in env [1 :bindings k] #(with-meta % (updater (meta %)))) ;; FIXME: use in-binding metadata
-      (assoc-in  env [1 :parent]      (alter-meta (get-parent env)
-                                                  symbol updater)))))
+      (update-in env [:bindings k]
+                 #(assoc % :meta (apply updater (:meta %) args)))
+
+      (update-in env [:parent]
+                 #(apply alter-meta % symbol updater args)))))
 
 (defn set-meta
   "λ [Env, Symbol, Map] → Env
@@ -172,16 +245,21 @@
 
 (defn push-locals
   "λ [Env, {[Symbol Value]}] → Env
+  λ [Env, {[Symbol Value]}, Meta] → Env
 
-  Pushes local bindings, returning a new environment with the pushed
-  local bindings."
-  [env bindings]
-  {:pre [(t/env? env)
-         (every? symbol? (keys bindings))]}
-  (->> (for [[k v] bindings]
-         (vector k (t/->value nil v))) ;; FIXME: should have line information for the form, source expr & c
-       (into {})
-       (t/->local env)))
+  Pushes local bindings, returning a new environment with the pushed local
+  bindings. If metadata is not supplied, then it defaults to the empty map."
+  ([env bindings]
+   (push-locals env bindings {}))
+
+  ([env bindings meta]
+   {:pre [(t/env? env)
+          (every? symbol? (keys bindings))]}
+   (as-> bindings v
+     (for [[k v] v]
+       (vector k (t/->value nil v))) ;; FIXME: should have line information for the form, source expr & c
+     (into {} v)
+     (t/->local env v nil))))
 
 (defn dynamic?
   "λ [Env, Symbol] → Bool
@@ -190,7 +268,6 @@
   rather than being static."
   [env symbol]
   (->> symbol
-       (resolve env)
        (get-meta env)
        :dynamic))
 
@@ -206,12 +283,11 @@
                  (keys bindings))
          (every? (partial dynamic? env)
                  (keys bindings))]}
-  (->> (for [[k v] bindings]
-         (vector k (with-meta (t/->value v)
-                     (merge (get-meta env k)
-                            (meta v)))))
-       (into {})
-       (t/->dynamic env)))
+  (as-> bindings v
+    (for [[k v] v]
+      (vector k (t/->value (get-meta env k) v)))
+    (into {} v)
+    (t/->dynamic env v nil)))
 
 (defn pop-bindings
   "λ [Env] → Env
@@ -224,8 +300,6 @@
              (t/dynamic? env))]}
   (get-parent env))
 
-
-
 (defn macro?
   "λ [Env, Symbol] → Bool
 
@@ -233,6 +307,5 @@
   environment."
   [env symbol]
   (->> symbol
-       (resolve env)
        (get-meta env)
        :macro))
