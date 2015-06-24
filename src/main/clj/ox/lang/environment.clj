@@ -216,8 +216,6 @@
   [env symbol]
   (:meta (get-entry env symbol)))
 
-;; FIXME: probably shouldn't use real Clojure metadata here. Adding a metadata
-;; part to bindings and defs would probably go over better inthe long run.
 (defn alter-meta
   "λ [Env, Symbol, λ[Map] → Map] → Env
 

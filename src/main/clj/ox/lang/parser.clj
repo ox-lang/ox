@@ -220,5 +220,3 @@
        -antlr4-parser
        rest
        (map -transform)))
-
-;; FIXME: Add a file/resource parser
