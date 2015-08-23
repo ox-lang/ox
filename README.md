@@ -1,6 +1,7 @@
 # 牛: Ox, the language
 
 | Branch | Build status |
+| ------ | ------------ | 
 | Master | [![Build Status](https://travis-ci.org/ox-lang/ox.svg?branch=master)](https://travis-ci.org/ox-lang/ox) |
 | Develop | [![Build Status](https://travis-ci.org/ox-lang/ox.svg?branch=develop)](https://travis-ci.org/ox-lang/ox) |
 
