@@ -1,0 +1,327 @@
+oxlang
+
+* Special forms
+** def*
+** do*
+** fn*
+** lambda*
+** if*
+** let*
+** list*
+** letrc*
+** quote
+** ns*
+
+* Types & Typeclasses
+  =nil= built in, base element of any sequence or type
+  =(Sum & ts)= expresses a tagged variant type. Must be built in?
+  =(Record name [name Type]+)=
+  =(Cons l r)= is just a record
+
+  Type notation:
+
+  (λ (((x ← Num) → Num) x))
+
+  Note that these are abstract interfaces describing common data
+  structures. These interfaces do not dictate or seek to dictate the
+  concrete types or implementations of these data structures.
+
+** Any
+   ⊥ type. Not a whole lot you can do with these values.
+
+** Eq
+   http://hackage.haskell.org/package/base-4.7.0.2/docs/Data-Eq.html
+
+** Ord
+   http://hackage.haskell.org/package/base-4.7.0.2/docs/Data-Ord.html
+
+   #+BEGIN_SRC haskell
+     data Ordering :: LT | EQ | GT
+   #+END_SRC
+
+   That'll fix PaulP right up...
+
+** Booleans
+   Booleans represent truth and falsehood.
+
+   - True
+   - False
+
+*** ox.core.Bool/boolean?
+    λ (Any) → Boolean
+
+    Predicate returning true only if the argument value is a boolean
+    value.
+
+** Num
+   At the end of the day computers are for munging numbers.  Having
+   good native support for generic numbers is a must.  Note that
+   having support for numbers is agnostic as to the implementation of
+   numbers.
+
+   Int, Long, Float, Double, Rational and BigInt are all Num.
+
+   See https://www.haskell.org/tutorial/numbers.html
+
+*** ox.core.Num/num?
+    λ (Any) → Boolean
+
+    Predicate indicating whether the value in question is a Num or
+    not.
+
+*** ox.core.Num/inc
+     λ (Num) → Num
+
+     Effectively (partial + 1).
+
+*** ox.core.Num/succ
+    alias for [[ox.core.Num/inc]]
+
+*** ox.core.Num/dec
+    λ (Num) → Num
+
+    Effectively (partial - 1)
+
+*** ox.core.Num/pred
+    alias for [[ox.core.Num/dec]]
+
+*** ox.core.Num/+
+    λ (Num Num) → Num
+
+    Returns the sum of two numbers.
+
+*** ox.core.Num/-
+    λ (Num Num) → Num
+
+    Returns the difference of two numbers.
+
+*** ox.core.Num/*
+    λ (Num Num) → Num
+
+    Returns the product of two numbers.
+
+*** ox.core.Num//
+    λ (Num Num) → Num
+
+    Returns the ratio of two numbers.
+
+*** ox.core.Num/pow
+    λ (Num Num) → Num
+
+    Returns the exponentiation of a base to a power.
+
+*** ox.core.Num/mod
+    λ (Num Num) → Num
+
+    Returns the remainder of the division of one number by another.
+
+** Integral
+   Subset of [[Num]]. Represents integer values.
+
+** Fractional
+   Subset of [[Num]]. Represents the set of values which can be written as
+   fractions proper or not.
+
+** Bitstring
+   [[Num]]s need not be bitstrings.  Consider a pair (real, imag). Is it
+   reasonable to treat this pair as a bistring?  Not obviously,
+   therefore Bitstrings != general Nums.  However obviously Bitstrings
+   and Nums may intersect in the case of _sized_ numbers such as
+   Longs, Doubles, Singles/Ints and soforth.
+
+   Bitstrings should probably be [[Sequences]] on individual bits.
+
+*** ox.core.Bits/bitstring?
+    λ (Any) → Boolean
+
+    Predicate indicating whether a value is a bitstring or not.
+
+*** ox.core.Bits/<<
+    λ (Bitstring Integral) → Bitstring
+
+    Left shift.
+
+*** ox.core.Bits/>>
+    λ (Bitstring Integral) → Bitstring
+
+    Right shift.
+
+*** ox.core.Bits/&
+    λ (Bitstring Bitstring) → Bitstring
+
+*** ox.core.Bits/|
+    λ (Bitstring Bitstring) → Bitstring
+
+*** ox.core.Bits/^
+    λ (Bitstring Bitstring) → Bitstring
+
+** Sequences
+   Sequences are an abstraction over datastructures which may be
+   viewed as (first, rest) in the traditional cons cell view of the
+   world.
+
+*** ox.core.Seq/seq?
+    λ (Any) → Boolean
+
+*** ox.core.Seq/empty?
+    λ (Seq) → Boolean
+
+*** ox.core.Seq/empty
+    λ (Seq) → Seq
+
+*** ox.core.Seq/first
+    λ (Seq) → Any
+
+*** ox.core.Seq/second
+    λ (Seq) → Any
+
+*** ox.core.Seq/nth
+    λ (Seq Int) → Any
+
+*** ox.core.Seq/rest
+    λ (Seq) → Seq
+
+*** ox.core.Seq/butlast
+    λ (Seq) → Seq
+
+*** ox.core.Seq/last
+    λ (Seq) → Seq
+
+*** ox.core.Seq/concat
+    λ (Seq Seq) → Seq
+
+*** ox.core.Seq/append
+    alias for [[ox.core.Seq/concat][concat]].
+
+** BoundedSeq
+   Sequences for which there exists an upper bound on the length.
+
+*** ox.core.Seq/bounded?
+    λ (Seq) → Boolean
+
+*** ox.core.Seq/bound
+    λ (Seq) → Num
+
+** CountedSeq
+   Sequences for which the exact length is known. Must be [[BoundedSeq]]s.
+
+*** ox.core.Seq/countable?
+    λ (Seq) → Boolean
+*** ox.core.Seq/count
+    λ (Seq) → Num
+
+** Set
+   Sets are [[Applicable]] as predicates on containment.
+
+   Some sets may be [[Sequences]] on their elements. Some may even be
+   sorted on addition order or other properties as sequences. Note
+   that sets need not be sequences or even [[BoundedSeq][bounded]]. Consider the case
+   of the complement of a finite set, which must be the set of all
+   possible values not in the set.
+
+*** ox.core.Set/set?
+    λ (Any) → Boolean
+
+*** ox.core.Set/contains?
+    λ (Set Any) → Boolean
+
+*** ox.core.Set/union
+    λ (Set Set) → Set
+
+*** ox.core.Set/intersection
+    λ (Set Set) → Set
+
+*** ox.core.Set/difference
+    λ (Set Set) → Set
+
+*** ox.core.Set/complement
+    λ (Set) → Set
+
+    Returns an uncountable,
+
+** Mapping
+   Mappings are also Sequences on their key value pairs, and
+   manipulating Mappings via rest/conj/concat builds new mappings.
+
+*** ox.core.Map/map?
+    λ (Any) → Boolean
+
+*** ox.core.Map/get
+    λ (Map Any) → Any
+
+*** ox.core.Map/assoc
+    λ (Map Any Any) → Map
+
+*** ox.core.Map/dissoc
+    λ (Map Any) → Map
+
+*** ox.core.Map/keys
+    λ (Map) → Seq
+
+*** ox.core.Map/vals
+    λ (Map) → Seq
+
+** Uuid
+   Since Clojure provides special handling for UUIDs in terms of
+   having printing and reading literals for them, it's silly that the
+   Clojure core lacks uuid creation facilities and a uuid predicate.
+
+*** ox.core.Uuid/uuid?
+    λ (Any) → Boolean
+
+*** ox.core.Uuid/uuid
+    λ (Int Int) → Uuid
+
+** Applicable
+   Applicable values represent the set of things which may be applied
+   including functions. Applicables must be pure, and can only contain
+   invocations of other Applicables.
+
+** Lambda
+   Lambdas are [[Applicable]] and represent a pure function as defined by
+   a user or some code generation. As with other Applicables, lambdas
+   can have no side-effects although one can implement monads with
+   lambdas.
+
+** Proc
+   Procs represent sequences of statements to be executed for side
+   effects. Procs may invoke [[Applicable]]s, but there's no escape hatch
+   from an Applicable (or a Lambda) to a Proc.
+
+** Named
+   Generic protocol for datastructures which have symbolic or programmer
+   meaningful "names" and participate in the Clojure/Oxlang namespaced
+   naming scheme.
+
+*** ox.core.Named/named?
+    λ (Any) → Boolean
+
+*** ox.core.Named/namespace
+    λ (Named) → String
+
+*** ox.core.Named/name
+    λ (Named) → String
+
+** Symbols
+   Symbols are [[Named]].
+
+*** ox.core.Symbol/symbol?
+    λ (Any) → Boolean
+
+*** ox.core.Symbol/symbol
+    λ (String) → Symbol
+
+*** ox.core.Symbol/symbol
+    λ (String String) → Symbol
+
+** Keywords
+   Also [[Named]].
+
+*** ox.core.Keyword/keyword?
+    λ (Any) → Boolean
+
+*** ox.core.Keyword/keyword
+    λ (String) → Keyword
+
+*** ox.core.Keyword/keyword
+    λ (String String) → Keyword
