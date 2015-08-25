@@ -15,481 +15,481 @@ public class OxlangBaseListener implements OxlangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_file(OxlangParser.Ox_fileContext ctx) { }
+	@Override public void enterOxFile(OxlangParser.OxFileContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_file(OxlangParser.Ox_fileContext ctx) { }
+	@Override public void exitOxFile(OxlangParser.OxFileContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_form(OxlangParser.Ox_formContext ctx) { }
+	@Override public void enterOxForm(OxlangParser.OxFormContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_form(OxlangParser.Ox_formContext ctx) { }
+	@Override public void exitOxForm(OxlangParser.OxFormContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_forms(OxlangParser.Ox_formsContext ctx) { }
+	@Override public void enterOxForms(OxlangParser.OxFormsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_forms(OxlangParser.Ox_formsContext ctx) { }
+	@Override public void exitOxForms(OxlangParser.OxFormsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_list(OxlangParser.Ox_listContext ctx) { }
+	@Override public void enterOxList(OxlangParser.OxListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_list(OxlangParser.Ox_listContext ctx) { }
+	@Override public void exitOxList(OxlangParser.OxListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_vector(OxlangParser.Ox_vectorContext ctx) { }
+	@Override public void enterOxVector(OxlangParser.OxVectorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_vector(OxlangParser.Ox_vectorContext ctx) { }
+	@Override public void exitOxVector(OxlangParser.OxVectorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_record(OxlangParser.Ox_recordContext ctx) { }
+	@Override public void enterOxRecord(OxlangParser.OxRecordContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_record(OxlangParser.Ox_recordContext ctx) { }
+	@Override public void exitOxRecord(OxlangParser.OxRecordContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_map(OxlangParser.Ox_mapContext ctx) { }
+	@Override public void enterOxMap(OxlangParser.OxMapContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_map(OxlangParser.Ox_mapContext ctx) { }
+	@Override public void exitOxMap(OxlangParser.OxMapContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_set(OxlangParser.Ox_setContext ctx) { }
+	@Override public void enterOxSet(OxlangParser.OxSetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_set(OxlangParser.Ox_setContext ctx) { }
+	@Override public void exitOxSet(OxlangParser.OxSetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_reader_macro(OxlangParser.Ox_reader_macroContext ctx) { }
+	@Override public void enterOxReaderMacro(OxlangParser.OxReaderMacroContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_reader_macro(OxlangParser.Ox_reader_macroContext ctx) { }
+	@Override public void exitOxReaderMacro(OxlangParser.OxReaderMacroContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_quote(OxlangParser.Ox_quoteContext ctx) { }
+	@Override public void enterOxQuote(OxlangParser.OxQuoteContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_quote(OxlangParser.Ox_quoteContext ctx) { }
+	@Override public void exitOxQuote(OxlangParser.OxQuoteContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_backtick(OxlangParser.Ox_backtickContext ctx) { }
+	@Override public void enterOxBacktick(OxlangParser.OxBacktickContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_backtick(OxlangParser.Ox_backtickContext ctx) { }
+	@Override public void exitOxBacktick(OxlangParser.OxBacktickContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_unquote(OxlangParser.Ox_unquoteContext ctx) { }
+	@Override public void enterOxUnquote(OxlangParser.OxUnquoteContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_unquote(OxlangParser.Ox_unquoteContext ctx) { }
+	@Override public void exitOxUnquote(OxlangParser.OxUnquoteContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_unquote_splicing(OxlangParser.Ox_unquote_splicingContext ctx) { }
+	@Override public void enterOxUnquoteSplicing(OxlangParser.OxUnquoteSplicingContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_unquote_splicing(OxlangParser.Ox_unquote_splicingContext ctx) { }
+	@Override public void exitOxUnquoteSplicing(OxlangParser.OxUnquoteSplicingContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_tag(OxlangParser.Ox_tagContext ctx) { }
+	@Override public void enterOxTag(OxlangParser.OxTagContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_tag(OxlangParser.Ox_tagContext ctx) { }
+	@Override public void exitOxTag(OxlangParser.OxTagContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_deref(OxlangParser.Ox_derefContext ctx) { }
+	@Override public void enterOxDeref(OxlangParser.OxDerefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_deref(OxlangParser.Ox_derefContext ctx) { }
+	@Override public void exitOxDeref(OxlangParser.OxDerefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_gensym(OxlangParser.Ox_gensymContext ctx) { }
+	@Override public void enterOxGensym(OxlangParser.OxGensymContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_gensym(OxlangParser.Ox_gensymContext ctx) { }
+	@Override public void exitOxGensym(OxlangParser.OxGensymContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_meta_data(OxlangParser.Ox_meta_dataContext ctx) { }
+	@Override public void enterOxMetaData(OxlangParser.OxMetaDataContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_meta_data(OxlangParser.Ox_meta_dataContext ctx) { }
+	@Override public void exitOxMetaData(OxlangParser.OxMetaDataContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_host_expr(OxlangParser.Ox_host_exprContext ctx) { }
+	@Override public void enterOxHostExpr(OxlangParser.OxHostExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_host_expr(OxlangParser.Ox_host_exprContext ctx) { }
+	@Override public void exitOxHostExpr(OxlangParser.OxHostExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_regex(OxlangParser.Ox_regexContext ctx) { }
+	@Override public void enterOxRegex(OxlangParser.OxRegexContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_regex(OxlangParser.Ox_regexContext ctx) { }
+	@Override public void exitOxRegex(OxlangParser.OxRegexContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_literal(OxlangParser.Ox_literalContext ctx) { }
+	@Override public void enterOxLiteral(OxlangParser.OxLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_literal(OxlangParser.Ox_literalContext ctx) { }
+	@Override public void exitOxLiteral(OxlangParser.OxLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_string(OxlangParser.Ox_stringContext ctx) { }
+	@Override public void enterOxString(OxlangParser.OxStringContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_string(OxlangParser.Ox_stringContext ctx) { }
+	@Override public void exitOxString(OxlangParser.OxStringContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_float(OxlangParser.Ox_floatContext ctx) { }
+	@Override public void enterOxFloat(OxlangParser.OxFloatContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_float(OxlangParser.Ox_floatContext ctx) { }
+	@Override public void exitOxFloat(OxlangParser.OxFloatContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_hex(OxlangParser.Ox_hexContext ctx) { }
+	@Override public void enterOxHex(OxlangParser.OxHexContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_hex(OxlangParser.Ox_hexContext ctx) { }
+	@Override public void exitOxHex(OxlangParser.OxHexContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_bin(OxlangParser.Ox_binContext ctx) { }
+	@Override public void enterOxBin(OxlangParser.OxBinContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_bin(OxlangParser.Ox_binContext ctx) { }
+	@Override public void exitOxBin(OxlangParser.OxBinContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_bign(OxlangParser.Ox_bignContext ctx) { }
+	@Override public void enterOxBign(OxlangParser.OxBignContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_bign(OxlangParser.Ox_bignContext ctx) { }
+	@Override public void exitOxBign(OxlangParser.OxBignContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_long(OxlangParser.Ox_longContext ctx) { }
+	@Override public void enterOxLong(OxlangParser.OxLongContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_long(OxlangParser.Ox_longContext ctx) { }
+	@Override public void exitOxLong(OxlangParser.OxLongContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_rint(OxlangParser.Ox_rintContext ctx) { }
+	@Override public void enterOxRint(OxlangParser.OxRintContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_rint(OxlangParser.Ox_rintContext ctx) { }
+	@Override public void exitOxRint(OxlangParser.OxRintContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_number(OxlangParser.Ox_numberContext ctx) { }
+	@Override public void enterOxNumber(OxlangParser.OxNumberContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_number(OxlangParser.Ox_numberContext ctx) { }
+	@Override public void exitOxNumber(OxlangParser.OxNumberContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_character(OxlangParser.Ox_characterContext ctx) { }
+	@Override public void enterOxCharacter(OxlangParser.OxCharacterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_character(OxlangParser.Ox_characterContext ctx) { }
+	@Override public void exitOxCharacter(OxlangParser.OxCharacterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_named_char(OxlangParser.Ox_named_charContext ctx) { }
+	@Override public void enterOxNamedChar(OxlangParser.OxNamedCharContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_named_char(OxlangParser.Ox_named_charContext ctx) { }
+	@Override public void exitOxNamedChar(OxlangParser.OxNamedCharContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_any_char(OxlangParser.Ox_any_charContext ctx) { }
+	@Override public void enterOxAnyChar(OxlangParser.OxAnyCharContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_any_char(OxlangParser.Ox_any_charContext ctx) { }
+	@Override public void exitOxAnyChar(OxlangParser.OxAnyCharContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_u_hex_quad(OxlangParser.Ox_u_hex_quadContext ctx) { }
+	@Override public void enterOxUHexQuad(OxlangParser.OxUHexQuadContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_u_hex_quad(OxlangParser.Ox_u_hex_quadContext ctx) { }
+	@Override public void exitOxUHexQuad(OxlangParser.OxUHexQuadContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_nil(OxlangParser.Ox_nilContext ctx) { }
+	@Override public void enterOxNil(OxlangParser.OxNilContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_nil(OxlangParser.Ox_nilContext ctx) { }
+	@Override public void exitOxNil(OxlangParser.OxNilContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_boolean(OxlangParser.Ox_booleanContext ctx) { }
+	@Override public void enterOxBoolean(OxlangParser.OxBooleanContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_boolean(OxlangParser.Ox_booleanContext ctx) { }
+	@Override public void exitOxBoolean(OxlangParser.OxBooleanContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_keyword(OxlangParser.Ox_keywordContext ctx) { }
+	@Override public void enterOxKeyword(OxlangParser.OxKeywordContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_keyword(OxlangParser.Ox_keywordContext ctx) { }
+	@Override public void exitOxKeyword(OxlangParser.OxKeywordContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_simple_keyword(OxlangParser.Ox_simple_keywordContext ctx) { }
+	@Override public void enterOxSimpleKeyword(OxlangParser.OxSimpleKeywordContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_simple_keyword(OxlangParser.Ox_simple_keywordContext ctx) { }
+	@Override public void exitOxSimpleKeyword(OxlangParser.OxSimpleKeywordContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_macro_keyword(OxlangParser.Ox_macro_keywordContext ctx) { }
+	@Override public void enterOxMacroKeyword(OxlangParser.OxMacroKeywordContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_macro_keyword(OxlangParser.Ox_macro_keywordContext ctx) { }
+	@Override public void exitOxMacroKeyword(OxlangParser.OxMacroKeywordContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_symbol(OxlangParser.Ox_symbolContext ctx) { }
+	@Override public void enterOxSymbol(OxlangParser.OxSymbolContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_symbol(OxlangParser.Ox_symbolContext ctx) { }
+	@Override public void exitOxSymbol(OxlangParser.OxSymbolContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSimple_sym(OxlangParser.Simple_symContext ctx) { }
+	@Override public void enterSimpleSym(OxlangParser.SimpleSymContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSimple_sym(OxlangParser.Simple_symContext ctx) { }
+	@Override public void exitSimpleSym(OxlangParser.SimpleSymContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOx_ns_symbol(OxlangParser.Ox_ns_symbolContext ctx) { }
+	@Override public void enterOxNsSymbol(OxlangParser.OxNsSymbolContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOx_ns_symbol(OxlangParser.Ox_ns_symbolContext ctx) { }
+	@Override public void exitOxNsSymbol(OxlangParser.OxNsSymbolContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

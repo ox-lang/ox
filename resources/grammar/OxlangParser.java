@@ -22,26 +22,24 @@ public class OxlangParser extends Parser {
 		CHAR_U=26, CHAR_NAMED=27, CHAR_ANY=28, NIL=29, BOOLEAN=30, SYMBOL=31, 
 		NS_SYMBOL=32, TRASH=33;
 	public static final int
-		RULE_ox_file = 0, RULE_ox_form = 1, RULE_ox_forms = 2, RULE_ox_list = 3, 
-		RULE_ox_vector = 4, RULE_ox_record = 5, RULE_ox_map = 6, RULE_ox_set = 7, 
-		RULE_ox_reader_macro = 8, RULE_ox_quote = 9, RULE_ox_backtick = 10, RULE_ox_unquote = 11, 
-		RULE_ox_unquote_splicing = 12, RULE_ox_tag = 13, RULE_ox_deref = 14, RULE_ox_gensym = 15, 
-		RULE_ox_meta_data = 16, RULE_ox_host_expr = 17, RULE_ox_regex = 18, RULE_ox_literal = 19, 
-		RULE_ox_string = 20, RULE_ox_float = 21, RULE_ox_hex = 22, RULE_ox_bin = 23, 
-		RULE_ox_bign = 24, RULE_ox_long = 25, RULE_ox_rint = 26, RULE_ox_number = 27, 
-		RULE_ox_character = 28, RULE_ox_named_char = 29, RULE_ox_any_char = 30, 
-		RULE_ox_u_hex_quad = 31, RULE_ox_nil = 32, RULE_ox_boolean = 33, RULE_ox_keyword = 34, 
-		RULE_ox_simple_keyword = 35, RULE_ox_macro_keyword = 36, RULE_ox_symbol = 37, 
-		RULE_simple_sym = 38, RULE_ox_ns_symbol = 39;
+		RULE_oxFile = 0, RULE_oxForm = 1, RULE_oxForms = 2, RULE_oxList = 3, RULE_oxVector = 4, 
+		RULE_oxRecord = 5, RULE_oxMap = 6, RULE_oxSet = 7, RULE_oxReaderMacro = 8, 
+		RULE_oxQuote = 9, RULE_oxBacktick = 10, RULE_oxUnquote = 11, RULE_oxUnquoteSplicing = 12, 
+		RULE_oxTag = 13, RULE_oxDeref = 14, RULE_oxGensym = 15, RULE_oxMetaData = 16, 
+		RULE_oxHostExpr = 17, RULE_oxRegex = 18, RULE_oxLiteral = 19, RULE_oxString = 20, 
+		RULE_oxFloat = 21, RULE_oxHex = 22, RULE_oxBin = 23, RULE_oxBign = 24, 
+		RULE_oxLong = 25, RULE_oxRint = 26, RULE_oxNumber = 27, RULE_oxCharacter = 28, 
+		RULE_oxNamedChar = 29, RULE_oxAnyChar = 30, RULE_oxUHexQuad = 31, RULE_oxNil = 32, 
+		RULE_oxBoolean = 33, RULE_oxKeyword = 34, RULE_oxSimpleKeyword = 35, RULE_oxMacroKeyword = 36, 
+		RULE_oxSymbol = 37, RULE_simpleSym = 38, RULE_oxNsSymbol = 39;
 	public static final String[] ruleNames = {
-		"ox_file", "ox_form", "ox_forms", "ox_list", "ox_vector", "ox_record", 
-		"ox_map", "ox_set", "ox_reader_macro", "ox_quote", "ox_backtick", "ox_unquote", 
-		"ox_unquote_splicing", "ox_tag", "ox_deref", "ox_gensym", "ox_meta_data", 
-		"ox_host_expr", "ox_regex", "ox_literal", "ox_string", "ox_float", "ox_hex", 
-		"ox_bin", "ox_bign", "ox_long", "ox_rint", "ox_number", "ox_character", 
-		"ox_named_char", "ox_any_char", "ox_u_hex_quad", "ox_nil", "ox_boolean", 
-		"ox_keyword", "ox_simple_keyword", "ox_macro_keyword", "ox_symbol", "simple_sym", 
-		"ox_ns_symbol"
+		"oxFile", "oxForm", "oxForms", "oxList", "oxVector", "oxRecord", "oxMap", 
+		"oxSet", "oxReaderMacro", "oxQuote", "oxBacktick", "oxUnquote", "oxUnquoteSplicing", 
+		"oxTag", "oxDeref", "oxGensym", "oxMetaData", "oxHostExpr", "oxRegex", 
+		"oxLiteral", "oxString", "oxFloat", "oxHex", "oxBin", "oxBign", "oxLong", 
+		"oxRint", "oxNumber", "oxCharacter", "oxNamedChar", "oxAnyChar", "oxUHexQuad", 
+		"oxNil", "oxBoolean", "oxKeyword", "oxSimpleKeyword", "oxMacroKeyword", 
+		"oxSymbol", "simpleSym", "oxNsSymbol"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -104,30 +102,30 @@ public class OxlangParser extends Parser {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
-	public static class Ox_fileContext extends ParserRuleContext {
-		public List<Ox_formContext> ox_form() {
-			return getRuleContexts(Ox_formContext.class);
+	public static class OxFileContext extends ParserRuleContext {
+		public List<OxFormContext> oxForm() {
+			return getRuleContexts(OxFormContext.class);
 		}
-		public Ox_formContext ox_form(int i) {
-			return getRuleContext(Ox_formContext.class,i);
+		public OxFormContext oxForm(int i) {
+			return getRuleContext(OxFormContext.class,i);
 		}
-		public Ox_fileContext(ParserRuleContext parent, int invokingState) {
+		public OxFileContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_file; }
+		@Override public int getRuleIndex() { return RULE_oxFile; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_file(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxFile(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_file(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxFile(this);
 		}
 	}
 
-	public final Ox_fileContext ox_file() throws RecognitionException {
-		Ox_fileContext _localctx = new Ox_fileContext(_ctx, getState());
-		enterRule(_localctx, 0, RULE_ox_file);
+	public final OxFileContext oxFile() throws RecognitionException {
+		OxFileContext _localctx = new OxFileContext(_ctx, getState());
+		enterRule(_localctx, 0, RULE_oxFile);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -139,7 +137,7 @@ public class OxlangParser extends Parser {
 				{
 				{
 				setState(80);
-				ox_form();
+				oxForm();
 				}
 				}
 				setState(85);
@@ -159,42 +157,42 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_formContext extends ParserRuleContext {
-		public Ox_literalContext ox_literal() {
-			return getRuleContext(Ox_literalContext.class,0);
+	public static class OxFormContext extends ParserRuleContext {
+		public OxLiteralContext oxLiteral() {
+			return getRuleContext(OxLiteralContext.class,0);
 		}
-		public Ox_listContext ox_list() {
-			return getRuleContext(Ox_listContext.class,0);
+		public OxListContext oxList() {
+			return getRuleContext(OxListContext.class,0);
 		}
-		public Ox_vectorContext ox_vector() {
-			return getRuleContext(Ox_vectorContext.class,0);
+		public OxVectorContext oxVector() {
+			return getRuleContext(OxVectorContext.class,0);
 		}
-		public Ox_mapContext ox_map() {
-			return getRuleContext(Ox_mapContext.class,0);
+		public OxMapContext oxMap() {
+			return getRuleContext(OxMapContext.class,0);
 		}
-		public Ox_recordContext ox_record() {
-			return getRuleContext(Ox_recordContext.class,0);
+		public OxRecordContext oxRecord() {
+			return getRuleContext(OxRecordContext.class,0);
 		}
-		public Ox_reader_macroContext ox_reader_macro() {
-			return getRuleContext(Ox_reader_macroContext.class,0);
+		public OxReaderMacroContext oxReaderMacro() {
+			return getRuleContext(OxReaderMacroContext.class,0);
 		}
-		public Ox_formContext(ParserRuleContext parent, int invokingState) {
+		public OxFormContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_form; }
+		@Override public int getRuleIndex() { return RULE_oxForm; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_form(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxForm(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_form(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxForm(this);
 		}
 	}
 
-	public final Ox_formContext ox_form() throws RecognitionException {
-		Ox_formContext _localctx = new Ox_formContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_ox_form);
+	public final OxFormContext oxForm() throws RecognitionException {
+		OxFormContext _localctx = new OxFormContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_oxForm);
 		try {
 			setState(92);
 			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
@@ -202,42 +200,42 @@ public class OxlangParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(86);
-				ox_literal();
+				oxLiteral();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(87);
-				ox_list();
+				oxList();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(88);
-				ox_vector();
+				oxVector();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(89);
-				ox_map();
+				oxMap();
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(90);
-				ox_record();
+				oxRecord();
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(91);
-				ox_reader_macro();
+				oxReaderMacro();
 				}
 				break;
 			}
@@ -253,30 +251,30 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_formsContext extends ParserRuleContext {
-		public List<Ox_formContext> ox_form() {
-			return getRuleContexts(Ox_formContext.class);
+	public static class OxFormsContext extends ParserRuleContext {
+		public List<OxFormContext> oxForm() {
+			return getRuleContexts(OxFormContext.class);
 		}
-		public Ox_formContext ox_form(int i) {
-			return getRuleContext(Ox_formContext.class,i);
+		public OxFormContext oxForm(int i) {
+			return getRuleContext(OxFormContext.class,i);
 		}
-		public Ox_formsContext(ParserRuleContext parent, int invokingState) {
+		public OxFormsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_forms; }
+		@Override public int getRuleIndex() { return RULE_oxForms; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_forms(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxForms(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_forms(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxForms(this);
 		}
 	}
 
-	public final Ox_formsContext ox_forms() throws RecognitionException {
-		Ox_formsContext _localctx = new Ox_formsContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_ox_forms);
+	public final OxFormsContext oxForms() throws RecognitionException {
+		OxFormsContext _localctx = new OxFormsContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_oxForms);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -288,7 +286,7 @@ public class OxlangParser extends Parser {
 				{
 				{
 				setState(94);
-				ox_form();
+				oxForm();
 				}
 				}
 				setState(99);
@@ -308,34 +306,34 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_listContext extends ParserRuleContext {
-		public Ox_formsContext ox_forms() {
-			return getRuleContext(Ox_formsContext.class,0);
+	public static class OxListContext extends ParserRuleContext {
+		public OxFormsContext oxForms() {
+			return getRuleContext(OxFormsContext.class,0);
 		}
-		public Ox_listContext(ParserRuleContext parent, int invokingState) {
+		public OxListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_list; }
+		@Override public int getRuleIndex() { return RULE_oxList; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_list(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxList(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_list(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxList(this);
 		}
 	}
 
-	public final Ox_listContext ox_list() throws RecognitionException {
-		Ox_listContext _localctx = new Ox_listContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_ox_list);
+	public final OxListContext oxList() throws RecognitionException {
+		OxListContext _localctx = new OxListContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_oxList);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(100);
 			match(T__0);
 			setState(101);
-			ox_forms();
+			oxForms();
 			setState(102);
 			match(T__1);
 			}
@@ -351,34 +349,34 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_vectorContext extends ParserRuleContext {
-		public Ox_formsContext ox_forms() {
-			return getRuleContext(Ox_formsContext.class,0);
+	public static class OxVectorContext extends ParserRuleContext {
+		public OxFormsContext oxForms() {
+			return getRuleContext(OxFormsContext.class,0);
 		}
-		public Ox_vectorContext(ParserRuleContext parent, int invokingState) {
+		public OxVectorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_vector; }
+		@Override public int getRuleIndex() { return RULE_oxVector; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_vector(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxVector(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_vector(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxVector(this);
 		}
 	}
 
-	public final Ox_vectorContext ox_vector() throws RecognitionException {
-		Ox_vectorContext _localctx = new Ox_vectorContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_ox_vector);
+	public final OxVectorContext oxVector() throws RecognitionException {
+		OxVectorContext _localctx = new OxVectorContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_oxVector);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(104);
 			match(T__2);
 			setState(105);
-			ox_forms();
+			oxForms();
 			setState(106);
 			match(T__3);
 			}
@@ -394,39 +392,39 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_recordContext extends ParserRuleContext {
-		public Ox_ns_symbolContext ox_ns_symbol() {
-			return getRuleContext(Ox_ns_symbolContext.class,0);
+	public static class OxRecordContext extends ParserRuleContext {
+		public OxNsSymbolContext oxNsSymbol() {
+			return getRuleContext(OxNsSymbolContext.class,0);
 		}
-		public Ox_mapContext ox_map() {
-			return getRuleContext(Ox_mapContext.class,0);
+		public OxMapContext oxMap() {
+			return getRuleContext(OxMapContext.class,0);
 		}
-		public Ox_recordContext(ParserRuleContext parent, int invokingState) {
+		public OxRecordContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_record; }
+		@Override public int getRuleIndex() { return RULE_oxRecord; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_record(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxRecord(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_record(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxRecord(this);
 		}
 	}
 
-	public final Ox_recordContext ox_record() throws RecognitionException {
-		Ox_recordContext _localctx = new Ox_recordContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_ox_record);
+	public final OxRecordContext oxRecord() throws RecognitionException {
+		OxRecordContext _localctx = new OxRecordContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_oxRecord);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(108);
 			match(T__4);
 			setState(109);
-			ox_ns_symbol();
+			oxNsSymbol();
 			setState(110);
-			ox_map();
+			oxMap();
 			setState(111);
 			match(T__3);
 			}
@@ -442,30 +440,30 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_mapContext extends ParserRuleContext {
-		public List<Ox_formContext> ox_form() {
-			return getRuleContexts(Ox_formContext.class);
+	public static class OxMapContext extends ParserRuleContext {
+		public List<OxFormContext> oxForm() {
+			return getRuleContexts(OxFormContext.class);
 		}
-		public Ox_formContext ox_form(int i) {
-			return getRuleContext(Ox_formContext.class,i);
+		public OxFormContext oxForm(int i) {
+			return getRuleContext(OxFormContext.class,i);
 		}
-		public Ox_mapContext(ParserRuleContext parent, int invokingState) {
+		public OxMapContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_map; }
+		@Override public int getRuleIndex() { return RULE_oxMap; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_map(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxMap(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_map(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxMap(this);
 		}
 	}
 
-	public final Ox_mapContext ox_map() throws RecognitionException {
-		Ox_mapContext _localctx = new Ox_mapContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_ox_map);
+	public final OxMapContext oxMap() throws RecognitionException {
+		OxMapContext _localctx = new OxMapContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_oxMap);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -479,9 +477,9 @@ public class OxlangParser extends Parser {
 				{
 				{
 				setState(114);
-				ox_form();
+				oxForm();
 				setState(115);
-				ox_form();
+				oxForm();
 				}
 				}
 				setState(121);
@@ -503,34 +501,34 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_setContext extends ParserRuleContext {
-		public Ox_formsContext ox_forms() {
-			return getRuleContext(Ox_formsContext.class,0);
+	public static class OxSetContext extends ParserRuleContext {
+		public OxFormsContext oxForms() {
+			return getRuleContext(OxFormsContext.class,0);
 		}
-		public Ox_setContext(ParserRuleContext parent, int invokingState) {
+		public OxSetContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_set; }
+		@Override public int getRuleIndex() { return RULE_oxSet; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_set(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxSet(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_set(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxSet(this);
 		}
 	}
 
-	public final Ox_setContext ox_set() throws RecognitionException {
-		Ox_setContext _localctx = new Ox_setContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_ox_set);
+	public final OxSetContext oxSet() throws RecognitionException {
+		OxSetContext _localctx = new OxSetContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_oxSet);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(124);
 			match(T__7);
 			setState(125);
-			ox_forms();
+			oxForms();
 			setState(126);
 			match(T__6);
 			}
@@ -546,57 +544,57 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_reader_macroContext extends ParserRuleContext {
-		public Ox_meta_dataContext ox_meta_data() {
-			return getRuleContext(Ox_meta_dataContext.class,0);
+	public static class OxReaderMacroContext extends ParserRuleContext {
+		public OxMetaDataContext oxMetaData() {
+			return getRuleContext(OxMetaDataContext.class,0);
 		}
-		public Ox_regexContext ox_regex() {
-			return getRuleContext(Ox_regexContext.class,0);
+		public OxRegexContext oxRegex() {
+			return getRuleContext(OxRegexContext.class,0);
 		}
-		public Ox_host_exprContext ox_host_expr() {
-			return getRuleContext(Ox_host_exprContext.class,0);
+		public OxHostExprContext oxHostExpr() {
+			return getRuleContext(OxHostExprContext.class,0);
 		}
-		public Ox_setContext ox_set() {
-			return getRuleContext(Ox_setContext.class,0);
+		public OxSetContext oxSet() {
+			return getRuleContext(OxSetContext.class,0);
 		}
-		public Ox_tagContext ox_tag() {
-			return getRuleContext(Ox_tagContext.class,0);
+		public OxTagContext oxTag() {
+			return getRuleContext(OxTagContext.class,0);
 		}
-		public Ox_derefContext ox_deref() {
-			return getRuleContext(Ox_derefContext.class,0);
+		public OxDerefContext oxDeref() {
+			return getRuleContext(OxDerefContext.class,0);
 		}
-		public Ox_quoteContext ox_quote() {
-			return getRuleContext(Ox_quoteContext.class,0);
+		public OxQuoteContext oxQuote() {
+			return getRuleContext(OxQuoteContext.class,0);
 		}
-		public Ox_backtickContext ox_backtick() {
-			return getRuleContext(Ox_backtickContext.class,0);
+		public OxBacktickContext oxBacktick() {
+			return getRuleContext(OxBacktickContext.class,0);
 		}
-		public Ox_unquoteContext ox_unquote() {
-			return getRuleContext(Ox_unquoteContext.class,0);
+		public OxUnquoteContext oxUnquote() {
+			return getRuleContext(OxUnquoteContext.class,0);
 		}
-		public Ox_unquote_splicingContext ox_unquote_splicing() {
-			return getRuleContext(Ox_unquote_splicingContext.class,0);
+		public OxUnquoteSplicingContext oxUnquoteSplicing() {
+			return getRuleContext(OxUnquoteSplicingContext.class,0);
 		}
-		public Ox_gensymContext ox_gensym() {
-			return getRuleContext(Ox_gensymContext.class,0);
+		public OxGensymContext oxGensym() {
+			return getRuleContext(OxGensymContext.class,0);
 		}
-		public Ox_reader_macroContext(ParserRuleContext parent, int invokingState) {
+		public OxReaderMacroContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_reader_macro; }
+		@Override public int getRuleIndex() { return RULE_oxReaderMacro; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_reader_macro(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxReaderMacro(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_reader_macro(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxReaderMacro(this);
 		}
 	}
 
-	public final Ox_reader_macroContext ox_reader_macro() throws RecognitionException {
-		Ox_reader_macroContext _localctx = new Ox_reader_macroContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_ox_reader_macro);
+	public final OxReaderMacroContext oxReaderMacro() throws RecognitionException {
+		OxReaderMacroContext _localctx = new OxReaderMacroContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_oxReaderMacro);
 		try {
 			setState(139);
 			switch (_input.LA(1)) {
@@ -604,77 +602,77 @@ public class OxlangParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(128);
-				ox_meta_data();
+				oxMetaData();
 				}
 				break;
 			case T__14:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(129);
-				ox_regex();
+				oxRegex();
 				}
 				break;
 			case T__16:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(130);
-				ox_host_expr();
+				oxHostExpr();
 				}
 				break;
 			case T__7:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(131);
-				ox_set();
+				oxSet();
 				}
 				break;
 			case T__12:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(132);
-				ox_tag();
+				oxTag();
 				}
 				break;
 			case T__13:
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(133);
-				ox_deref();
+				oxDeref();
 				}
 				break;
 			case T__8:
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(134);
-				ox_quote();
+				oxQuote();
 				}
 				break;
 			case T__9:
 				enterOuterAlt(_localctx, 8);
 				{
 				setState(135);
-				ox_backtick();
+				oxBacktick();
 				}
 				break;
 			case T__10:
 				enterOuterAlt(_localctx, 9);
 				{
 				setState(136);
-				ox_unquote();
+				oxUnquote();
 				}
 				break;
 			case T__11:
 				enterOuterAlt(_localctx, 10);
 				{
 				setState(137);
-				ox_unquote_splicing();
+				oxUnquoteSplicing();
 				}
 				break;
 			case SYMBOL:
 				enterOuterAlt(_localctx, 11);
 				{
 				setState(138);
-				ox_gensym();
+				oxGensym();
 				}
 				break;
 			default:
@@ -692,34 +690,34 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_quoteContext extends ParserRuleContext {
-		public Ox_formContext ox_form() {
-			return getRuleContext(Ox_formContext.class,0);
+	public static class OxQuoteContext extends ParserRuleContext {
+		public OxFormContext oxForm() {
+			return getRuleContext(OxFormContext.class,0);
 		}
-		public Ox_quoteContext(ParserRuleContext parent, int invokingState) {
+		public OxQuoteContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_quote; }
+		@Override public int getRuleIndex() { return RULE_oxQuote; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_quote(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxQuote(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_quote(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxQuote(this);
 		}
 	}
 
-	public final Ox_quoteContext ox_quote() throws RecognitionException {
-		Ox_quoteContext _localctx = new Ox_quoteContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_ox_quote);
+	public final OxQuoteContext oxQuote() throws RecognitionException {
+		OxQuoteContext _localctx = new OxQuoteContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_oxQuote);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(141);
 			match(T__8);
 			setState(142);
-			ox_form();
+			oxForm();
 			}
 		}
 		catch (RecognitionException re) {
@@ -733,34 +731,34 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_backtickContext extends ParserRuleContext {
-		public Ox_formContext ox_form() {
-			return getRuleContext(Ox_formContext.class,0);
+	public static class OxBacktickContext extends ParserRuleContext {
+		public OxFormContext oxForm() {
+			return getRuleContext(OxFormContext.class,0);
 		}
-		public Ox_backtickContext(ParserRuleContext parent, int invokingState) {
+		public OxBacktickContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_backtick; }
+		@Override public int getRuleIndex() { return RULE_oxBacktick; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_backtick(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxBacktick(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_backtick(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxBacktick(this);
 		}
 	}
 
-	public final Ox_backtickContext ox_backtick() throws RecognitionException {
-		Ox_backtickContext _localctx = new Ox_backtickContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_ox_backtick);
+	public final OxBacktickContext oxBacktick() throws RecognitionException {
+		OxBacktickContext _localctx = new OxBacktickContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_oxBacktick);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(144);
 			match(T__9);
 			setState(145);
-			ox_form();
+			oxForm();
 			}
 		}
 		catch (RecognitionException re) {
@@ -774,34 +772,34 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_unquoteContext extends ParserRuleContext {
-		public Ox_formContext ox_form() {
-			return getRuleContext(Ox_formContext.class,0);
+	public static class OxUnquoteContext extends ParserRuleContext {
+		public OxFormContext oxForm() {
+			return getRuleContext(OxFormContext.class,0);
 		}
-		public Ox_unquoteContext(ParserRuleContext parent, int invokingState) {
+		public OxUnquoteContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_unquote; }
+		@Override public int getRuleIndex() { return RULE_oxUnquote; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_unquote(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxUnquote(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_unquote(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxUnquote(this);
 		}
 	}
 
-	public final Ox_unquoteContext ox_unquote() throws RecognitionException {
-		Ox_unquoteContext _localctx = new Ox_unquoteContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_ox_unquote);
+	public final OxUnquoteContext oxUnquote() throws RecognitionException {
+		OxUnquoteContext _localctx = new OxUnquoteContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_oxUnquote);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(147);
 			match(T__10);
 			setState(148);
-			ox_form();
+			oxForm();
 			}
 		}
 		catch (RecognitionException re) {
@@ -815,34 +813,34 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_unquote_splicingContext extends ParserRuleContext {
-		public Ox_formContext ox_form() {
-			return getRuleContext(Ox_formContext.class,0);
+	public static class OxUnquoteSplicingContext extends ParserRuleContext {
+		public OxFormContext oxForm() {
+			return getRuleContext(OxFormContext.class,0);
 		}
-		public Ox_unquote_splicingContext(ParserRuleContext parent, int invokingState) {
+		public OxUnquoteSplicingContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_unquote_splicing; }
+		@Override public int getRuleIndex() { return RULE_oxUnquoteSplicing; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_unquote_splicing(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxUnquoteSplicing(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_unquote_splicing(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxUnquoteSplicing(this);
 		}
 	}
 
-	public final Ox_unquote_splicingContext ox_unquote_splicing() throws RecognitionException {
-		Ox_unquote_splicingContext _localctx = new Ox_unquote_splicingContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_ox_unquote_splicing);
+	public final OxUnquoteSplicingContext oxUnquoteSplicing() throws RecognitionException {
+		OxUnquoteSplicingContext _localctx = new OxUnquoteSplicingContext(_ctx, getState());
+		enterRule(_localctx, 24, RULE_oxUnquoteSplicing);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(150);
 			match(T__11);
 			setState(151);
-			ox_form();
+			oxForm();
 			}
 		}
 		catch (RecognitionException re) {
@@ -856,33 +854,33 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_tagContext extends ParserRuleContext {
-		public Ox_formContext ox_form() {
-			return getRuleContext(Ox_formContext.class,0);
+	public static class OxTagContext extends ParserRuleContext {
+		public OxFormContext oxForm() {
+			return getRuleContext(OxFormContext.class,0);
 		}
-		public Ox_symbolContext ox_symbol() {
-			return getRuleContext(Ox_symbolContext.class,0);
+		public OxSymbolContext oxSymbol() {
+			return getRuleContext(OxSymbolContext.class,0);
 		}
-		public Ox_stringContext ox_string() {
-			return getRuleContext(Ox_stringContext.class,0);
+		public OxStringContext oxString() {
+			return getRuleContext(OxStringContext.class,0);
 		}
-		public Ox_tagContext(ParserRuleContext parent, int invokingState) {
+		public OxTagContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_tag; }
+		@Override public int getRuleIndex() { return RULE_oxTag; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_tag(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxTag(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_tag(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxTag(this);
 		}
 	}
 
-	public final Ox_tagContext ox_tag() throws RecognitionException {
-		Ox_tagContext _localctx = new Ox_tagContext(_ctx, getState());
-		enterRule(_localctx, 26, RULE_ox_tag);
+	public final OxTagContext oxTag() throws RecognitionException {
+		OxTagContext _localctx = new OxTagContext(_ctx, getState());
+		enterRule(_localctx, 26, RULE_oxTag);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -894,20 +892,20 @@ public class OxlangParser extends Parser {
 			case NS_SYMBOL:
 				{
 				setState(154);
-				ox_symbol();
+				oxSymbol();
 				}
 				break;
 			case STRING:
 				{
 				setState(155);
-				ox_string();
+				oxString();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
 			setState(158);
-			ox_form();
+			oxForm();
 			}
 		}
 		catch (RecognitionException re) {
@@ -921,34 +919,34 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_derefContext extends ParserRuleContext {
-		public Ox_formContext ox_form() {
-			return getRuleContext(Ox_formContext.class,0);
+	public static class OxDerefContext extends ParserRuleContext {
+		public OxFormContext oxForm() {
+			return getRuleContext(OxFormContext.class,0);
 		}
-		public Ox_derefContext(ParserRuleContext parent, int invokingState) {
+		public OxDerefContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_deref; }
+		@Override public int getRuleIndex() { return RULE_oxDeref; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_deref(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxDeref(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_deref(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxDeref(this);
 		}
 	}
 
-	public final Ox_derefContext ox_deref() throws RecognitionException {
-		Ox_derefContext _localctx = new Ox_derefContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_ox_deref);
+	public final OxDerefContext oxDeref() throws RecognitionException {
+		OxDerefContext _localctx = new OxDerefContext(_ctx, getState());
+		enterRule(_localctx, 28, RULE_oxDeref);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(160);
 			match(T__13);
 			setState(161);
-			ox_form();
+			oxForm();
 			}
 		}
 		catch (RecognitionException re) {
@@ -962,25 +960,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_gensymContext extends ParserRuleContext {
+	public static class OxGensymContext extends ParserRuleContext {
 		public TerminalNode SYMBOL() { return getToken(OxlangParser.SYMBOL, 0); }
-		public Ox_gensymContext(ParserRuleContext parent, int invokingState) {
+		public OxGensymContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_gensym; }
+		@Override public int getRuleIndex() { return RULE_oxGensym; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_gensym(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxGensym(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_gensym(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxGensym(this);
 		}
 	}
 
-	public final Ox_gensymContext ox_gensym() throws RecognitionException {
-		Ox_gensymContext _localctx = new Ox_gensymContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_ox_gensym);
+	public final OxGensymContext oxGensym() throws RecognitionException {
+		OxGensymContext _localctx = new OxGensymContext(_ctx, getState());
+		enterRule(_localctx, 30, RULE_oxGensym);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1001,39 +999,39 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_meta_dataContext extends ParserRuleContext {
-		public Ox_mapContext ox_map() {
-			return getRuleContext(Ox_mapContext.class,0);
+	public static class OxMetaDataContext extends ParserRuleContext {
+		public OxMapContext oxMap() {
+			return getRuleContext(OxMapContext.class,0);
 		}
-		public Ox_formContext ox_form() {
-			return getRuleContext(Ox_formContext.class,0);
+		public OxFormContext oxForm() {
+			return getRuleContext(OxFormContext.class,0);
 		}
-		public Ox_meta_dataContext(ParserRuleContext parent, int invokingState) {
+		public OxMetaDataContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_meta_data; }
+		@Override public int getRuleIndex() { return RULE_oxMetaData; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_meta_data(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxMetaData(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_meta_data(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxMetaData(this);
 		}
 	}
 
-	public final Ox_meta_dataContext ox_meta_data() throws RecognitionException {
-		Ox_meta_dataContext _localctx = new Ox_meta_dataContext(_ctx, getState());
-		enterRule(_localctx, 32, RULE_ox_meta_data);
+	public final OxMetaDataContext oxMetaData() throws RecognitionException {
+		OxMetaDataContext _localctx = new OxMetaDataContext(_ctx, getState());
+		enterRule(_localctx, 32, RULE_oxMetaData);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(166);
 			match(T__15);
 			setState(167);
-			ox_map();
+			oxMap();
 			setState(168);
-			ox_form();
+			oxForm();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1047,39 +1045,39 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_host_exprContext extends ParserRuleContext {
-		public List<Ox_formContext> ox_form() {
-			return getRuleContexts(Ox_formContext.class);
+	public static class OxHostExprContext extends ParserRuleContext {
+		public List<OxFormContext> oxForm() {
+			return getRuleContexts(OxFormContext.class);
 		}
-		public Ox_formContext ox_form(int i) {
-			return getRuleContext(Ox_formContext.class,i);
+		public OxFormContext oxForm(int i) {
+			return getRuleContext(OxFormContext.class,i);
 		}
-		public Ox_host_exprContext(ParserRuleContext parent, int invokingState) {
+		public OxHostExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_host_expr; }
+		@Override public int getRuleIndex() { return RULE_oxHostExpr; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_host_expr(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxHostExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_host_expr(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxHostExpr(this);
 		}
 	}
 
-	public final Ox_host_exprContext ox_host_expr() throws RecognitionException {
-		Ox_host_exprContext _localctx = new Ox_host_exprContext(_ctx, getState());
-		enterRule(_localctx, 34, RULE_ox_host_expr);
+	public final OxHostExprContext oxHostExpr() throws RecognitionException {
+		OxHostExprContext _localctx = new OxHostExprContext(_ctx, getState());
+		enterRule(_localctx, 34, RULE_oxHostExpr);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(170);
 			match(T__16);
 			setState(171);
-			ox_form();
+			oxForm();
 			setState(172);
-			ox_form();
+			oxForm();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1093,34 +1091,34 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_regexContext extends ParserRuleContext {
-		public Ox_stringContext ox_string() {
-			return getRuleContext(Ox_stringContext.class,0);
+	public static class OxRegexContext extends ParserRuleContext {
+		public OxStringContext oxString() {
+			return getRuleContext(OxStringContext.class,0);
 		}
-		public Ox_regexContext(ParserRuleContext parent, int invokingState) {
+		public OxRegexContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_regex; }
+		@Override public int getRuleIndex() { return RULE_oxRegex; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_regex(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxRegex(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_regex(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxRegex(this);
 		}
 	}
 
-	public final Ox_regexContext ox_regex() throws RecognitionException {
-		Ox_regexContext _localctx = new Ox_regexContext(_ctx, getState());
-		enterRule(_localctx, 36, RULE_ox_regex);
+	public final OxRegexContext oxRegex() throws RecognitionException {
+		OxRegexContext _localctx = new OxRegexContext(_ctx, getState());
+		enterRule(_localctx, 36, RULE_oxRegex);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(174);
 			match(T__14);
 			setState(175);
-			ox_string();
+			oxString();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1134,45 +1132,45 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_literalContext extends ParserRuleContext {
-		public Ox_stringContext ox_string() {
-			return getRuleContext(Ox_stringContext.class,0);
+	public static class OxLiteralContext extends ParserRuleContext {
+		public OxStringContext oxString() {
+			return getRuleContext(OxStringContext.class,0);
 		}
-		public Ox_numberContext ox_number() {
-			return getRuleContext(Ox_numberContext.class,0);
+		public OxNumberContext oxNumber() {
+			return getRuleContext(OxNumberContext.class,0);
 		}
-		public Ox_characterContext ox_character() {
-			return getRuleContext(Ox_characterContext.class,0);
+		public OxCharacterContext oxCharacter() {
+			return getRuleContext(OxCharacterContext.class,0);
 		}
-		public Ox_nilContext ox_nil() {
-			return getRuleContext(Ox_nilContext.class,0);
+		public OxNilContext oxNil() {
+			return getRuleContext(OxNilContext.class,0);
 		}
-		public Ox_booleanContext ox_boolean() {
-			return getRuleContext(Ox_booleanContext.class,0);
+		public OxBooleanContext oxBoolean() {
+			return getRuleContext(OxBooleanContext.class,0);
 		}
-		public Ox_keywordContext ox_keyword() {
-			return getRuleContext(Ox_keywordContext.class,0);
+		public OxKeywordContext oxKeyword() {
+			return getRuleContext(OxKeywordContext.class,0);
 		}
-		public Ox_symbolContext ox_symbol() {
-			return getRuleContext(Ox_symbolContext.class,0);
+		public OxSymbolContext oxSymbol() {
+			return getRuleContext(OxSymbolContext.class,0);
 		}
-		public Ox_literalContext(ParserRuleContext parent, int invokingState) {
+		public OxLiteralContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_literal; }
+		@Override public int getRuleIndex() { return RULE_oxLiteral; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_literal(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxLiteral(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_literal(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxLiteral(this);
 		}
 	}
 
-	public final Ox_literalContext ox_literal() throws RecognitionException {
-		Ox_literalContext _localctx = new Ox_literalContext(_ctx, getState());
-		enterRule(_localctx, 38, RULE_ox_literal);
+	public final OxLiteralContext oxLiteral() throws RecognitionException {
+		OxLiteralContext _localctx = new OxLiteralContext(_ctx, getState());
+		enterRule(_localctx, 38, RULE_oxLiteral);
 		try {
 			setState(184);
 			switch (_input.LA(1)) {
@@ -1180,7 +1178,7 @@ public class OxlangParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(177);
-				ox_string();
+				oxString();
 				}
 				break;
 			case FLOAT:
@@ -1192,7 +1190,7 @@ public class OxlangParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(178);
-				ox_number();
+				oxNumber();
 				}
 				break;
 			case CHAR_U:
@@ -1201,28 +1199,28 @@ public class OxlangParser extends Parser {
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(179);
-				ox_character();
+				oxCharacter();
 				}
 				break;
 			case NIL:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(180);
-				ox_nil();
+				oxNil();
 				}
 				break;
 			case BOOLEAN:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(181);
-				ox_boolean();
+				oxBoolean();
 				}
 				break;
 			case T__17:
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(182);
-				ox_keyword();
+				oxKeyword();
 				}
 				break;
 			case SYMBOL:
@@ -1230,7 +1228,7 @@ public class OxlangParser extends Parser {
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(183);
-				ox_symbol();
+				oxSymbol();
 				}
 				break;
 			default:
@@ -1248,25 +1246,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_stringContext extends ParserRuleContext {
+	public static class OxStringContext extends ParserRuleContext {
 		public TerminalNode STRING() { return getToken(OxlangParser.STRING, 0); }
-		public Ox_stringContext(ParserRuleContext parent, int invokingState) {
+		public OxStringContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_string; }
+		@Override public int getRuleIndex() { return RULE_oxString; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_string(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxString(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_string(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxString(this);
 		}
 	}
 
-	public final Ox_stringContext ox_string() throws RecognitionException {
-		Ox_stringContext _localctx = new Ox_stringContext(_ctx, getState());
-		enterRule(_localctx, 40, RULE_ox_string);
+	public final OxStringContext oxString() throws RecognitionException {
+		OxStringContext _localctx = new OxStringContext(_ctx, getState());
+		enterRule(_localctx, 40, RULE_oxString);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1285,25 +1283,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_floatContext extends ParserRuleContext {
+	public static class OxFloatContext extends ParserRuleContext {
 		public TerminalNode FLOAT() { return getToken(OxlangParser.FLOAT, 0); }
-		public Ox_floatContext(ParserRuleContext parent, int invokingState) {
+		public OxFloatContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_float; }
+		@Override public int getRuleIndex() { return RULE_oxFloat; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_float(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxFloat(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_float(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxFloat(this);
 		}
 	}
 
-	public final Ox_floatContext ox_float() throws RecognitionException {
-		Ox_floatContext _localctx = new Ox_floatContext(_ctx, getState());
-		enterRule(_localctx, 42, RULE_ox_float);
+	public final OxFloatContext oxFloat() throws RecognitionException {
+		OxFloatContext _localctx = new OxFloatContext(_ctx, getState());
+		enterRule(_localctx, 42, RULE_oxFloat);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1322,25 +1320,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_hexContext extends ParserRuleContext {
+	public static class OxHexContext extends ParserRuleContext {
 		public TerminalNode HEX() { return getToken(OxlangParser.HEX, 0); }
-		public Ox_hexContext(ParserRuleContext parent, int invokingState) {
+		public OxHexContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_hex; }
+		@Override public int getRuleIndex() { return RULE_oxHex; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_hex(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxHex(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_hex(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxHex(this);
 		}
 	}
 
-	public final Ox_hexContext ox_hex() throws RecognitionException {
-		Ox_hexContext _localctx = new Ox_hexContext(_ctx, getState());
-		enterRule(_localctx, 44, RULE_ox_hex);
+	public final OxHexContext oxHex() throws RecognitionException {
+		OxHexContext _localctx = new OxHexContext(_ctx, getState());
+		enterRule(_localctx, 44, RULE_oxHex);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1359,25 +1357,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_binContext extends ParserRuleContext {
+	public static class OxBinContext extends ParserRuleContext {
 		public TerminalNode BIN() { return getToken(OxlangParser.BIN, 0); }
-		public Ox_binContext(ParserRuleContext parent, int invokingState) {
+		public OxBinContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_bin; }
+		@Override public int getRuleIndex() { return RULE_oxBin; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_bin(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxBin(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_bin(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxBin(this);
 		}
 	}
 
-	public final Ox_binContext ox_bin() throws RecognitionException {
-		Ox_binContext _localctx = new Ox_binContext(_ctx, getState());
-		enterRule(_localctx, 46, RULE_ox_bin);
+	public final OxBinContext oxBin() throws RecognitionException {
+		OxBinContext _localctx = new OxBinContext(_ctx, getState());
+		enterRule(_localctx, 46, RULE_oxBin);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1396,25 +1394,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_bignContext extends ParserRuleContext {
+	public static class OxBignContext extends ParserRuleContext {
 		public TerminalNode BIGN() { return getToken(OxlangParser.BIGN, 0); }
-		public Ox_bignContext(ParserRuleContext parent, int invokingState) {
+		public OxBignContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_bign; }
+		@Override public int getRuleIndex() { return RULE_oxBign; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_bign(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxBign(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_bign(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxBign(this);
 		}
 	}
 
-	public final Ox_bignContext ox_bign() throws RecognitionException {
-		Ox_bignContext _localctx = new Ox_bignContext(_ctx, getState());
-		enterRule(_localctx, 48, RULE_ox_bign);
+	public final OxBignContext oxBign() throws RecognitionException {
+		OxBignContext _localctx = new OxBignContext(_ctx, getState());
+		enterRule(_localctx, 48, RULE_oxBign);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1433,25 +1431,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_longContext extends ParserRuleContext {
+	public static class OxLongContext extends ParserRuleContext {
 		public TerminalNode LONG() { return getToken(OxlangParser.LONG, 0); }
-		public Ox_longContext(ParserRuleContext parent, int invokingState) {
+		public OxLongContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_long; }
+		@Override public int getRuleIndex() { return RULE_oxLong; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_long(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxLong(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_long(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxLong(this);
 		}
 	}
 
-	public final Ox_longContext ox_long() throws RecognitionException {
-		Ox_longContext _localctx = new Ox_longContext(_ctx, getState());
-		enterRule(_localctx, 50, RULE_ox_long);
+	public final OxLongContext oxLong() throws RecognitionException {
+		OxLongContext _localctx = new OxLongContext(_ctx, getState());
+		enterRule(_localctx, 50, RULE_oxLong);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1470,25 +1468,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_rintContext extends ParserRuleContext {
+	public static class OxRintContext extends ParserRuleContext {
 		public TerminalNode RINT() { return getToken(OxlangParser.RINT, 0); }
-		public Ox_rintContext(ParserRuleContext parent, int invokingState) {
+		public OxRintContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_rint; }
+		@Override public int getRuleIndex() { return RULE_oxRint; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_rint(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxRint(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_rint(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxRint(this);
 		}
 	}
 
-	public final Ox_rintContext ox_rint() throws RecognitionException {
-		Ox_rintContext _localctx = new Ox_rintContext(_ctx, getState());
-		enterRule(_localctx, 52, RULE_ox_rint);
+	public final OxRintContext oxRint() throws RecognitionException {
+		OxRintContext _localctx = new OxRintContext(_ctx, getState());
+		enterRule(_localctx, 52, RULE_oxRint);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1507,42 +1505,42 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_numberContext extends ParserRuleContext {
-		public Ox_floatContext ox_float() {
-			return getRuleContext(Ox_floatContext.class,0);
+	public static class OxNumberContext extends ParserRuleContext {
+		public OxFloatContext oxFloat() {
+			return getRuleContext(OxFloatContext.class,0);
 		}
-		public Ox_hexContext ox_hex() {
-			return getRuleContext(Ox_hexContext.class,0);
+		public OxHexContext oxHex() {
+			return getRuleContext(OxHexContext.class,0);
 		}
-		public Ox_binContext ox_bin() {
-			return getRuleContext(Ox_binContext.class,0);
+		public OxBinContext oxBin() {
+			return getRuleContext(OxBinContext.class,0);
 		}
-		public Ox_bignContext ox_bign() {
-			return getRuleContext(Ox_bignContext.class,0);
+		public OxBignContext oxBign() {
+			return getRuleContext(OxBignContext.class,0);
 		}
-		public Ox_longContext ox_long() {
-			return getRuleContext(Ox_longContext.class,0);
+		public OxLongContext oxLong() {
+			return getRuleContext(OxLongContext.class,0);
 		}
-		public Ox_rintContext ox_rint() {
-			return getRuleContext(Ox_rintContext.class,0);
+		public OxRintContext oxRint() {
+			return getRuleContext(OxRintContext.class,0);
 		}
-		public Ox_numberContext(ParserRuleContext parent, int invokingState) {
+		public OxNumberContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_number; }
+		@Override public int getRuleIndex() { return RULE_oxNumber; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_number(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxNumber(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_number(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxNumber(this);
 		}
 	}
 
-	public final Ox_numberContext ox_number() throws RecognitionException {
-		Ox_numberContext _localctx = new Ox_numberContext(_ctx, getState());
-		enterRule(_localctx, 54, RULE_ox_number);
+	public final OxNumberContext oxNumber() throws RecognitionException {
+		OxNumberContext _localctx = new OxNumberContext(_ctx, getState());
+		enterRule(_localctx, 54, RULE_oxNumber);
 		try {
 			setState(206);
 			switch (_input.LA(1)) {
@@ -1550,42 +1548,42 @@ public class OxlangParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(200);
-				ox_float();
+				oxFloat();
 				}
 				break;
 			case HEX:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(201);
-				ox_hex();
+				oxHex();
 				}
 				break;
 			case BIN:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(202);
-				ox_bin();
+				oxBin();
 				}
 				break;
 			case BIGN:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(203);
-				ox_bign();
+				oxBign();
 				}
 				break;
 			case LONG:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(204);
-				ox_long();
+				oxLong();
 				}
 				break;
 			case RINT:
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(205);
-				ox_rint();
+				oxRint();
 				}
 				break;
 			default:
@@ -1603,33 +1601,33 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_characterContext extends ParserRuleContext {
-		public Ox_named_charContext ox_named_char() {
-			return getRuleContext(Ox_named_charContext.class,0);
+	public static class OxCharacterContext extends ParserRuleContext {
+		public OxNamedCharContext oxNamedChar() {
+			return getRuleContext(OxNamedCharContext.class,0);
 		}
-		public Ox_u_hex_quadContext ox_u_hex_quad() {
-			return getRuleContext(Ox_u_hex_quadContext.class,0);
+		public OxUHexQuadContext oxUHexQuad() {
+			return getRuleContext(OxUHexQuadContext.class,0);
 		}
-		public Ox_any_charContext ox_any_char() {
-			return getRuleContext(Ox_any_charContext.class,0);
+		public OxAnyCharContext oxAnyChar() {
+			return getRuleContext(OxAnyCharContext.class,0);
 		}
-		public Ox_characterContext(ParserRuleContext parent, int invokingState) {
+		public OxCharacterContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_character; }
+		@Override public int getRuleIndex() { return RULE_oxCharacter; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_character(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxCharacter(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_character(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxCharacter(this);
 		}
 	}
 
-	public final Ox_characterContext ox_character() throws RecognitionException {
-		Ox_characterContext _localctx = new Ox_characterContext(_ctx, getState());
-		enterRule(_localctx, 56, RULE_ox_character);
+	public final OxCharacterContext oxCharacter() throws RecognitionException {
+		OxCharacterContext _localctx = new OxCharacterContext(_ctx, getState());
+		enterRule(_localctx, 56, RULE_oxCharacter);
 		try {
 			setState(211);
 			switch (_input.LA(1)) {
@@ -1637,21 +1635,21 @@ public class OxlangParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(208);
-				ox_named_char();
+				oxNamedChar();
 				}
 				break;
 			case CHAR_U:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(209);
-				ox_u_hex_quad();
+				oxUHexQuad();
 				}
 				break;
 			case CHAR_ANY:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(210);
-				ox_any_char();
+				oxAnyChar();
 				}
 				break;
 			default:
@@ -1669,25 +1667,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_named_charContext extends ParserRuleContext {
+	public static class OxNamedCharContext extends ParserRuleContext {
 		public TerminalNode CHAR_NAMED() { return getToken(OxlangParser.CHAR_NAMED, 0); }
-		public Ox_named_charContext(ParserRuleContext parent, int invokingState) {
+		public OxNamedCharContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_named_char; }
+		@Override public int getRuleIndex() { return RULE_oxNamedChar; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_named_char(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxNamedChar(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_named_char(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxNamedChar(this);
 		}
 	}
 
-	public final Ox_named_charContext ox_named_char() throws RecognitionException {
-		Ox_named_charContext _localctx = new Ox_named_charContext(_ctx, getState());
-		enterRule(_localctx, 58, RULE_ox_named_char);
+	public final OxNamedCharContext oxNamedChar() throws RecognitionException {
+		OxNamedCharContext _localctx = new OxNamedCharContext(_ctx, getState());
+		enterRule(_localctx, 58, RULE_oxNamedChar);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1706,25 +1704,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_any_charContext extends ParserRuleContext {
+	public static class OxAnyCharContext extends ParserRuleContext {
 		public TerminalNode CHAR_ANY() { return getToken(OxlangParser.CHAR_ANY, 0); }
-		public Ox_any_charContext(ParserRuleContext parent, int invokingState) {
+		public OxAnyCharContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_any_char; }
+		@Override public int getRuleIndex() { return RULE_oxAnyChar; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_any_char(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxAnyChar(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_any_char(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxAnyChar(this);
 		}
 	}
 
-	public final Ox_any_charContext ox_any_char() throws RecognitionException {
-		Ox_any_charContext _localctx = new Ox_any_charContext(_ctx, getState());
-		enterRule(_localctx, 60, RULE_ox_any_char);
+	public final OxAnyCharContext oxAnyChar() throws RecognitionException {
+		OxAnyCharContext _localctx = new OxAnyCharContext(_ctx, getState());
+		enterRule(_localctx, 60, RULE_oxAnyChar);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1743,25 +1741,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_u_hex_quadContext extends ParserRuleContext {
+	public static class OxUHexQuadContext extends ParserRuleContext {
 		public TerminalNode CHAR_U() { return getToken(OxlangParser.CHAR_U, 0); }
-		public Ox_u_hex_quadContext(ParserRuleContext parent, int invokingState) {
+		public OxUHexQuadContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_u_hex_quad; }
+		@Override public int getRuleIndex() { return RULE_oxUHexQuad; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_u_hex_quad(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxUHexQuad(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_u_hex_quad(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxUHexQuad(this);
 		}
 	}
 
-	public final Ox_u_hex_quadContext ox_u_hex_quad() throws RecognitionException {
-		Ox_u_hex_quadContext _localctx = new Ox_u_hex_quadContext(_ctx, getState());
-		enterRule(_localctx, 62, RULE_ox_u_hex_quad);
+	public final OxUHexQuadContext oxUHexQuad() throws RecognitionException {
+		OxUHexQuadContext _localctx = new OxUHexQuadContext(_ctx, getState());
+		enterRule(_localctx, 62, RULE_oxUHexQuad);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1780,25 +1778,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_nilContext extends ParserRuleContext {
+	public static class OxNilContext extends ParserRuleContext {
 		public TerminalNode NIL() { return getToken(OxlangParser.NIL, 0); }
-		public Ox_nilContext(ParserRuleContext parent, int invokingState) {
+		public OxNilContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_nil; }
+		@Override public int getRuleIndex() { return RULE_oxNil; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_nil(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxNil(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_nil(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxNil(this);
 		}
 	}
 
-	public final Ox_nilContext ox_nil() throws RecognitionException {
-		Ox_nilContext _localctx = new Ox_nilContext(_ctx, getState());
-		enterRule(_localctx, 64, RULE_ox_nil);
+	public final OxNilContext oxNil() throws RecognitionException {
+		OxNilContext _localctx = new OxNilContext(_ctx, getState());
+		enterRule(_localctx, 64, RULE_oxNil);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1817,25 +1815,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_booleanContext extends ParserRuleContext {
+	public static class OxBooleanContext extends ParserRuleContext {
 		public TerminalNode BOOLEAN() { return getToken(OxlangParser.BOOLEAN, 0); }
-		public Ox_booleanContext(ParserRuleContext parent, int invokingState) {
+		public OxBooleanContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_boolean; }
+		@Override public int getRuleIndex() { return RULE_oxBoolean; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_boolean(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxBoolean(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_boolean(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxBoolean(this);
 		}
 	}
 
-	public final Ox_booleanContext ox_boolean() throws RecognitionException {
-		Ox_booleanContext _localctx = new Ox_booleanContext(_ctx, getState());
-		enterRule(_localctx, 66, RULE_ox_boolean);
+	public final OxBooleanContext oxBoolean() throws RecognitionException {
+		OxBooleanContext _localctx = new OxBooleanContext(_ctx, getState());
+		enterRule(_localctx, 66, RULE_oxBoolean);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1854,30 +1852,30 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_keywordContext extends ParserRuleContext {
-		public Ox_macro_keywordContext ox_macro_keyword() {
-			return getRuleContext(Ox_macro_keywordContext.class,0);
+	public static class OxKeywordContext extends ParserRuleContext {
+		public OxMacroKeywordContext oxMacroKeyword() {
+			return getRuleContext(OxMacroKeywordContext.class,0);
 		}
-		public Ox_simple_keywordContext ox_simple_keyword() {
-			return getRuleContext(Ox_simple_keywordContext.class,0);
+		public OxSimpleKeywordContext oxSimpleKeyword() {
+			return getRuleContext(OxSimpleKeywordContext.class,0);
 		}
-		public Ox_keywordContext(ParserRuleContext parent, int invokingState) {
+		public OxKeywordContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_keyword; }
+		@Override public int getRuleIndex() { return RULE_oxKeyword; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_keyword(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxKeyword(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_keyword(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxKeyword(this);
 		}
 	}
 
-	public final Ox_keywordContext ox_keyword() throws RecognitionException {
-		Ox_keywordContext _localctx = new Ox_keywordContext(_ctx, getState());
-		enterRule(_localctx, 68, RULE_ox_keyword);
+	public final OxKeywordContext oxKeyword() throws RecognitionException {
+		OxKeywordContext _localctx = new OxKeywordContext(_ctx, getState());
+		enterRule(_localctx, 68, RULE_oxKeyword);
 		try {
 			setState(225);
 			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
@@ -1885,14 +1883,14 @@ public class OxlangParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(223);
-				ox_macro_keyword();
+				oxMacroKeyword();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(224);
-				ox_simple_keyword();
+				oxSimpleKeyword();
 				}
 				break;
 			}
@@ -1908,34 +1906,34 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_simple_keywordContext extends ParserRuleContext {
-		public Ox_symbolContext ox_symbol() {
-			return getRuleContext(Ox_symbolContext.class,0);
+	public static class OxSimpleKeywordContext extends ParserRuleContext {
+		public OxSymbolContext oxSymbol() {
+			return getRuleContext(OxSymbolContext.class,0);
 		}
-		public Ox_simple_keywordContext(ParserRuleContext parent, int invokingState) {
+		public OxSimpleKeywordContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_simple_keyword; }
+		@Override public int getRuleIndex() { return RULE_oxSimpleKeyword; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_simple_keyword(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxSimpleKeyword(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_simple_keyword(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxSimpleKeyword(this);
 		}
 	}
 
-	public final Ox_simple_keywordContext ox_simple_keyword() throws RecognitionException {
-		Ox_simple_keywordContext _localctx = new Ox_simple_keywordContext(_ctx, getState());
-		enterRule(_localctx, 70, RULE_ox_simple_keyword);
+	public final OxSimpleKeywordContext oxSimpleKeyword() throws RecognitionException {
+		OxSimpleKeywordContext _localctx = new OxSimpleKeywordContext(_ctx, getState());
+		enterRule(_localctx, 70, RULE_oxSimpleKeyword);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(227);
 			match(T__17);
 			setState(228);
-			ox_symbol();
+			oxSymbol();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1949,27 +1947,27 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_macro_keywordContext extends ParserRuleContext {
-		public Ox_symbolContext ox_symbol() {
-			return getRuleContext(Ox_symbolContext.class,0);
+	public static class OxMacroKeywordContext extends ParserRuleContext {
+		public OxSymbolContext oxSymbol() {
+			return getRuleContext(OxSymbolContext.class,0);
 		}
-		public Ox_macro_keywordContext(ParserRuleContext parent, int invokingState) {
+		public OxMacroKeywordContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_macro_keyword; }
+		@Override public int getRuleIndex() { return RULE_oxMacroKeyword; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_macro_keyword(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxMacroKeyword(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_macro_keyword(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxMacroKeyword(this);
 		}
 	}
 
-	public final Ox_macro_keywordContext ox_macro_keyword() throws RecognitionException {
-		Ox_macro_keywordContext _localctx = new Ox_macro_keywordContext(_ctx, getState());
-		enterRule(_localctx, 72, RULE_ox_macro_keyword);
+	public final OxMacroKeywordContext oxMacroKeyword() throws RecognitionException {
+		OxMacroKeywordContext _localctx = new OxMacroKeywordContext(_ctx, getState());
+		enterRule(_localctx, 72, RULE_oxMacroKeyword);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -1978,7 +1976,7 @@ public class OxlangParser extends Parser {
 			setState(231);
 			match(T__17);
 			setState(232);
-			ox_symbol();
+			oxSymbol();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1992,30 +1990,30 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_symbolContext extends ParserRuleContext {
-		public Ox_ns_symbolContext ox_ns_symbol() {
-			return getRuleContext(Ox_ns_symbolContext.class,0);
+	public static class OxSymbolContext extends ParserRuleContext {
+		public OxNsSymbolContext oxNsSymbol() {
+			return getRuleContext(OxNsSymbolContext.class,0);
 		}
-		public Simple_symContext simple_sym() {
-			return getRuleContext(Simple_symContext.class,0);
+		public SimpleSymContext simpleSym() {
+			return getRuleContext(SimpleSymContext.class,0);
 		}
-		public Ox_symbolContext(ParserRuleContext parent, int invokingState) {
+		public OxSymbolContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_symbol; }
+		@Override public int getRuleIndex() { return RULE_oxSymbol; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_symbol(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxSymbol(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_symbol(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxSymbol(this);
 		}
 	}
 
-	public final Ox_symbolContext ox_symbol() throws RecognitionException {
-		Ox_symbolContext _localctx = new Ox_symbolContext(_ctx, getState());
-		enterRule(_localctx, 74, RULE_ox_symbol);
+	public final OxSymbolContext oxSymbol() throws RecognitionException {
+		OxSymbolContext _localctx = new OxSymbolContext(_ctx, getState());
+		enterRule(_localctx, 74, RULE_oxSymbol);
 		try {
 			setState(236);
 			switch (_input.LA(1)) {
@@ -2023,14 +2021,14 @@ public class OxlangParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(234);
-				ox_ns_symbol();
+				oxNsSymbol();
 				}
 				break;
 			case SYMBOL:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(235);
-				simple_sym();
+				simpleSym();
 				}
 				break;
 			default:
@@ -2048,25 +2046,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Simple_symContext extends ParserRuleContext {
+	public static class SimpleSymContext extends ParserRuleContext {
 		public TerminalNode SYMBOL() { return getToken(OxlangParser.SYMBOL, 0); }
-		public Simple_symContext(ParserRuleContext parent, int invokingState) {
+		public SimpleSymContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_simple_sym; }
+		@Override public int getRuleIndex() { return RULE_simpleSym; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterSimple_sym(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterSimpleSym(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitSimple_sym(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitSimpleSym(this);
 		}
 	}
 
-	public final Simple_symContext simple_sym() throws RecognitionException {
-		Simple_symContext _localctx = new Simple_symContext(_ctx, getState());
-		enterRule(_localctx, 76, RULE_simple_sym);
+	public final SimpleSymContext simpleSym() throws RecognitionException {
+		SimpleSymContext _localctx = new SimpleSymContext(_ctx, getState());
+		enterRule(_localctx, 76, RULE_simpleSym);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -2085,25 +2083,25 @@ public class OxlangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Ox_ns_symbolContext extends ParserRuleContext {
+	public static class OxNsSymbolContext extends ParserRuleContext {
 		public TerminalNode NS_SYMBOL() { return getToken(OxlangParser.NS_SYMBOL, 0); }
-		public Ox_ns_symbolContext(ParserRuleContext parent, int invokingState) {
+		public OxNsSymbolContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_ox_ns_symbol; }
+		@Override public int getRuleIndex() { return RULE_oxNsSymbol; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOx_ns_symbol(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).enterOxNsSymbol(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOx_ns_symbol(this);
+			if ( listener instanceof OxlangListener ) ((OxlangListener)listener).exitOxNsSymbol(this);
 		}
 	}
 
-	public final Ox_ns_symbolContext ox_ns_symbol() throws RecognitionException {
-		Ox_ns_symbolContext _localctx = new Ox_ns_symbolContext(_ctx, getState());
-		enterRule(_localctx, 78, RULE_ox_ns_symbol);
+	public final OxNsSymbolContext oxNsSymbol() throws RecognitionException {
+		OxNsSymbolContext _localctx = new OxNsSymbolContext(_ctx, getState());
+		enterRule(_localctx, 78, RULE_oxNsSymbol);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{

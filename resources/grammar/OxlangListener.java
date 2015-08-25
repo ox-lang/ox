@@ -7,403 +7,403 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface OxlangListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_file}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxFile}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_file(OxlangParser.Ox_fileContext ctx);
+	void enterOxFile(OxlangParser.OxFileContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_file}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxFile}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_file(OxlangParser.Ox_fileContext ctx);
+	void exitOxFile(OxlangParser.OxFileContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_form}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxForm}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_form(OxlangParser.Ox_formContext ctx);
+	void enterOxForm(OxlangParser.OxFormContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_form}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxForm}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_form(OxlangParser.Ox_formContext ctx);
+	void exitOxForm(OxlangParser.OxFormContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_forms}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxForms}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_forms(OxlangParser.Ox_formsContext ctx);
+	void enterOxForms(OxlangParser.OxFormsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_forms}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxForms}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_forms(OxlangParser.Ox_formsContext ctx);
+	void exitOxForms(OxlangParser.OxFormsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_list}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxList}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_list(OxlangParser.Ox_listContext ctx);
+	void enterOxList(OxlangParser.OxListContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_list}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxList}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_list(OxlangParser.Ox_listContext ctx);
+	void exitOxList(OxlangParser.OxListContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_vector}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxVector}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_vector(OxlangParser.Ox_vectorContext ctx);
+	void enterOxVector(OxlangParser.OxVectorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_vector}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxVector}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_vector(OxlangParser.Ox_vectorContext ctx);
+	void exitOxVector(OxlangParser.OxVectorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_record}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxRecord}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_record(OxlangParser.Ox_recordContext ctx);
+	void enterOxRecord(OxlangParser.OxRecordContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_record}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxRecord}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_record(OxlangParser.Ox_recordContext ctx);
+	void exitOxRecord(OxlangParser.OxRecordContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_map}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxMap}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_map(OxlangParser.Ox_mapContext ctx);
+	void enterOxMap(OxlangParser.OxMapContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_map}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxMap}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_map(OxlangParser.Ox_mapContext ctx);
+	void exitOxMap(OxlangParser.OxMapContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_set}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxSet}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_set(OxlangParser.Ox_setContext ctx);
+	void enterOxSet(OxlangParser.OxSetContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_set}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxSet}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_set(OxlangParser.Ox_setContext ctx);
+	void exitOxSet(OxlangParser.OxSetContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_reader_macro}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxReaderMacro}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_reader_macro(OxlangParser.Ox_reader_macroContext ctx);
+	void enterOxReaderMacro(OxlangParser.OxReaderMacroContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_reader_macro}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxReaderMacro}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_reader_macro(OxlangParser.Ox_reader_macroContext ctx);
+	void exitOxReaderMacro(OxlangParser.OxReaderMacroContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_quote}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxQuote}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_quote(OxlangParser.Ox_quoteContext ctx);
+	void enterOxQuote(OxlangParser.OxQuoteContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_quote}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxQuote}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_quote(OxlangParser.Ox_quoteContext ctx);
+	void exitOxQuote(OxlangParser.OxQuoteContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_backtick}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxBacktick}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_backtick(OxlangParser.Ox_backtickContext ctx);
+	void enterOxBacktick(OxlangParser.OxBacktickContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_backtick}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxBacktick}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_backtick(OxlangParser.Ox_backtickContext ctx);
+	void exitOxBacktick(OxlangParser.OxBacktickContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_unquote}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxUnquote}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_unquote(OxlangParser.Ox_unquoteContext ctx);
+	void enterOxUnquote(OxlangParser.OxUnquoteContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_unquote}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxUnquote}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_unquote(OxlangParser.Ox_unquoteContext ctx);
+	void exitOxUnquote(OxlangParser.OxUnquoteContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_unquote_splicing}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxUnquoteSplicing}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_unquote_splicing(OxlangParser.Ox_unquote_splicingContext ctx);
+	void enterOxUnquoteSplicing(OxlangParser.OxUnquoteSplicingContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_unquote_splicing}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxUnquoteSplicing}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_unquote_splicing(OxlangParser.Ox_unquote_splicingContext ctx);
+	void exitOxUnquoteSplicing(OxlangParser.OxUnquoteSplicingContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_tag}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxTag}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_tag(OxlangParser.Ox_tagContext ctx);
+	void enterOxTag(OxlangParser.OxTagContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_tag}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxTag}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_tag(OxlangParser.Ox_tagContext ctx);
+	void exitOxTag(OxlangParser.OxTagContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_deref}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxDeref}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_deref(OxlangParser.Ox_derefContext ctx);
+	void enterOxDeref(OxlangParser.OxDerefContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_deref}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxDeref}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_deref(OxlangParser.Ox_derefContext ctx);
+	void exitOxDeref(OxlangParser.OxDerefContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_gensym}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxGensym}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_gensym(OxlangParser.Ox_gensymContext ctx);
+	void enterOxGensym(OxlangParser.OxGensymContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_gensym}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxGensym}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_gensym(OxlangParser.Ox_gensymContext ctx);
+	void exitOxGensym(OxlangParser.OxGensymContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_meta_data}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxMetaData}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_meta_data(OxlangParser.Ox_meta_dataContext ctx);
+	void enterOxMetaData(OxlangParser.OxMetaDataContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_meta_data}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxMetaData}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_meta_data(OxlangParser.Ox_meta_dataContext ctx);
+	void exitOxMetaData(OxlangParser.OxMetaDataContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_host_expr}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxHostExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_host_expr(OxlangParser.Ox_host_exprContext ctx);
+	void enterOxHostExpr(OxlangParser.OxHostExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_host_expr}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxHostExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_host_expr(OxlangParser.Ox_host_exprContext ctx);
+	void exitOxHostExpr(OxlangParser.OxHostExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_regex}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxRegex}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_regex(OxlangParser.Ox_regexContext ctx);
+	void enterOxRegex(OxlangParser.OxRegexContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_regex}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxRegex}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_regex(OxlangParser.Ox_regexContext ctx);
+	void exitOxRegex(OxlangParser.OxRegexContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_literal}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxLiteral}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_literal(OxlangParser.Ox_literalContext ctx);
+	void enterOxLiteral(OxlangParser.OxLiteralContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_literal}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxLiteral}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_literal(OxlangParser.Ox_literalContext ctx);
+	void exitOxLiteral(OxlangParser.OxLiteralContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_string}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxString}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_string(OxlangParser.Ox_stringContext ctx);
+	void enterOxString(OxlangParser.OxStringContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_string}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxString}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_string(OxlangParser.Ox_stringContext ctx);
+	void exitOxString(OxlangParser.OxStringContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_float}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxFloat}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_float(OxlangParser.Ox_floatContext ctx);
+	void enterOxFloat(OxlangParser.OxFloatContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_float}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxFloat}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_float(OxlangParser.Ox_floatContext ctx);
+	void exitOxFloat(OxlangParser.OxFloatContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_hex}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxHex}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_hex(OxlangParser.Ox_hexContext ctx);
+	void enterOxHex(OxlangParser.OxHexContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_hex}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxHex}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_hex(OxlangParser.Ox_hexContext ctx);
+	void exitOxHex(OxlangParser.OxHexContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_bin}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxBin}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_bin(OxlangParser.Ox_binContext ctx);
+	void enterOxBin(OxlangParser.OxBinContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_bin}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxBin}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_bin(OxlangParser.Ox_binContext ctx);
+	void exitOxBin(OxlangParser.OxBinContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_bign}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxBign}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_bign(OxlangParser.Ox_bignContext ctx);
+	void enterOxBign(OxlangParser.OxBignContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_bign}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxBign}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_bign(OxlangParser.Ox_bignContext ctx);
+	void exitOxBign(OxlangParser.OxBignContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_long}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxLong}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_long(OxlangParser.Ox_longContext ctx);
+	void enterOxLong(OxlangParser.OxLongContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_long}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxLong}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_long(OxlangParser.Ox_longContext ctx);
+	void exitOxLong(OxlangParser.OxLongContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_rint}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxRint}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_rint(OxlangParser.Ox_rintContext ctx);
+	void enterOxRint(OxlangParser.OxRintContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_rint}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxRint}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_rint(OxlangParser.Ox_rintContext ctx);
+	void exitOxRint(OxlangParser.OxRintContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_number}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxNumber}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_number(OxlangParser.Ox_numberContext ctx);
+	void enterOxNumber(OxlangParser.OxNumberContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_number}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxNumber}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_number(OxlangParser.Ox_numberContext ctx);
+	void exitOxNumber(OxlangParser.OxNumberContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_character}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxCharacter}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_character(OxlangParser.Ox_characterContext ctx);
+	void enterOxCharacter(OxlangParser.OxCharacterContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_character}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxCharacter}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_character(OxlangParser.Ox_characterContext ctx);
+	void exitOxCharacter(OxlangParser.OxCharacterContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_named_char}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxNamedChar}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_named_char(OxlangParser.Ox_named_charContext ctx);
+	void enterOxNamedChar(OxlangParser.OxNamedCharContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_named_char}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxNamedChar}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_named_char(OxlangParser.Ox_named_charContext ctx);
+	void exitOxNamedChar(OxlangParser.OxNamedCharContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_any_char}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxAnyChar}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_any_char(OxlangParser.Ox_any_charContext ctx);
+	void enterOxAnyChar(OxlangParser.OxAnyCharContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_any_char}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxAnyChar}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_any_char(OxlangParser.Ox_any_charContext ctx);
+	void exitOxAnyChar(OxlangParser.OxAnyCharContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_u_hex_quad}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxUHexQuad}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_u_hex_quad(OxlangParser.Ox_u_hex_quadContext ctx);
+	void enterOxUHexQuad(OxlangParser.OxUHexQuadContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_u_hex_quad}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxUHexQuad}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_u_hex_quad(OxlangParser.Ox_u_hex_quadContext ctx);
+	void exitOxUHexQuad(OxlangParser.OxUHexQuadContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_nil}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxNil}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_nil(OxlangParser.Ox_nilContext ctx);
+	void enterOxNil(OxlangParser.OxNilContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_nil}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxNil}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_nil(OxlangParser.Ox_nilContext ctx);
+	void exitOxNil(OxlangParser.OxNilContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_boolean}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxBoolean}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_boolean(OxlangParser.Ox_booleanContext ctx);
+	void enterOxBoolean(OxlangParser.OxBooleanContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_boolean}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxBoolean}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_boolean(OxlangParser.Ox_booleanContext ctx);
+	void exitOxBoolean(OxlangParser.OxBooleanContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_keyword}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxKeyword}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_keyword(OxlangParser.Ox_keywordContext ctx);
+	void enterOxKeyword(OxlangParser.OxKeywordContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_keyword}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxKeyword}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_keyword(OxlangParser.Ox_keywordContext ctx);
+	void exitOxKeyword(OxlangParser.OxKeywordContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_simple_keyword}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxSimpleKeyword}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_simple_keyword(OxlangParser.Ox_simple_keywordContext ctx);
+	void enterOxSimpleKeyword(OxlangParser.OxSimpleKeywordContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_simple_keyword}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxSimpleKeyword}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_simple_keyword(OxlangParser.Ox_simple_keywordContext ctx);
+	void exitOxSimpleKeyword(OxlangParser.OxSimpleKeywordContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_macro_keyword}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxMacroKeyword}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_macro_keyword(OxlangParser.Ox_macro_keywordContext ctx);
+	void enterOxMacroKeyword(OxlangParser.OxMacroKeywordContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_macro_keyword}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxMacroKeyword}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_macro_keyword(OxlangParser.Ox_macro_keywordContext ctx);
+	void exitOxMacroKeyword(OxlangParser.OxMacroKeywordContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_symbol}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxSymbol}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_symbol(OxlangParser.Ox_symbolContext ctx);
+	void enterOxSymbol(OxlangParser.OxSymbolContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_symbol}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxSymbol}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_symbol(OxlangParser.Ox_symbolContext ctx);
+	void exitOxSymbol(OxlangParser.OxSymbolContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#simple_sym}.
+	 * Enter a parse tree produced by {@link OxlangParser#simpleSym}.
 	 * @param ctx the parse tree
 	 */
-	void enterSimple_sym(OxlangParser.Simple_symContext ctx);
+	void enterSimpleSym(OxlangParser.SimpleSymContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#simple_sym}.
+	 * Exit a parse tree produced by {@link OxlangParser#simpleSym}.
 	 * @param ctx the parse tree
 	 */
-	void exitSimple_sym(OxlangParser.Simple_symContext ctx);
+	void exitSimpleSym(OxlangParser.SimpleSymContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link OxlangParser#ox_ns_symbol}.
+	 * Enter a parse tree produced by {@link OxlangParser#oxNsSymbol}.
 	 * @param ctx the parse tree
 	 */
-	void enterOx_ns_symbol(OxlangParser.Ox_ns_symbolContext ctx);
+	void enterOxNsSymbol(OxlangParser.OxNsSymbolContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link OxlangParser#ox_ns_symbol}.
+	 * Exit a parse tree produced by {@link OxlangParser#oxNsSymbol}.
 	 * @param ctx the parse tree
 	 */
-	void exitOx_ns_symbol(OxlangParser.Ox_ns_symbolContext ctx);
+	void exitOxNsSymbol(OxlangParser.OxNsSymbolContext ctx);
 }
