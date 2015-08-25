@@ -6,9 +6,6 @@
 
   :whitelist #"ox.lang.*"
 
-  :plugins [[lein-cloverage "1.0.2"]
-            [lein-auto "0.1.1"]]
-
   :auto {:default {:file-pattern #"\.(clj|cljs|cljx|edn|g4|ox)$"}}
   
   :source-paths      ["src/main/clj"
@@ -28,4 +25,7 @@
                  [clj-tuple "0.2.1"
                   :exclusions [org.clojure/clojure]]
                  [clj-antlr "0.2.2"
-                  :exclusions [org.clojure/clojure]]])
+                  :exclusions [org.clojure/clojure]]]
+
+  :profiles {:dev {:plugins [[lein-cloverage "1.0.2"]
+                             [lein-auto "0.1.1"]]}})
