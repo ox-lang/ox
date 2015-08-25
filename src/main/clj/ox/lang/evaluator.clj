@@ -9,8 +9,9 @@
              [util :refer :all]]))
 
 (defn read-eval-1
-  "Implementation detail of read-eval. This form computes the read-eval of a
-  form given that it has already been recursively read-eval'd.
+  "Implementation detail of read-eval. This form computes the
+  read-eval of a form given that it has already been recursively
+  read-eval'd.
 
   (let* ((env ...))
   (read-eval env '(read-eval FORM))
@@ -23,13 +24,14 @@
     tree))
 
 (defn read-eval
-  "Recursively walks the given tree, read-evaluating children nodes first then
-  read-eval-1ing the parent of the evaluated nodes. This pass exists so that
-  datastructures like maps, floats and vectors can be implemented as part of
-  bootstrap rather than being baked into a platform's implementation.
+  "Recursively walks the given tree, read-evaluating children nodes
+  first then read-eval-1ing the parent of the evaluated nodes. This
+  pass exists so that datastructures like maps, floats and vectors can
+  be implemented as part of bootstrap rather than being baked into a
+  platform's implementation.
 
-  When reading structures, users are required to read-eval their forms before
-  macroexpanding or evaluating them."
+  When reading structures, users are required to read-eval their forms
+  before macroexpanding or evaluating them."
   [eval env tree]
   (if (list? tree)
     (->> tree
@@ -48,9 +50,10 @@
     tree))
 
 (defn macroexpand
-  "Walks a previously read-eval'd tree, expanding macros occuring in the tree
-  via macroexpand-1. Children are expanded first until they reach a fixed point,
-  then the parent is expanded until it fixes as well."
+  "Walks a previously read-eval'd tree, expanding macros occuring in
+  the tree via macroexpand-1. Children are expanded first until they
+  reach a fixed point, then the parent is expanded until it fixes as
+  well."
   [eval env tree]
   (if (list? tree)
     (->> tree
@@ -61,8 +64,9 @@
 (defn apply
   "λ [λ[Env, Form] → [Env, Form], Env, f & args] → [Env, Form]
 
-  Applies f in the given environment with args, as computed interpreted
-  assembled or what have you by the provided eval function.
+  Applies f in the given environment with args, as computed
+  interpreted assembled or what have you by the provided eval
+  function.
 
   Returns a new [env value] pair."
   [eval env f & args]
@@ -115,10 +119,6 @@
             (let*)
             ,,nil
 
-            ;; FIXME: how even do I
-            (letrc*)
-            ,,nil
-
             ;; FIXME: all at once or one at a time? The naive implementation
             ;; is all at once...
             (list*)
@@ -145,8 +145,8 @@
         ,,(vector env form)))
 
 (defn eval-form
-  "Analyzes, macroexpands and interprets a single form in the given
-  environment, returning a pair [env, result]."
+  "Analyzes, macroexpands and interprets a single form in the given environment,
+  returning a pair [env, result]."
   [eval env form]
   (->> form
        (read-eval eval env)
