@@ -1,13 +1,9 @@
-(defproject org.oxlang/oxlang (slurp "VERSION") 
+(defproject org.oxlang/oxlang (slurp "VERSION")
   :description "牛, the language"
   :url "http://github.com/ox-lang/ox"
   :license {:name "MIX/X11 license"
             :url "http://opensource.org/licenses/MIT"}
 
-  :whitelist #"ox.lang.*"
-
-  :auto {:default {:file-pattern #"\.(clj|cljs|cljx|edn|g4|ox)$"}}
-  
   :source-paths      ["src/main/clj"
                       "src/main/ox"]
   :java-source-paths ["src/main/java"]
@@ -28,4 +24,6 @@
                   :exclusions [org.clojure/clojure]]]
 
   :profiles {:dev {:plugins [[lein-cloverage "1.0.2"]
-                             [lein-auto "0.1.1"]]}})
+                             [lein-auto "0.1.1"]]
+                   :whitelist #"ox.lang.*"
+                   :auto {:default {:file-pattern #"\.(clj|cljs|cljx|edn|g4|ox)$"}}}})
