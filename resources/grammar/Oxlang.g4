@@ -25,215 +25,146 @@
 
 grammar Oxlang;
 
-file: form *;
+ox_file: ox_form *;
 
-form: literal
-    | list
-    | vector
-    | map
-    | record
-    | pair
-    | reader_macro
+ox_form
+  : ox_literal
+  | ox_list
+  | ox_vector
+  | ox_map
+  | ox_record
+  | ox_reader_macro
+  ;
+
+ox_forms: ox_form * ;
+
+ox_list: '(' ox_forms ')' ;
+
+ox_vector: '[' ox_forms ']' ;
+
+ox_record: '#[' ox_ns_symbol ox_map ']' ;
+
+ox_map: '{' (ox_form ox_form)* '}' ;
+
+ox_set: '#{' ox_forms '}' ;
+
+ox_reader_macro
+    : ox_meta_data
+    | ox_regex
+    | ox_host_expr
+    | ox_set
+    | ox_tag
+    | ox_deref
+    | ox_quote
+    | ox_backtick
+    | ox_unquote
+    | ox_unquote_splicing
+    | ox_gensym
     ;
 
-forms: form* ;
-
-list: '(' forms ')' ;
-
-vector: '[' forms ']' ;
-
-record: '#[' ns_symbol map ']' ;
-
-map: '{' (form form)* '}' ;
-
-set: '#{' forms '}' ;
-
-pair: '⸠' forms '⸡'
-		| '﹁' forms '﹂'
-		| '⸂' forms '⸃'
-    | '⸢' forms '⸣'
-    | '⹂' forms '〈'
-    | '｢' forms '｣'
-    | '⦃' forms '⦄'
-    | '﹃' forms '﹄'
-    | '⸄' forms '⸅'
-    | '⸤' forms '⸥'
-    | '⁅' forms '⁆'
-    | '⦅' forms '⦆'
-    | '⟅' forms '⟆'
-    | '⸦' forms '⸧'
-    | '⟦' forms '⟧'
-    | '⦇' forms '⦈'
-    | '﹇' forms '﹈'
-    | '(' forms ')'
-    | '⸨' forms '⸩'
-    | '⌈' forms '⌉'
-    | '（' forms '）'
-    | '❨' forms '❩'
-    | '⟨' forms '⟩'
-    | '〉' forms '《'
-    | '⦉' forms '⦊'
-    | '⸉' forms '⸊'
-    | '〈' forms '〉'
-    | '⌊' forms '⌋'
-    | '❪' forms '❫'
-    | '⟪' forms '⟫'
-    | '》' forms '「'
-    | '«' forms '»'
-    | '⦋' forms '⦌'
-    | '⸌' forms '⸍'
-    | '❬' forms '❭'
-    | '⟬' forms '⟭'
-    | '」' forms '『'
-    | '₍' forms '₎'
-    | '⦍' forms '⦎'
-    | '❮' forms '❯'
-    | '⟮' forms '⟯'
-    | '【' forms '】'
-    | '⦏' forms '⦐'
-    | '❰' forms '❱'
-    | '〔' forms '〕'
-    | '⦑' forms '⦒'
-    | '❲' forms '❳'
-    | '⦓' forms '⦔'
-    | '❴' forms '❵'
-    | '〔' forms '〕'
-		| '〖' forms '〗'
-    | '⦕' forms '⦖'
-    | '︵' forms '︶'
-    | '〘' forms '〙'
-    | '⦗' forms '⦘'
-    | '︗' forms '︘'
-    | '︷' forms '︸'
-    | '‘' forms '’'
-    | '⧘' forms '⧙'
-    | '〚' forms '〛'
-    | '‹' forms '›'
-    | '︹' forms '︺'
-    | '﹙' forms '﹚'
-    | '‚' forms '‛'
-    | '⧚' forms '⧛'
-    | '༺' forms '༻'
-    | '[' forms ']'
-    | '{' forms '}'
-    | '︻' forms '︼'
-    | '﹛' forms '﹜'
-    | '᚛' forms '᚜'
-    | '［' forms '］'
-    | '｛' forms '｝'
-    | '“' forms '”'
-    | '⧼' forms '⧽'
-    | '⸜' forms '⸝'
-    | '༼' forms '༽'
-    | '⁽' forms '⁾'
-    | '︽' forms '︾'
-    | '﹝' forms '﹞'
-    | '„' forms '‟'
-    | '〞' forms '〟'
-    | '﴾' forms '﴿'
-    | '︿' forms '﹀'
-    | '｟' forms '｠'
+ox_quote
+    : '\'' ox_form
     ;
 
-reader_macro
-    : meta_data
-    | regex
-    | host_expr
-    | set
-    | tag
-    | deref
-    | quote
-    | backtick
-    | unquote
-    | unquote_splicing
-    | gensym
+ox_backtick
+    : '`' ox_form
     ;
 
-quote
-    : '\'' form
+ox_unquote
+    : '~' ox_form
     ;
 
-backtick
-    : '`' form
+ox_unquote_splicing
+    : '~@' ox_form
     ;
 
-unquote
-    : '~' form
+ox_tag
+    : '^' (ox_symbol | ox_string) ox_form
     ;
 
-unquote_splicing
-    : '~@' form
+ox_deref
+    : '@' ox_form
     ;
 
-tag
-    : '^' form form
-    ;
-
-deref
-    : '@' form
-    ;
-
-gensym
+ox_gensym
     : SYMBOL '#'
     ;
 
-meta_data
-    : '#^' map form
+ox_meta_data
+    : '#^' ox_map ox_form
     ;
 
-host_expr
-    : '#+' form form
+ox_host_expr
+    : '#+' ox_form ox_form
     ;
 
-regex
-    : '#' string
+ox_regex
+    : '#' ox_string
     ;
 
-literal
-    : string
-    | number
-    | character
-    | nil
-    | boolean
-    | keyword
-    | symbol
+ox_literal
+    : ox_string
+    | ox_number
+    | ox_character
+    | ox_nil
+    | ox_boolean
+    | ox_keyword
+    | ox_symbol
     ;
 
-string: STRING;
-float: FLOAT;
-hex: HEX;
-bin: BIN;
-bign: BIGN;
-long: LONG;
-rint: RINT;
-number
-    : float
-    | hex
-    | bin
-    | bign
-    | long
-    | rint
+ox_string: STRING;
+ox_float: FLOAT;
+ox_hex: HEX;
+ox_bin: BIN;
+ox_bign: BIGN;
+ox_long: LONG;
+ox_rint: RINT;
+ox_number
+    : ox_float
+    | ox_hex
+    | ox_bin
+    | ox_bign
+    | ox_long
+    | ox_rint
     ;
 
-character
-    : named_char
-    | u_hex_quad
-    | any_char
+ox_character
+    : ox_named_char
+    | ox_u_hex_quad
+    | ox_any_char
     ;
-named_char: CHAR_NAMED ;
-any_char: CHAR_ANY ;
-u_hex_quad: CHAR_U ;
+ox_named_char: CHAR_NAMED ;
+ox_any_char: CHAR_ANY ;
+ox_u_hex_quad: CHAR_U ;
 
-nil: NIL;
-boolean: BOOLEAN;
+ox_nil: NIL;
+ox_boolean: BOOLEAN;
 
-keyword: macro_keyword | simple_keyword;
-simple_keyword: ':' symbol;
-macro_keyword: ':' ':' symbol;
+ox_keyword
+  : ox_macro_keyword
+  | ox_simple_keyword
+  ;
 
-symbol: ns_symbol | simple_sym;
-simple_sym: SYMBOL;
-ns_symbol: NS_SYMBOL;
+ox_simple_keyword
+  : ':' ox_symbol
+  ;
+
+ox_macro_keyword
+  : ':' ':' ox_symbol
+  ;
+
+ox_symbol
+  : ox_ns_symbol
+  | simple_sym
+  ;
+
+simple_sym
+  : SYMBOL
+  ;
+
+ox_ns_symbol
+  : NS_SYMBOL
+  ;
 
 // Lexers
 //--------------------------------------------------------------------
@@ -295,11 +226,11 @@ CHAR_U
     : '\\' 'u'[0-9D-Fd-f] HEXD HEXD HEXD ;
 CHAR_NAMED
     : '\\' ( 'newline'
-	   | 'return'
-	   | 'space'
-	   | 'tab'
-	   | 'formfeed'
-	   | 'backspace' ) ;
+     | 'return'
+     | 'space'
+     | 'tab'
+     | 'formfeed'
+     | 'backspace' ) ;
 CHAR_ANY
     : '\\' . ;
 
@@ -326,30 +257,30 @@ NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 fragment
 SYMBOL_HEAD
     : ~('0' .. '9'
-      	| '〈' | '〉'
-	| '⁅' | '⁆'
-    	| '⌊' | '⌋'
-    	| '⌈' | '⌉'
-    	| '⟦' | '⟧'
-    	| '〈' | '〉'
-    	| '⟪' | '⟫'
-    	| '⟬' | '⟭'
-    	| '⦃' | '⦄'
-    	| '⦇' | '⦈'
-    	| '⦉' | '⦊'
-    	| '⦑' | '⦒'
-    	| '⧘' | '⧙'
-    	| '⧚' | '⧛'
-    	| '⸨' | '⸩'
-    	| '﹙' | '﹚'
-    	| '⁽' | '⁾'
-    	| '₍' | '₎'
-	| '(' | ')'
-	| '[' | ']'
-	| '{' | '}'
-    	| '^' | '`' | '\'' | '"' | '#' | '~' | '@' | ':' | '/' // FIXME: could be one group
-	| [ \n\r\t\,] // FIXME: could be WS
-	)
+       | '〈' | '〉'
+       | '⁅' | '⁆'
+       | '⌊' | '⌋'
+       | '⌈' | '⌉'
+       | '⟦' | '⟧'
+       | '〈' | '〉'
+       | '⟪' | '⟫'
+       | '⟬' | '⟭'
+       | '⦃' | '⦄'
+       | '⦇' | '⦈'
+       | '⦉' | '⦊'
+       | '⦑' | '⦒'
+       | '⧘' | '⧙'
+       | '⧚' | '⧛'
+       | '⸨' | '⸩'
+       | '﹙' | '﹚'
+       | '⁽' | '⁾'
+       | '₍' | '₎'
+       | '(' | ')'
+       | '[' | ']'
+       | '{' | '}'
+       | '^' | '`' | '\'' | '"' | '#' | '~' | '@' | ':' | '/' // FIXME: could be one group
+       | [ \n\r\t\,] // FIXME: could be WS
+       )
     ;
 
 fragment
