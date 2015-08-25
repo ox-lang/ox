@@ -12,7 +12,7 @@
 (declare get-value)
 
 (defn install
-  "λ [Env, Symbol, Value] → Env1
+  "λ [Env, Symbol, Value] → Env'
 
   Returns a new environment with the given symbol bound as if by a global def to
   the given value. The value must be a Binding value as from env.types."

@@ -88,7 +88,7 @@
     ~(-transform s)))
 
 (defmethod -transform :list [[_ _ forms]]
-  (->> forms -transform))
+  (->> forms -transform (cons 'list)))
 
 (defmethod -transform :nil [_]
   nil)
