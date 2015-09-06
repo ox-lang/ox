@@ -105,5 +105,5 @@
         base         (->base base-binds)
         global       (->global base {} nil)]
     (-> global
-        (assoc-in [:bindings 'ox.lang.base] (->value nil bootstrap-ns))
+        (assoc-in [:bindings 'ox.lang.bootstrap] (->value nil bootstrap-ns))
         (assoc-in [:bindings 'user] (->value nil user-ns)))))
