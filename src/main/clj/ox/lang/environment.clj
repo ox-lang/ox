@@ -192,7 +192,7 @@
 
 (defn get-value
   "λ [Env, Symbol] → Value
-  λ [Env, Symbol, Depth] → Value  
+  λ [Env, Symbol, Depth] → Value
 
   Returns the value of the given symbol in the specified environment. As with
   get-entry takes an optional depth parameter (defaults to 3)."
