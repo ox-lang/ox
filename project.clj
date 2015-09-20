@@ -1,4 +1,4 @@
-(defproject org.oxlang/oxlang (slurp "VERSION")
+(defproject org.oxlang/oxlang "0.0.0"
   :description "牛, the language"
   :url "http://github.com/ox-lang/ox"
   :license {:name "MIX/X11 license"
@@ -19,7 +19,10 @@
                  [me.arrdem/guten-tag "0.1.4"
                   :exclusions [org.clojure/clojure]]
                  [clj-tuple "0.2.2"
-                  :exclusions [org.clojure/clojure]]]
+                  :exclusions [org.clojure/clojure]]
+                 [org.antlr/antlr4-runtime "4.5.1"]
+                 [org.antlr/antlr4 "4.5.1"]
+                 [com.google.guava/guava "18.0"]]
 
   :profiles {:dev {:plugins [[lein-cloverage "1.0.2"]
                              [lein-auto "0.1.1"]]
