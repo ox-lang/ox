@@ -1,4 +1,4 @@
-(defproject org.oxlang/oxlang "0.0.0"
+(defproject org.oxlang/oxlang "0.0.1"
   :description "牛, the language"
   :url "http://github.com/ox-lang/ox"
   :license {:name "MIX/X11 license"
@@ -9,19 +9,13 @@
   :java-source-paths ["src/main/java"]
   :test-paths        ["src/test/clj"]
 
-  :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/core.match "0.3.0-alpha4"
-                  :exclusions [org.clojure/clojure]]
+  :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/test.check "0.8.1"
                   :exclusions [org.clojure/clojure]]
                  [org.clojure/core.match "0.3.0-alpha3"
                   :exclusions [org.clojure/clojure]]
                  [me.arrdem/guten-tag "0.1.4"
                   :exclusions [org.clojure/clojure]]
-                 [clj-tuple "0.2.2"
-                  :exclusions [org.clojure/clojure]]
-                 [org.antlr/antlr4-runtime "4.5.1"]
-                 [org.antlr/antlr4 "4.5.1"]
                  [com.google.guava/guava "18.0"]]
 
   :profiles {:dev {:plugins [[lein-cloverage "1.0.2"]
