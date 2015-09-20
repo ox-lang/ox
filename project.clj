@@ -16,6 +16,8 @@
                   :exclusions [org.clojure/clojure]]
                  [me.arrdem/guten-tag "0.1.4"
                   :exclusions [org.clojure/clojure]]
+                 [clj-tuple "0.2.2"
+                  :exclusions [org.clojure/clojure]]
                  [com.google.guava/guava "18.0"]]
 
   :profiles {:dev {:plugins [[lein-cloverage "1.0.2"]
