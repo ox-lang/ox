@@ -13,10 +13,10 @@
 (deftag binding/special [name]
   (symbol? name))
 
-(def binding?
-  (some-fn alias?
-           value?
-           special?))
+(defn binding? [x]
+  (or (instance? ox.lang.environment.AliasBinding x)
+      (instance? ox.lang.environment.ValueBinding x)
+      (instance? ox.lang.environment.SpecialBinding x)))
 
 ;; Types to do with environments
 
