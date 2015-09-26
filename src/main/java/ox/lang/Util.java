@@ -1,6 +1,8 @@
 package ox.lang;
 import java.lang.IllegalArgumentException;
 import java.lang.Character;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /* This class serves as a holding tank for snippets of Java code which
  * are both stateless, and serve as helpers in interacting with the ox
@@ -30,5 +32,27 @@ public class Util {
             uc = uc * base + d;
         }
         return new Character((char) uc);
+    }
+
+
+    /* Validator for Symbol and Keyword names.
+     */
+
+    private static Pattern namePattern =
+            Pattern.compile("^([^;:#\"'\\[\\]\\(\\)\\{\\}\\d\\s][^;:#\"'\\[\\]\\(\\)\\{\\}\\s]*)$");
+
+    public static boolean isValidName(String name) {
+        Matcher m = namePattern.matcher(name);
+        return m.matches();
+    }
+
+    /* Validator for Symbol and Keyword namespaces.
+     */
+    private static Pattern namespacePattern =
+            Pattern.compile("(([^;:#\"'\\[\\]\\(\\)\\{\\}\\d\\s/][^;:#\"'\\[\\]\\(\\)\\{\\}\\s/]*)\\.?)+");
+
+    public static boolean isValidNamespace(String ns) {
+        Matcher m = namespacePattern.matcher(ns);
+        return m.matches();
     }
 }
