@@ -7,5 +7,5 @@ import ox.lang.Symbol;
  */
 public interface IEnvironment {
     IEnvironment getParent();
-    IBinding resolve(Symbol name);
+    ABinding resolve(Symbol name);
 }

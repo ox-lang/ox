@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Created by arrdem on 9/26/15.
  */
-public class ValueBinding implements IBinding, IMeta {
+public class ValueBinding extends ABinding {
     @Override
     public Map meta() {
         return null;
@@ -15,6 +15,11 @@ public class ValueBinding implements IBinding, IMeta {
 
     @Override
     public Object withMeta(Map meta) {
+        return null;
+    }
+
+    @Override
+    public Object value() {
         return null;
     }
 }
