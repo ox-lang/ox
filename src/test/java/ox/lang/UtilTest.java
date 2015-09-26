@@ -39,6 +39,11 @@ public class UtilTest {
 
     @Test
     public void testIsValidNamespace() throws Exception {
+        assertEquals(true, Util.isValidNamespace("foo"));
+        assertEquals(true, Util.isValidNamespace("a16z"));
+        assertEquals(true, Util.isValidNamespace("foo.bar"));
 
+        assertEquals(false, Util.isValidNamespace("foo/bar"));
+        assertEquals(false, Util.isValidNamespace("foo.bar/baz"));
     }
 }
