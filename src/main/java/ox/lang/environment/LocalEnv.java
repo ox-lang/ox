@@ -12,7 +12,7 @@ public class LocalEnv implements IEnvironment {
     }
 
     @Override
-    public ABinding resolve(Symbol name) {
+    public ABinding find(Symbol name) {
         return null;
     }
 }

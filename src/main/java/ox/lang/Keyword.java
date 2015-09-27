@@ -1,4 +1,5 @@
 package ox.lang;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
@@ -9,9 +10,9 @@ import java.util.Map;
  * A Keyword may have a namespace, but it may be null.
  */
 public class Keyword implements INamed, IMeta {
-    final String name;
-    final String namespace;
-    final Map meta;
+    private final String name;
+    private final String namespace;
+    private final Map meta;
 
     private Keyword(String n, String ns, Map meta) {
         this.name = n;
@@ -19,7 +20,7 @@ public class Keyword implements INamed, IMeta {
         this.meta = meta;
     }
 
-    public class Builder {
+    public static final class Builder {
         private String name;
         private String namespace;
         private Map meta;
@@ -28,7 +29,7 @@ public class Keyword implements INamed, IMeta {
         public Builder() {
             this.namespace = null;
             this.name = null;
-            this.meta = null;
+            this.meta = ImmutableMap.of();
             this.result = null;
         }
 

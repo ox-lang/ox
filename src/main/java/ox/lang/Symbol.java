@@ -1,5 +1,6 @@
 package ox.lang;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 
 /**
@@ -7,11 +8,37 @@ import java.util.Map;
  *
  * A Symbol must have a non-null, legal name.
  * A Symbol may have a namespace, but it may be null.
+ *
+ * Symbols are used to represent literal textual symbols, and to store the
+ * textual name to which values are bound during evaluation. The symbol class
+ * itself is just a holder for metadata, a name, possibly a namespace and
+ * possibly metadata.
  */
 public class Symbol implements INamed, IMeta {
-    final String name;
-    final String namespace;
-    final Map meta;
+    private final String name;
+    private final String namespace;
+    private final Map meta;
+
+    public static Symbol of(String name) {
+        return new Builder()
+                .setName(name)
+                .build();
+    }
+
+    public static Symbol of(String namespace, String name) {
+        return new Builder()
+                .setName(name)
+                .setNamespace(namespace)
+                .build();
+    }
+
+    public static Symbol of(String namespace, String name, Map meta) {
+        return new Builder()
+                .setMeta(meta)
+                .setName(name)
+                .setNamespace(namespace)
+                .build();
+    }
 
     private Symbol(String n, String ns, Map meta) {
         this.name = n;
@@ -19,7 +46,7 @@ public class Symbol implements INamed, IMeta {
         this.meta = meta;
     }
 
-    public class Builder {
+    public static final class Builder {
         private String name;
         private String namespace;
         private Map meta;
@@ -28,7 +55,7 @@ public class Symbol implements INamed, IMeta {
         public Builder() {
             this.namespace = null;
             this.name = null;
-            this.meta = null;
+            this.meta = ImmutableMap.of();
             this.result = null;
         }
 

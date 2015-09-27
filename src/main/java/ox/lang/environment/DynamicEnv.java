@@ -22,7 +22,7 @@ public class DynamicEnv implements IEnvironment {
     }
 
     @Override
-    public ABinding resolve(Symbol name) {
+    public ABinding find(Symbol name) {
         if(bindings.containsKey(name))
             return bindings.get(name);
         else

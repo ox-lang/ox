@@ -15,4 +15,9 @@ public class AliasBinding extends ABinding {
     public Object withMeta(Map meta) {
         return null;
     }
+
+    @Override
+    public Object value() {
+        return null;
+    }
 }
