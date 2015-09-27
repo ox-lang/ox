@@ -39,8 +39,9 @@ public class GlobalEnv implements IEnvironment, IMeta {
             for (Object k : bindings.keySet()) {
                 if (!(k instanceof Symbol)) {
                     throw new RuntimeException(
-                            String.format("Cannot bind non-Symbol value '%s'!",
-                                    k.toString()));
+                            String.format(
+                                "Cannot bind non-Symbol value '%s'!",
+                                k.toString()));
                 }
             }
 
@@ -49,9 +50,9 @@ public class GlobalEnv implements IEnvironment, IMeta {
                 if (!(v instanceof ABinding)) {
                     throw new RuntimeException(
                             String.format(
-                              "Illegal non-binding entry '%s! (class '%s')",
-                                    v.toString(),
-                                    v.getClass().getCanonicalName()));
+                                "Illegal non-binding entry '%s! (class '%s')",
+                                v.toString(),
+                                v.getClass().getCanonicalName()));
                 }
             }
 
