@@ -107,8 +107,8 @@
   chase aliases. To find the _final_ binding (or the visible root binding) use
   get-entry instead."
   [env symbol]
-  {:pre  [(t/env? env)
-          (symbol? symbol)]}
+  {:pre [(t/env? env)
+         (symbol? symbol)]}
   (try
     (or
      ;; Try to get a binding out of the current context
