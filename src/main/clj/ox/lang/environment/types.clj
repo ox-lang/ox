@@ -1,7 +1,11 @@
 (ns ox.lang.environment.types
   (:refer-clojure :exclude [vector alias ns])
   (:require [clj-tuple :refer [vector]]
-            [guten-tag.core :refer [deftag]]))
+            [guten-tag.core :refer [deftag]])
+  (:import [ox.lang.environment
+            AliasBinding
+            ValueBinding
+            SpecialBinding]))
 
 ;; Types to do with bindings in environments
 
@@ -14,9 +18,18 @@
   (symbol? name))
 
 (defn binding? [x]
-  (or (instance? ox.lang.environment.AliasBinding x)
-      (instance? ox.lang.environment.ValueBinding x)
-      (instance? ox.lang.environment.SpecialBinding x)))
+  (and (not (nil? x))
+       (boolean
+        (or
+         ;; current imp'l
+         alias?
+         value?
+         special?
+         
+         ;; for future use
+         (instance? AliasBinding x)
+         (instance? ValueBinding x)
+         (instance? SpecialBinding x)))))
 
 ;; Types to do with environments
 
