@@ -10,7 +10,7 @@ import static ox.lang.Symbol.of;
 /**
  * Created by arrdem on 9/26/15.
  */
-public class BaseEnv implements IEnvironment {
+public class BaseEnv extends AEnvironment {
 
     private static Map baseEnvMap =
             new ImmutableMap.Builder<Symbol, ABinding>()
@@ -19,12 +19,22 @@ public class BaseEnv implements IEnvironment {
 
 
     @Override
-    public IEnvironment getParent() {
+    public AEnvironment getParent() {
         return null;
     }
 
     @Override
     public ABinding find(Symbol name) {
+        return null;
+    }
+
+    @Override
+    public Map meta() {
+        return null;
+    }
+
+    @Override
+    public Object withMeta(Map meta) {
         return null;
     }
 }

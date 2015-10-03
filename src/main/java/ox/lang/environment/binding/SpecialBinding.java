@@ -1,7 +1,8 @@
-package ox.lang.environment;
+package ox.lang.environment.binding;
 
 import com.google.common.collect.ImmutableMap;
 import ox.lang.Symbol;
+import ox.lang.environment.ABinding;
 
 import java.util.Map;
 

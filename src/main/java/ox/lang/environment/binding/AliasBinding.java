@@ -1,4 +1,6 @@
-package ox.lang.environment;
+package ox.lang.environment.binding;
+
+import ox.lang.environment.ABinding;
 
 import java.util.Map;
 

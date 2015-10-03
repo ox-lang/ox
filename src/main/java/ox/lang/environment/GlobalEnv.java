@@ -9,13 +9,15 @@ import java.util.Map;
 /**
  * Created by arrdem on 9/26/15.
  */
-public class GlobalEnv implements IEnvironment, IMeta {
+public class GlobalEnv
+        extends AEnvironment
+        implements IMeta {
 
-    private final IEnvironment parent;
+    private final AEnvironment parent;
     private final Map meta;
     private final Map<Symbol,ABinding> bindings;
 
-    private GlobalEnv(IEnvironment parent,
+    private GlobalEnv(AEnvironment parent,
                       Map<Symbol, ABinding> bindings,
                       Map meta) {
         this.parent = parent;
@@ -25,7 +27,7 @@ public class GlobalEnv implements IEnvironment, IMeta {
 
     public static final class Builder {
         private Map meta;
-        private IEnvironment parent;
+        private AEnvironment parent;
         private Map bindings;
         private GlobalEnv result;
 
@@ -84,7 +86,7 @@ public class GlobalEnv implements IEnvironment, IMeta {
             return this;
         }
 
-        public Builder setParent(IEnvironment parent) {
+        public Builder setParent(AEnvironment parent) {
             assert parent != null;
             this.parent = parent;
             return this;
@@ -92,7 +94,7 @@ public class GlobalEnv implements IEnvironment, IMeta {
     }
 
     @Override
-    public IEnvironment getParent() {
+    public AEnvironment getParent() {
         return parent;
     }
 
