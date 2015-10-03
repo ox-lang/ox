@@ -3,7 +3,7 @@
   (:require [clojure.core.match :refer [match]]
             [clj-tuple :refer [vector]]
             [guten-tag.core :refer [deftag]])
-  (:import [ox.lang.environment
+  (:import [ox.lang.environment.binding
             AliasBinding
             ValueBinding
             SpecialBinding]))
