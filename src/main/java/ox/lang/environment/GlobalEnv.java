@@ -25,16 +25,40 @@ public class GlobalEnv implements IEnvironment, IMeta {
 
     public static final class Builder {
         private Map meta;
+        private IEnvironment parent;
         private Map bindings;
         private GlobalEnv result;
 
         public Builder() {
             this.meta = ImmutableMap.of();
             this.bindings = ImmutableMap.of();
+            this.parent = null;
             this.result = null;
         }
 
+        public GlobalEnv build() {
+            if(this.result != null)
+                return this.result;
+            else {
+                if(parent == null)
+                    throw new RuntimeException(
+                            "Cannot build global env with null parent!");
+
+                this.result = new GlobalEnv(parent, bindings, meta);
+                return this.result;
+            }
+        }
+
+        public Builder setMeta(Map meta) {
+            assert  meta != null;
+
+            this.meta = meta;
+            return this;
+        }
+
         public Builder setBindings(Map<Symbol, ABinding> bindings) {
+            assert bindings != null;
+
             // Typecheck the keys
             for (Object k : bindings.keySet()) {
                 if (!(k instanceof Symbol)) {
@@ -57,6 +81,12 @@ public class GlobalEnv implements IEnvironment, IMeta {
             }
 
             this.bindings = bindings;
+            return this;
+        }
+
+        public Builder setParent(IEnvironment parent) {
+            assert parent != null;
+            this.parent = parent;
             return this;
         }
     }
