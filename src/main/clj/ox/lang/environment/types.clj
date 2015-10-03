@@ -1,6 +1,7 @@
 (ns ox.lang.environment.types
   (:refer-clojure :exclude [vector alias ns])
-  (:require [clj-tuple :refer [vector]]
+  (:require [clojure.core.match :refer [match]]
+            [clj-tuple :refer [vector]]
             [guten-tag.core :refer [deftag]])
   (:import [ox.lang.environment
             AliasBinding
@@ -89,6 +90,26 @@
            ns?
            local?
            dynamic?))
+
+;;;; IEnvironment
+;;;;;;;;;;;;;;;;;;;;
+
+(defn env->parent [env]
+  {:pre [(env? env)]}
+  (match [env]
+
+    ;; the base env is its own parent
+    [([:env/base _] :seq)]
+    ,,env
+
+    [([:env/global {:parent p}] :seq)]
+    ,,p
+
+    [([:env/local {:parent p}] :seq)]
+    ,,p
+
+    [([:env/dynamic {:parent p}] :seq)]
+    ,,p))
 
 ;;;; empty environments
 ;;;;;;;;;;;;;;;;;;;;

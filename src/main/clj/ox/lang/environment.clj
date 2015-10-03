@@ -84,12 +84,6 @@
    :post [(t/env? %)]}
   (install env l (t/->alias r)))
 
-(defn get-parent
-  [x]
-  {:pre  [(t/env? x)]
-   :post [(t/env? %)]}
-  (:parent x))
-
 (defn get-global-env
   "λ [Env] → Global
 
@@ -102,7 +96,7 @@
   {:pre [(not (t/base? env))]}
   (if (t/global? env)
     env
-    (recur (get-parent env))))
+    (recur (t/env->parent env))))
 
 (defn rebase
   "λ [Env, Env] → Env
@@ -139,7 +133,7 @@
      (get-in env [:bindings symbol])
 
      ;; Try to get a binding out of the parent context
-     (get-binding (get-parent env) symbol)
+     (get-binding (t/env->parent env) symbol)
 
      ;; All else failing die
      (e! "Symbol '%s' is not bound in any enclosing scope!" (str symbol)))
@@ -296,7 +290,7 @@
   {:pre [(t/env? env)
          (or (t/local? env)
              (t/dynamic? env))]}
-  (get-parent env))
+  (t/env->parent env))
 
 (defn macro?
   "λ [Env, Symbol] → Bool
