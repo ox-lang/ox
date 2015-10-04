@@ -59,7 +59,7 @@ public class AliasBinding extends ABinding {
                 return res;
             } else {
                 assert name != null : "Cannot build with a null name";
-                // value may be null
+                // getValue may be null
                 // meta is not nillable and starts non-nil
 
                 res = new AliasBinding(name, value, meta);
@@ -84,7 +84,7 @@ public class AliasBinding extends ABinding {
     }
 
     @Override
-    public Map meta() {
+    public Map getMeta() {
         return meta;
     }
 
@@ -94,12 +94,12 @@ public class AliasBinding extends ABinding {
     }
 
     @Override
-    public Object value() {
+    public Object getValue() {
         return value;
     }
 
     @Override
-    public Symbol name() {
+    public Symbol getName() {
         return name;
     }
 }

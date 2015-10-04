@@ -6,12 +6,12 @@ import java.util.Map;
 /**
  * Created by arrdem on 9/19/15.
  *
- * A Symbol must have a non-null, legal name.
+ * A Symbol must have a non-null, legal getName.
  * A Symbol may have a namespace, but it may be null.
  *
  * Symbols are used to represent literal textual symbols, and to store the
- * textual name to which values are bound during evaluation. The symbol class
- * itself is just a holder for metadata, a name, possibly a namespace and
+ * textual getName to which values are bound during evaluation. The symbol class
+ * itself is just a holder for metadata, a getName, possibly a namespace and
  * possibly metadata.
  */
 public class Symbol implements INamed, IMeta {
@@ -115,7 +115,7 @@ public class Symbol implements INamed, IMeta {
     /* IMeta
      */
     @Override
-    public Map meta() {
+    public Map getMeta() {
         return meta;
     }
 

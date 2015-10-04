@@ -68,7 +68,7 @@
   interpreted assembled or what have you by the provided eval
   function.
 
-  Returns a new [env value] pair."
+  Returns a new [env getValue] pair."
   [eval env f & args]
   )
 

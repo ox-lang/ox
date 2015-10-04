@@ -69,7 +69,7 @@
     (is (env/dynamic? env1 k))
     (is (env/dynamic? env2 k))
 
-    ;; value checks
+    ;; getValue checks
     (is (= 1 (env/get-value env k)))
     (is (= 2 (env/get-value env1 k)))
     (is (= 3 (env/get-value env2 k)))))

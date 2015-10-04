@@ -8,8 +8,8 @@ import java.util.Map;
  * Created by arrdem on 9/26/15.
  */
 public class DynamicEnv extends AEnvironment {
-    private static AEnvironment parent;
-    private static Map<Symbol, ABinding> bindings;
+    private final AEnvironment parent;
+    private final Map<Symbol,ABinding> bindings;
 
     private DynamicEnv(AEnvironment parent, Map<Symbol, ABinding> bindings) {
         this.parent = parent;
@@ -22,7 +22,7 @@ public class DynamicEnv extends AEnvironment {
     }
 
     @Override
-    public ABinding find(Symbol name) {
+    public ABinding getBinding(Symbol name) {
         if(bindings.containsKey(name))
             return bindings.get(name);
         else
@@ -30,7 +30,7 @@ public class DynamicEnv extends AEnvironment {
     }
 
     @Override
-    public Map meta() {
+    public Map getMeta() {
         return null;
     }
 

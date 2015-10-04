@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by arrdem on 9/26/15.
  *
- * Special bindings are used to represent symbolic bindings. They have no actual value, but
+ * Special bindings are used to represent symbolic bindings. They have no actual getValue, but
  * instead represent the bindings of special forms which cannot be more meaningfully evaluated
  * except to themselves.
  *
@@ -68,7 +68,7 @@ public class SpecialBinding extends ABinding {
     }
 
     @Override
-    public Map meta() {
+    public Map getMeta() {
         return meta;
     }
 
@@ -78,12 +78,12 @@ public class SpecialBinding extends ABinding {
     }
 
     @Override
-    public Object value() {
+    public Object getValue() {
         return this;
     }
 
     @Override
-    public Symbol name() {
+    public Symbol getName() {
         return name;
     }
 }

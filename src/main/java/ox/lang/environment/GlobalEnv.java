@@ -8,6 +8,9 @@ import java.util.Map;
 
 /**
  * Created by arrdem on 9/26/15.
+ *
+ * Represents the top level binding context which a user can alter. Definitions and namespaces
+ * exist at this level as values.
  */
 public class GlobalEnv
         extends AEnvironment
@@ -28,7 +31,7 @@ public class GlobalEnv
     public static final class Builder {
         private Map meta;
         private AEnvironment parent;
-        private Map bindings;
+        private Map<Symbol,ABinding> bindings;
         private GlobalEnv result;
 
         public Builder() {
@@ -42,9 +45,7 @@ public class GlobalEnv
             if(this.result != null)
                 return this.result;
             else {
-                if(parent == null)
-                    throw new RuntimeException(
-                            "Cannot build global env with null parent!");
+                assert parent != null : "Cannot build global env with null parent!";
 
                 this.result = new GlobalEnv(parent, bindings, meta);
                 return this.result;
@@ -63,23 +64,19 @@ public class GlobalEnv
 
             // Typecheck the keys
             for (Object k : bindings.keySet()) {
-                if (!(k instanceof Symbol)) {
-                    throw new RuntimeException(
-                            String.format(
+                assert k instanceof Symbol :
+                        String.format(
                                 "Cannot bind non-Symbol value '%s'!",
-                                k.toString()));
-                }
+                                k.toString());
             }
 
             // Typecheck the values
             for (Object v : bindings.values()) {
-                if (!(v instanceof ABinding)) {
-                    throw new RuntimeException(
-                            String.format(
+                assert v instanceof ABinding :
+                        String.format(
                                 "Illegal non-binding entry '%s! (class '%s')",
                                 v.toString(),
-                                v.getClass().getCanonicalName()));
-                }
+                                v.getClass().getCanonicalName());
             }
 
             this.bindings = bindings;
@@ -93,23 +90,45 @@ public class GlobalEnv
         }
     }
 
+    public static GlobalEnv of(AEnvironment parent,
+                               Map<Symbol, ABinding> bindings) {
+        return new Builder()
+                .setParent(parent)
+                .setBindings(bindings)
+                .build();
+    }
+
+    public static GlobalEnv of(AEnvironment parent,
+                               Map<Symbol, ABinding> bindings,
+                               Map meta) {
+        return new Builder()
+                .setParent(parent)
+                .setBindings(bindings)
+                .setMeta(meta)
+                .build();
+    }
+
     @Override
     public AEnvironment getParent() {
         return parent;
     }
 
     @Override
-    public ABinding find(Symbol name) {
+    public ABinding getBinding(Symbol name) {
         return (ABinding) bindings.get(name);
     }
 
     @Override
-    public Map meta() {
+    public Map getMeta() {
         return meta;
     }
 
     @Override
     public Object withMeta(Map meta) {
-        return new GlobalEnv(parent, bindings, meta);
+        return new Builder()
+            .setParent(parent)
+            .setBindings(bindings)
+            .setMeta(meta)
+            .build();
     }
 }

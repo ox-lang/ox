@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by arrdem on 9/19/15.
  *
- * A Keyword must have a non-null, legal name.
+ * A Keyword must have a non-null, legal getName.
  * A Keyword may have a namespace, but it may be null.
  */
 public class Keyword implements INamed, IMeta {
@@ -84,7 +84,7 @@ public class Keyword implements INamed, IMeta {
     /* IMeta
      */
     @Override
-    public Map meta() {
+    public Map getMeta() {
         return meta;
     }
 

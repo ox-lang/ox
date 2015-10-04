@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * Created by arrdem on 9/26/15.
  *
- * A binding which has a definite value. The overwhelming majority of bindings fall into this
+ * A binding which has a definite getValue. The overwhelming majority of bindings fall into this
  * category.
  */
 public class ValueBinding extends ABinding {
@@ -59,8 +59,8 @@ public class ValueBinding extends ABinding {
                 return res;
             } else {
                 assert name != null : "Cannot build with a null name";
-                // value may be null
-                // meta is not nillable and starts non-nil
+                // getValue may be null
+                // getMeta is not nillable and starts non-nil
 
                 res = new ValueBinding(name, value, meta);
                 return res;
@@ -84,7 +84,7 @@ public class ValueBinding extends ABinding {
     }
 
     @Override
-    public Map meta() {
+    public Map getMeta() {
         return meta;
     }
 
@@ -95,12 +95,12 @@ public class ValueBinding extends ABinding {
     }
 
     @Override
-    public Object value() {
+    public Object getValue() {
         return value;
     }
 
     @Override
-    public Symbol name() {
+    public Symbol getName() {
         return name;
     }
 }

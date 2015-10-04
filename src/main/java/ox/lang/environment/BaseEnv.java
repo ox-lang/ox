@@ -31,7 +31,7 @@ public class BaseEnv extends AEnvironment {
 
     private static Map mempty = ImmutableMap.of();
 
-    private static Map baseEnvMap =
+    private static Map<Symbol,ABinding> baseEnvMap =
             new ImmutableMap.Builder<Symbol, ABinding>()
                 .put(_if_star, SpecialBinding.of(_if_star))
                 .put(_def_star, SpecialBinding.of(_def_star))
@@ -44,19 +44,18 @@ public class BaseEnv extends AEnvironment {
                 .put(_star_ns_star_, ValueBinding.of(_star_ns_star_, Symbol.of(_ns)))
                 .build();
 
-
     @Override
     public AEnvironment getParent() {
         return null;
     }
 
     @Override
-    public ABinding find(Symbol name) {
+    public ABinding getBinding(Symbol name) {
         return (ABinding) baseEnvMap.get(name);
     }
 
     @Override
-    public Map meta() {
+    public Map getMeta() {
         return mempty;
     }
 

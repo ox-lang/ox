@@ -17,28 +17,28 @@ public abstract class AEnvironment implements IMeta {
     public abstract AEnvironment getParent();
 
     /*
-     * Attempts to find a binding in an env
+     * Attempts to getBinding a binding in an env
      *
-     * @param name The symbol to find
+     * @param getName The symbol to getBinding
      * @return     The first binding thereof or null
      */
-    public abstract ABinding find(Symbol name);
+    public abstract ABinding getBinding(Symbol name);
 
     /*
-     * Attempts to resolve a symbol to a fully qualified name or to itself in an env by walking
+     * Attempts to resolve a symbol to a fully qualified getName or to itself in an env by walking
      * parent environments until a unique resolution is found or the symbol is determined to be
      * unbound.
      *
-     * @param name The symbol to find
-     * @return     The fully qualified name thereof, or null if unbound.
+     * @param getName The symbol to getBinding
+     * @return     The fully qualified getName thereof, or null if unbound.
      */
     public Symbol resolve(Symbol name) {
         assert name != null : "Cannot resolve null!";
 
-        ABinding res = find(name);
+        ABinding res = getBinding(name);
 
         if(res != null) {
-            return res.name();
+            return res.getName();
         } else {
             AEnvironment parent = getParent();
 

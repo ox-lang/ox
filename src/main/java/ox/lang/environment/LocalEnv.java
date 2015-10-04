@@ -14,12 +14,12 @@ public class LocalEnv extends AEnvironment {
     }
 
     @Override
-    public ABinding find(Symbol name) {
+    public ABinding getBinding(Symbol name) {
         return null;
     }
 
     @Override
-    public Map meta() {
+    public Map getMeta() {
         return null;
     }
 
