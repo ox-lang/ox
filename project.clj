@@ -21,10 +21,11 @@
                  [com.google.guava/guava "18.0"]
                  [com.intellij/annotations "12.0"]]
 
-  :profiles {:dev {:plugins      [[lein-cloverage "1.0.2"]
-                                  [lein-auto "0.1.1"]
-                                  [lein-junit "1.1.8"]]
-                   :dependencies [[junit/junit "4.11"]]
-                   :junit        ["src/test/java"]
-                   :whitelist    #"ox.lang.*"
-                   :auto         {:default {:file-pattern #"\.(clj|cljs|cljc|edn|ox)$"}}}})
+  :profiles {:test {:dependencies      [[junit/junit "4.11"]]
+                    :java-source-paths ["src/test/java"]
+                    :junit             ["src/test/java"]}
+             :dev  {:plugins [[lein-cloverage "1.0.2"]
+                              [lein-auto "0.1.1"]
+                              [lein-junit "1.1.8"]]
+                    :aliases {"test" ["do" "clean" ["with-profile" "test" "junit"] "test"]}
+                    :auto    {:default {:file-pattern #"\.(clj|cljs|cljc|edn|ox)$"}}}})
