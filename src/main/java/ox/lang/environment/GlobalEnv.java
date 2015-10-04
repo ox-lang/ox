@@ -45,7 +45,7 @@ public class GlobalEnv
             if(this.result != null)
                 return this.result;
             else {
-                assert parent != null : "Cannot build global env with null parent!";
+                assert parent != null : "Cannot env with null parent!";
 
                 this.result = new GlobalEnv(parent, bindings, meta);
                 return this.result;
@@ -125,10 +125,6 @@ public class GlobalEnv
 
     @Override
     public Object withMeta(Map meta) {
-        return new Builder()
-            .setParent(parent)
-            .setBindings(bindings)
-            .setMeta(meta)
-            .build();
+        return of(parent, bindings, meta);
     }
 }
