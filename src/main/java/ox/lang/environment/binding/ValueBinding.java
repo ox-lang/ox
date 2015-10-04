@@ -9,6 +9,9 @@ import java.util.Objects;
 
 /**
  * Created by arrdem on 9/26/15.
+ *
+ * A binding which has a definite value. The overwhelming majority of bindings fall into this
+ * category.
  */
 public class ValueBinding extends ABinding {
     private final Symbol name;

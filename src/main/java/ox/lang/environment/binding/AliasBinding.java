@@ -8,6 +8,10 @@ import java.util.Map;
 
 /**
  * Created by arrdem on 9/19/15.
+ *
+ * A binding representing the alias of some other binding. This concept may need to get hammered
+ * down some more, since evaluating an alias in some context is very much nontrivial. But for now
+ * it exists.
  */
 public class AliasBinding extends ABinding {
     private final Symbol name;

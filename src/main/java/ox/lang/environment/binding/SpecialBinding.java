@@ -9,12 +9,12 @@ import java.util.Map;
 /**
  * Created by arrdem on 9/26/15.
  *
- * Special bindings are used to represent symbolic bindings. They have no
- * actual value, but instead represent the bindings of special forms which
- * cannot be more meaningfully evaluated.
+ * Special bindings are used to represent symbolic bindings. They have no actual value, but
+ * instead represent the bindings of special forms which cannot be more meaningfully evaluated
+ * except to themselves.
  *
- * This is may change, as one could imagine syntactically legal uses of say
- * 'if in conjunction with eval or apply.
+ * This is may change, as one could imagine syntactically legal uses of say if in conjunction
+ * with eval or apply.
  */
 public class SpecialBinding extends ABinding {
     private final Symbol name;
