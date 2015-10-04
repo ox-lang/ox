@@ -39,6 +39,7 @@ public class AliasBinding extends ABinding {
 
         public Builder setName(Symbol name) {
             assert name != null : "Name cannot be null";
+
             this.name = name;
             return this;
         }
@@ -50,6 +51,7 @@ public class AliasBinding extends ABinding {
 
         public Builder setMeta(Map meta) {
             assert meta != null : "Meta cannot be null";
+
             this.meta = meta;
             return this;
         }

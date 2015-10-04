@@ -4,14 +4,15 @@ import com.google.common.collect.ImmutableMap;
 import ox.lang.Symbol;
 import ox.lang.environment.ABinding;
 
+import java.nio.Buffer;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * Created by arrdem on 9/26/15.
  *
- * A binding which has a definite getValue. The overwhelming majority of bindings fall into this
- * category.
+ * A binding which has a definite singular value. The overwhelming majority of bindings fall into
+ * this category.
  */
 public class ValueBinding extends ABinding {
     private final Symbol name;
@@ -39,6 +40,7 @@ public class ValueBinding extends ABinding {
 
         public Builder setName(Symbol name) {
             assert name != null : "Name cannot be null";
+
             this.name = name;
             return this;
         }
@@ -50,6 +52,7 @@ public class ValueBinding extends ABinding {
 
         public Builder setMeta(Map meta) {
             assert meta != null : "Meta cannot be null";
+
             this.meta = meta;
             return this;
         }
@@ -90,8 +93,7 @@ public class ValueBinding extends ABinding {
 
     @Override
     public Object withMeta(Map meta) {
-        assert meta != null : "Meta cannot be null";
-        return new ValueBinding(name, value, meta);
+        return of(name, value, meta);
     }
 
     @Override

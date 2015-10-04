@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by arrdem on 9/26/15.
  *
- * Special bindings are used to represent symbolic bindings. They have no actual getValue, but
+ * Special bindings are used to represent symbolic bindings. They have no actual value, but
  * instead represent the bindings of special forms which cannot be more meaningfully evaluated
  * except to themselves.
  *
@@ -37,26 +37,25 @@ public class SpecialBinding extends ABinding {
         }
 
         public Builder setName(Symbol name) {
-            if(name == null) {
-                throw new RuntimeException(
-                        "Bindings cannot have null names!");
-            } else {
-                this.name = name;
-                return this;
-            }
+            assert name != null : "Name cannot be null";
+
+            this.name = name;
+            return this;
         }
 
         public Builder setMeta(Map meta) {
+            assert meta != null : "Meta cannot be null";
+
             this.meta = meta;
             return this;
         }
 
         public SpecialBinding build() {
-            if(this.result != null) {
-                return this.result;
+            if(result != null) {
+                return result;
             } else {
-                this.result = new SpecialBinding(name, meta);
-                return this.result;
+                result = new SpecialBinding(name, meta);
+                return result;
             }
         }
     }
@@ -67,6 +66,13 @@ public class SpecialBinding extends ABinding {
                 .build();
     }
 
+    public static ABinding of(Symbol name, Map meta) {
+        return new Builder()
+                .setName(name)
+                .setMeta(meta)
+                .build();
+    }
+
     @Override
     public Map getMeta() {
         return meta;
@@ -74,7 +80,7 @@ public class SpecialBinding extends ABinding {
 
     @Override
     public Object withMeta(Map meta) {
-        return new SpecialBinding(name, meta);
+        return of(name, meta);
     }
 
     @Override
