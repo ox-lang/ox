@@ -27,44 +27,71 @@ public class Keyword implements INamed, IMeta {
         private Keyword result;
 
         public Builder() {
-            this.namespace = null;
-            this.name = null;
-            this.meta = ImmutableMap.of();
-            this.result = null;
+            namespace = null;
+            name = null;
+            meta = ImmutableMap.of();
+            result = null;
         }
 
         public Keyword build() {
             if(result != null) {
                 return result;
             } else {
-                if (this.name == null) {
-                    throw new RuntimeException(
-                            "Cannot build a keyword with a null name!");
-                }
+                assert name != null : "Cannot build a keyword with a null name!";
+
                 result = new Keyword(name, namespace, meta);
                 return result;
             }
         }
 
         public Builder setName(String name) {
-            if(Util.isValidName(name)) {
-                this.name = name;
-                return this;
-            } else {
-                throw new RuntimeException(
-                        String.format("Illegal name '%s'!", name));
-            }
+            assert Util.isValidName(name) : String.format("Illegal name '%s'!", name);
+
+            this.name = name;
+            return this;
         }
 
         public Builder setNamespace(String ns) {
-            if(Util.isValidNamespace(ns)) {
-                this.namespace = ns;
-                return this;
-            } else {
-                throw new RuntimeException(
-                        String.format("Illegal namespace '%s'!", ns));
-            }
+            assert Util.isValidNamespace(ns) : String.format("Illegal namespace '%s'!", ns);
+
+            this.namespace = ns;
+            return this;
         }
+
+        public Builder setMeta(Map meta) {
+            assert meta != null : "Metadata cannot be null";
+
+            this.meta = meta;
+            return this;
+        }
+    }
+
+    public static Keyword of(String name) {
+        return new Builder()
+                .setName(name)
+                .build();
+    }
+
+    public static Keyword of(String name, Map meta) {
+        return new Builder()
+                .setName(name)
+                .setMeta(meta)
+                .build();
+    }
+
+    public static Keyword of(String namespace, String name) {
+        return new Builder()
+                .setNamespace(namespace)
+                .setName(name)
+                .build();
+    }
+
+    public static Keyword of(String namespace, String name, Map meta) {
+        return new Builder()
+                .setNamespace(namespace)
+                .setName(name)
+                .setMeta(meta)
+                .build();
     }
 
     /* INamed
@@ -92,7 +119,7 @@ public class Keyword implements INamed, IMeta {
      */
     @Override
     public Object withMeta(Map meta) {
-        return new Keyword(name, namespace, meta);
+        return of(name, namespace, meta);
     }
 
     /* Object
@@ -110,8 +137,8 @@ public class Keyword implements INamed, IMeta {
     public boolean equals(Object other) {
         if(other instanceof Keyword) {
             Keyword otherK = (Keyword) other;
-            return ((this.name.equals(otherK.name)) &&
-                    (this.namespace.equals(otherK.namespace)));
+            return ((name.equals(otherK.name)) &&
+                    (namespace.equals(otherK.namespace)));
         } else {
             return false;
         }

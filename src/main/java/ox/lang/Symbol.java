@@ -19,27 +19,6 @@ public class Symbol implements INamed, IMeta {
     private final String namespace;
     private final Map meta;
 
-    public static Symbol of(String name) {
-        return new Builder()
-                .setName(name)
-                .build();
-    }
-
-    public static Symbol of(String namespace, String name) {
-        return new Builder()
-                .setName(name)
-                .setNamespace(namespace)
-                .build();
-    }
-
-    public static Symbol of(String namespace, String name, Map meta) {
-        return new Builder()
-                .setMeta(meta)
-                .setName(name)
-                .setNamespace(namespace)
-                .build();
-    }
-
     private Symbol(String n, String ns, Map meta) {
         this.name = n;
         this.namespace = ns;
@@ -53,49 +32,71 @@ public class Symbol implements INamed, IMeta {
         private Symbol result;
 
         public Builder() {
-            this.namespace = null;
-            this.name = null;
-            this.meta = ImmutableMap.of();
-            this.result = null;
+            namespace = null;
+            name = null;
+            meta = ImmutableMap.of();
+            result = null;
         }
 
         public Symbol build() {
             if(result != null) {
                 return result;
             } else {
-                if (this.name == null) {
-                    throw new RuntimeException(
-                            "Cannot build a Symbol with a null name!");
-                }
+                assert name != null : "Cannot build a Symbol with a null name!";
+
                 result = new Symbol(name, namespace, meta);
                 return result;
             }
         }
 
         public Builder setName(String name) {
-            if(Util.isValidName(name)) {
-                this.name = name;
-                return this;
-            } else {
-                throw new RuntimeException(
-                        String.format("Illegal name '%s'!", name));
-            }
+            assert Util.isValidName(name) : String.format("Illegal name '%s'!", name);
+
+            this.name = name;
+            return this;
         }
 
         public Builder setNamespace(String ns) {
-            if(Util.isValidNamespace(ns)) {
-                this.namespace = ns;
-                return this;
-            } else {
-                throw new RuntimeException(
-                        String.format("Illegal namespace '%s'!", ns));
-            }
+            assert Util.isValidNamespace(ns) : String.format("Illegal namespace '%s'!", ns);
+
+            this.namespace = ns;
+            return this;
         }
 
         public Builder setMeta(Map meta) {
+            assert meta != null : "Metadata cannot be null";
+
             this.meta = meta;
             return this;
         }
+    }
+
+    public static Symbol of(String name) {
+        return new Builder()
+                .setName(name)
+                .build();
+    }
+
+    public static Symbol of(String name, Map meta) {
+        return new Builder()
+                .setName(name)
+                .setMeta(meta)
+                .build();
+    }
+
+    public static Symbol of(String namespace, String name) {
+        return new Builder()
+                .setNamespace(namespace)
+                .setName(name)
+                .build();
+    }
+
+    public static Symbol of(String namespace, String name, Map meta) {
+        return new Builder()
+                .setNamespace(namespace)
+                .setName(name)
+                .setMeta(meta)
+                .build();
     }
 
     /* INamed
@@ -123,7 +124,7 @@ public class Symbol implements INamed, IMeta {
      */
     @Override
     public Object withMeta(Map meta) {
-        return new Symbol(name, namespace, meta);
+        return of(name, namespace, meta);
     }
 
     /* Object
@@ -136,11 +137,13 @@ public class Symbol implements INamed, IMeta {
         }
     }
 
+    /* Object
+     */
     public boolean equals(Object other) {
         if(other instanceof Symbol) {
-            Symbol otherK = (Symbol) other;
-            return ((this.name.equals(otherK.name)) &&
-                    (this.namespace.equals(otherK.namespace)));
+            Symbol otherS = (Symbol) other;
+            return ((name.equals(otherS.name)) &&
+                    (namespace.equals(otherS.namespace)));
         } else {
             return false;
         }
