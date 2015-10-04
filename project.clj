@@ -1,4 +1,4 @@
-(defproject org.oxlang/oxlang "0.0.1"
+(defproject org.ox-lang/ox "0.0.1"
   :description "牛, the language"
   :url "http://github.com/ox-lang/ox"
   :license {:name "MIX/X11 license"
