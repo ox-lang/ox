@@ -1,6 +1,8 @@
 package ox.lang.environment.binding;
 
 import com.google.common.collect.ImmutableMap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ox.lang.Symbol;
 import ox.lang.environment.ABinding;
 
@@ -37,19 +39,22 @@ public class AliasBinding extends ABinding {
             res = null;
         }
 
-        public Builder setName(Symbol name) {
+        @NotNull
+        public Builder setName(@Nullable Symbol name) {
             assert name != null : "Name cannot be null";
 
             this.name = name;
             return this;
         }
 
-        public Builder setValue(Symbol value) {
+        @NotNull
+        public Builder setValue(@Nullable Symbol value) {
             this.value = value;
             return this;
         }
 
-        public Builder setMeta(Map meta) {
+        @NotNull
+        public Builder setMeta(@Nullable Map meta) {
             assert meta != null : "Meta cannot be null";
 
             this.meta = meta;
@@ -85,22 +90,22 @@ public class AliasBinding extends ABinding {
                 .build();
     }
 
-    @Override
+    @NotNull
     public Map getMeta() {
         return meta;
     }
 
-    @Override
-    public Object withMeta(Map meta) {
+    @NotNull
+    public Object withMeta(@NotNull Map meta) {
         return of(name, value, meta);
     }
 
-    @Override
+    @Nullable
     public Object getValue() {
         return value;
     }
 
-    @Override
+    @NotNull
     public Symbol getName() {
         return name;
     }

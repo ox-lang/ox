@@ -1,6 +1,9 @@
 package ox.lang;
 
 import com.google.common.collect.ImmutableMap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Map;
 
 /**
@@ -19,7 +22,9 @@ public class Symbol implements INamed, IMeta {
     private final String namespace;
     private final Map meta;
 
-    private Symbol(String n, String ns, Map meta) {
+    private Symbol(@NotNull String n,
+                    @Nullable String ns,
+                    @NotNull Map meta) {
         this.name = n;
         this.namespace = ns;
         this.meta = meta;
@@ -38,32 +43,39 @@ public class Symbol implements INamed, IMeta {
             result = null;
         }
 
+        @NotNull
         public Symbol build() {
             if(result != null) {
                 return result;
             } else {
-                assert name != null : "Cannot build a Symbol with a null name!";
+                assert name != null : "Name cannot be null";
 
                 result = new Symbol(name, namespace, meta);
                 return result;
             }
         }
 
-        public Builder setName(String name) {
-            assert Util.isValidName(name) : String.format("Illegal name '%s'!", name);
+        @NotNull
+        public Builder setName(@NotNull String name) {
+            assert name != null : "Name cannot be null";
+            assert Util.isValidName(name) : String.format("Illegal name '%s'", name);
 
             this.name = name;
             return this;
         }
 
-        public Builder setNamespace(String ns) {
-            assert Util.isValidNamespace(ns) : String.format("Illegal namespace '%s'!", ns);
+        @NotNull
+        public Builder setNamespace(@Nullable String ns) {
+            if(ns != null) {
+                assert Util.isValidNamespace(ns) : String.format("Illegal namespace '%s'!", ns);
 
-            this.namespace = ns;
+                this.namespace = ns;
+            }
             return this;
         }
 
-        public Builder setMeta(Map meta) {
+        @NotNull
+        public Builder setMeta(@NotNull Map meta) {
             assert meta != null : "Metadata cannot be null";
 
             this.meta = meta;
@@ -71,27 +83,33 @@ public class Symbol implements INamed, IMeta {
         }
     }
 
-    public static Symbol of(String name) {
+    @NotNull
+    public static Symbol of(@NotNull String name) {
         return new Builder()
                 .setName(name)
                 .build();
     }
 
-    public static Symbol of(String name, Map meta) {
+    @NotNull
+    public static Symbol of(@NotNull String name,
+                             @NotNull Map meta) {
         return new Builder()
                 .setName(name)
                 .setMeta(meta)
                 .build();
     }
 
-    public static Symbol of(String namespace, String name) {
+    public static Symbol of(String namespace,
+                             @NotNull String name) {
         return new Builder()
                 .setNamespace(namespace)
                 .setName(name)
                 .build();
     }
 
-    public static Symbol of(String namespace, String name, Map meta) {
+    public static Symbol of(String namespace,
+                             @NotNull String name,
+                             @NotNull Map meta) {
         return new Builder()
                 .setNamespace(namespace)
                 .setName(name)
@@ -102,6 +120,7 @@ public class Symbol implements INamed, IMeta {
     /* INamed
      */
     @Override
+    @NotNull
     public String getName() {
         return name;
     }
@@ -109,6 +128,7 @@ public class Symbol implements INamed, IMeta {
     /* INamed
      */
     @Override
+    @Nullable
     public String getNamespace() {
         return namespace;
     }
@@ -116,6 +136,7 @@ public class Symbol implements INamed, IMeta {
     /* IMeta
      */
     @Override
+    @NotNull
     public Map getMeta() {
         return meta;
     }
@@ -123,12 +144,14 @@ public class Symbol implements INamed, IMeta {
     /* IMeta
      */
     @Override
+    @NotNull
     public Object withMeta(Map meta) {
         return of(name, namespace, meta);
     }
 
     /* Object
      */
+    @NotNull
     public String toString() {
         if(namespace != null) {
             return String.format("%s/%s", namespace, name);
@@ -140,6 +163,9 @@ public class Symbol implements INamed, IMeta {
     /* Object
      */
     public boolean equals(Object other) {
+        if(other == null)
+            return false;
+
         if(other instanceof Symbol) {
             Symbol otherS = (Symbol) other;
             return ((name.equals(otherS.name)) &&

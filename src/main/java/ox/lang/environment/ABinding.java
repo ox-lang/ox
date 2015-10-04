@@ -1,5 +1,7 @@
 package ox.lang.environment;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ox.lang.IMeta;
 import ox.lang.Symbol;
 
@@ -16,6 +18,9 @@ import java.util.Map;
  * than the symbolic getName for the binding.
  */
 public abstract class ABinding implements IMeta {
+    @Nullable
     public abstract Object getValue();
+
+    @NotNull
     public abstract Symbol getName();
 }
