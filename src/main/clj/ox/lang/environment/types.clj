@@ -1,7 +1,6 @@
 (ns ox.lang.environment.types
   (:refer-clojure :exclude [vector alias ns])
   (:require [clojure.core.match :refer [match]]
-            [clj-tuple :refer [vector]]
             [guten-tag.core :refer [deftag]])
   (:import [ox.lang.environment.binding
             AliasBinding
