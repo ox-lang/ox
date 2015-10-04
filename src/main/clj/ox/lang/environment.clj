@@ -44,7 +44,7 @@
                (assoc-in [:bindings sym] value)
                (update-in [:bindings (symbol (namespace sym)) :val :defs] #(conj (set %1) %2) sym)))
 
-     [[(:or :env/local :env/dynamic) _] _ _]
+     [([(:or :env/local :env/dynamic) _] :seq) _ _]
      ,,(update-in env [:parent] install sym value))))
 
 (defn inter

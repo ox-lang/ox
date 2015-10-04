@@ -116,3 +116,12 @@
     (is (env/get-entry env 'user/boom 4))
     (is (= 3 (env/get-value env 'user/boom 4)))
     (is (env/resolve env 'user/boom 4))))
+
+(deftest inter-through-locals
+  (let [sym 'user/foo
+        val 3
+        env (-> env.t/bootstrap-env
+                (env/push-locals {} nil)
+                (env/inter sym val))]
+    (is (= val (env/get-value env sym)))
+    (is (= val (env/get-value (env/pop-bindings env) sym)))))
