@@ -169,7 +169,8 @@ public class Symbol implements INamed, IMeta {
         if(other instanceof Symbol) {
             Symbol otherS = (Symbol) other;
             return ((name.equals(otherS.name)) &&
-                    (namespace.equals(otherS.namespace)));
+                    ((this.namespace == null && otherS.namespace == null) ||
+                     (namespace.equals(otherS.namespace))));
         } else {
             return false;
         }

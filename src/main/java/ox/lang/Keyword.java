@@ -163,7 +163,8 @@ public class Keyword implements INamed, IMeta {
         if(other instanceof Keyword) {
             Keyword otherK = (Keyword) other;
             return ((name.equals(otherK.name)) &&
-                    (namespace.equals(otherK.namespace)));
+                    ((namespace == null && otherK.namespace == null) ||
+                     (namespace.equals(otherK.namespace))));
         } else {
             return false;
         }
