@@ -131,9 +131,9 @@ public class Symbol implements INamed, IMeta {
      */
     public String toString() {
         if(namespace != null) {
-            return String.format(":%s/%s", namespace, name);
+            return String.format("%s/%s", namespace, name);
         } else {
-            return String.format(":%s", name);
+            return String.format("%s", name);
         }
     }
 
