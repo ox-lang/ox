@@ -18,7 +18,8 @@
                   :exclusions [org.clojure/clojure]]
                  [clj-tuple "0.2.2"
                   :exclusions [org.clojure/clojure]]
-                 [com.google.guava/guava "18.0"]]
+                 [com.google.guava/guava "18.0"]
+                 [com.intellij/annotations "12.0"]]
 
   :profiles {:dev {:plugins [[lein-cloverage "1.0.2"]
                              [lein-auto "0.1.1"]]
