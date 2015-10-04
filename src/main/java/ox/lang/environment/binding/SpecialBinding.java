@@ -61,6 +61,12 @@ public class SpecialBinding extends ABinding {
         }
     }
 
+    public static ABinding of(Symbol name) {
+        return new Builder()
+                .setName(name)
+                .build();
+    }
+
     @Override
     public Map meta() {
         return meta;
@@ -74,5 +80,10 @@ public class SpecialBinding extends ABinding {
     @Override
     public Object value() {
         return this;
+    }
+
+    @Override
+    public Symbol name() {
+        return name;
     }
 }
