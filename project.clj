@@ -1,6 +1,6 @@
 (defproject org.ox-lang/ox "0.0.1"
   :description "牛, the language"
-  :url "http://github.com/ox-lang/ox"
+  :url "https://ox-lang.org"
   :license {:name "MIX/X11 license"
             :url "http://opensource.org/licenses/MIT"}
 
