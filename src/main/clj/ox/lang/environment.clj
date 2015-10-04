@@ -249,19 +249,22 @@
   "λ [Env, {[Symbol Value]}] → Env
 
   Pushes dynamic bindings of fully qualified dynamic symbols."
-  [env bindings]
-  {:pre [(t/env? env)
-         (every? symbol?
-                 (keys bindings))
-         (every? namespace
-                 (keys bindings))
-         (every? (partial dynamic? env)
-                 (keys bindings))]}
-  (as-> bindings v
-    (for [[k v] v]
-      (vector k (t/->value (get-meta env k) v)))
-    (into {} v)
-    (t/->dynamic env v nil)))
+  ([env bindings]
+   (push-dynamics env bindings nil))
+  
+  ([env bindings meta]
+   {:pre [(t/env? env)
+          (every? symbol?
+                  (keys bindings))
+          (every? namespace
+                  (keys bindings))
+          (every? (partial dynamic? env)
+                  (keys bindings))]}
+   (as-> bindings v
+     (for [[k v] v]
+       (vector k (t/->value (get-meta env k) v)))
+     (into {} v)
+     (t/->dynamic env v meta))))
 
 (defn pop-bindings
   "λ [Env] → Env

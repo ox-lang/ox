@@ -125,3 +125,12 @@
                 (env/inter sym val))]
     (is (= val (env/get-value env sym)))
     (is (= val (env/get-value (env/pop-bindings env) sym)))))
+
+(deftest inter-through-dynamics
+  (let [sym 'user/foo
+        val 3
+        env (-> env.t/bootstrap-env
+                (env/push-dynamics {} nil)
+                (env/inter sym val))]
+    (is (= val (env/get-value env sym)))
+    (is (= val (env/get-value (env/pop-bindings env) sym)))))
