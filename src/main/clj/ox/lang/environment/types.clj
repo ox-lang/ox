@@ -3,9 +3,9 @@
   (:require [clojure.core.match :refer [match]]
             [guten-tag.core :refer [deftag]])
   (:import [ox.lang.environment.binding
-            AliasBinding
-            ValueBinding
-            SpecialBinding]))
+            ,,AliasBinding
+            ,,ValueBinding
+            ,,SpecialBinding]))
 
 ;; Types to do with bindings in environments
 
