@@ -19,8 +19,8 @@ public abstract class AEnvironment implements IMeta {
     /*
      * Attempts to getBinding a binding in an env
      *
-     * @param getName The symbol to getBinding
-     * @return     The first binding thereof or null
+     * @param getName The symbol to look up
+     * @return        The binding thereof or null
      */
     public abstract ABinding getBinding(Symbol name);
 
