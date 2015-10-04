@@ -95,20 +95,18 @@
 ;;;;;;;;;;;;;;;;;;;;
 
 (defn env->parent [env]
-  {:pre [(env? env)]}
+  {:pre  [(env? env)]
+   :post [(env? %)]}
   (match [env]
 
     ;; the base env is its own parent
     [([:env/base _] :seq)]
     ,,env
 
-    [([:env/global {:parent p}] :seq)]
-    ,,p
-
-    [([:env/local {:parent p}] :seq)]
-    ,,p
-
-    [([:env/dynamic {:parent p}] :seq)]
+    [([(:or :env/global
+            :env/local
+            :env/dynamic)
+       {:parent p}] :seq)]
     ,,p))
 
 ;;;; empty environments
