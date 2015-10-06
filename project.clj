@@ -6,7 +6,8 @@
 
   :source-paths      ["src/main/clj"
                       "src/main/ox"]
-  :java-source-paths ["src/main/java"]
+  :java-source-paths ["src/main/java"
+                      "src/gen/java"]
   :test-paths        ["src/test/clj"]
 
   :dependencies [[org.clojure/clojure "1.7.0"]
@@ -26,6 +27,9 @@
                     :junit             ["src/test/java"]}
              :dev  {:plugins [[lein-cloverage "1.0.2"]
                               [lein-auto "0.1.1"]
-                              [lein-junit "1.1.8"]]
+                              [lein-junit "1.1.8"]
+                              [lein-antlr "0.3.0"]]
+                    :antlr-src-dir "src/main/antlr"
+                    :antlr-dest-dir "src/main/java"
                     :aliases {"test" ["do" "clean" ["with-profile" "test" "junit"] "test"]}
                     :auto    {:default {:file-pattern #"\.(clj|cljs|cljc|edn|ox)$"}}}})
