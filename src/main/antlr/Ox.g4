@@ -1,136 +1,149 @@
 grammar Ox;
 
-@header {
-    package org.oxlang.parser;
-}
-
-ox_file
-    : ox_form*
+oxFile
+    : oxForms
     ;
 
-ox_form
-    : ox_reader_macro
-    | ox_literal
-    | ox_list
-    | ox_vector
-    | ox_map
-    | ox_set
+oxForms
+    : oxForm *
     ;
 
-ox_reader_macro
-    : ox_meta_data
-    | ox_reader_cond_splicing
-    | ox_reader_cond
-    | ox_discard
-    | ox_dispatch
-    | ox_quote
+oxForm
+    : oxNil
+    | oxBoolean
+    | oxSymbol
+    | oxKeyword
+    | oxString
+    | oxNumber
+    | oxCharacter
+    | oxQuote
+    | oxList
+    | oxTuple
+    | oxVector
+    | oxSomething
+    | oxMap
+    | oxSet
+    | oxTag
+    | oxReader
     ;
 
-ox_list
-    : '(' ox_form* ')'
+oxList
+    : '(' oxForms ')'
     ;
 
-ox_vector
-    : '[' ox_form* ']'
+oxTuple
+    : '#(' oxForms ')'
     ;
 
-ox_map
-    : '{' (ox_form ox_form)* '}'
+oxVector
+    : '[' oxForms ']'
     ;
 
-ox_set
-    : '#{' ox_form* '}'
+// FIXME: what is?
+oxSomething
+    : '#[' oxForms ']'
     ;
 
-ox_literal
-    : ox_keyword
-    | ox_number
-    | ox_symbol
+oxMap
+    : '{' (oxForm oxForm)* '}'
     ;
 
-ox_meta_data
-    : '^' ox_form ox_form
+oxSet
+    : '#{' oxForms '}'
     ;
 
-ox_dispatch
-    : ox_symbol ox_form
+oxQuote
+    : '\'' oxForm
     ;
 
-ox_discard
-    : '#_' ox_form
+oxTag
+    : '^' oxForm oxForm
     ;
 
-ox_quote
-    : '\'' ox_form
+oxReader
+    : '#' oxSymbol oxForm
     ;
 
-ox_reader_cond_splicing
-    : '#?@' '(' (ox_keyword ox_form) * ')'
+oxString: STRING;
+oxFloat : FLOAT;
+oxHex   : HEX;
+oxBin   : BIN;
+oxBign  : BIGN;
+oxLong  : LONG;
+oxRint  : RINT;
+
+oxNumber
+    : oxFloat
+    | oxHex
+    | oxBin
+    | oxBign
+    | oxLong
+    | oxRint
     ;
 
-ox_reader_cond
-    : '#?' '(' (ox_keyword ox_form) * ')'
+oxCharacter
+    : oxNamedChar
+    | oxUHexQuad
+    | oxAnyChar
     ;
 
-ox_keyword
-    : '::' NAMESPACE '/' NAME
-    | '::' NAME
-    | ':' NAMESPACE '/' NAME
-    | ':' NAME
+oxNamedChar: CHAR_NAMED ;
+oxAnyChar  : CHAR_ANY ;
+oxUHexQuad : CHAR_U ;
+
+oxNil: NIL;
+oxBoolean: BOOLEAN;
+
+oxKeyword
+    : oxMacroKeyword
+    | oxSimpleKeyword
     ;
 
-ox_symbol
-    : NAMESPACE '/' NAME
-    | NAME
+oxSimpleKeyword
+    : ':' oxSymbol
     ;
 
-ox_float
-    : FLOAT
+oxMacroKeyword
+    : '::' oxSymbol
     ;
 
-ox_hex
-    : HEX
+oxSymbol
+    : oxNsSymbol
+    | SYMBOL
     ;
 
-ox_bin
-    : BIN
+oxNsSymbol
+    : NS_SYMBOL
     ;
 
-ox_bign
-    : BIGN
+// Lexers
+//--------------------------------------------------------------------
+
+// Java §3.10.5 String Literals
+STRING
+    : '"' StringCharacters? '"'
     ;
 
-ox_long
-    : LONG
+fragment
+StringCharacters
+    : StringCharacter+
     ;
 
-ox_number
-    : ox_float
-    | ox_hex
-    | ox_bin
-    | ox_bign
-    | ox_long
+fragment
+StringCharacter
+    : ~[""\\]
+    | EscapeSequence
     ;
 
-//----------------------------------------------------------------------------------------------------------------------
-
-NAME
-    : [^\^;:#"'\[\]\(\)\{\}\d\s][^;:#"'\[\]\(\)\{\}\s]+
+// Java §3.10.6 Escape Sequences for Character and String Literals
+fragment
+EscapeSequence
+    : '\\' [btnfr"'\\]
+    | CHAR_U
+    | CHAR_NAMED
     ;
 
-NAMESPACE
-    : (([^\^;:#\"\'\[\]\(\)\{\}\d\s/][^;:#\"\'\[\]\(\)\{\}\s/]+)'.'?)+
-    ;
-
-NIL
-    : 'nil'
-    ;
-
-BOOLEAN
-    : 'true'
-    | 'false'
-    ;
-
+// FIXME: Doesn't deal with arbitrary read radixes, BigNums
 FLOAT
     : '-'? [0-9]+ FLOAT_TAIL
     | '-'? 'Infinity'
@@ -153,12 +166,69 @@ fragment
 FLOAT_EXP
     : [eE] '-'? [0-9]+
     ;
+
 fragment
 HEXD: [0-9a-fA-F] ;
-HEX: '0' [xX] HEXD+ ;
-BIN: '0' [bB] [10]+ ;
+HEX:  '0' [xX] HEXD+ ;
+BIN:  '0' [bB] [10]+ ;
 LONG: '-'? [0-9]+[lL]?;
 BIGN: '-'? [0-9]+[nN];
+RINT: [1-9][0-9]* 'r' ('0'..'9'|'a'..'z'|'A'..'Z')+;
+
+CHAR_U
+    : '\\' 'u'[0-9D-Fd-f] HEXD HEXD HEXD ;
+
+CHAR_NAMED
+    : '\\'
+    ( 'newline'
+    | 'return'
+    | 'space'
+    | 'tab'
+    | 'formfeed'
+    | 'backspace'
+    )
+    ;
+
+CHAR_ANY: '\\' . ;
+
+NIL : 'nil';
+
+BOOLEAN : 'true' | 'false' ;
+
+SYMBOL
+    : '.'
+    | '/'
+    | ':'
+    | NAME
+    ;
+
+NS_SYMBOL
+    : NAME '/' SYMBOL
+    ;
+
+// Fragments
+//--------------------------------------------------------------------
+
+NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
+
+SYMBOL_HEAD
+    : ~('0' .. '9'
+       | '(' | ')'
+       | '[' | ']'
+       | '{' | '}'
+       | '^' | '`' | '\'' | '"' | '#' | '~' | '@' | ':' | '/'
+       | [ \n\r\t\,]
+       )
+    ;
+
+SYMBOL_REST
+    : SYMBOL_HEAD
+    | '0'..'9'
+    | '.'
+    ;
+
+// Discard
+//--------------------------------------------------------------------
 
 fragment
 WS : [ \n\r\t\,] ;
