@@ -1,4 +1,4 @@
-grammar Oxlang;
+grammar Ox;
 
 @header {
     package org.oxlang.parser;
