@@ -23,8 +23,8 @@ public class Symbol implements INamed, IMeta {
     private final Map meta;
 
     private Symbol(@NotNull String n,
-                    @Nullable String ns,
-                    @NotNull Map meta) {
+                   @Nullable String ns,
+                   @NotNull Map meta) {
         this.name = n;
         this.namespace = ns;
         this.meta = meta;

@@ -51,8 +51,11 @@ public class Keyword implements INamed, IMeta {
 
         @NotNull
         public Builder setName(@NotNull String name) {
-            assert name != null : "Name cannot be null";
-            assert Util.isValidName(name) : String.format("Illegal name '%s'", name);
+            if(name == null)
+                throw new RuntimeException("Name cannot be null");
+
+            if(!Util.isValidName(name))
+                throw new RuntimeException(String.format("Illegal name '%s'", name));
 
             this.name = name;
             return this;
@@ -60,17 +63,17 @@ public class Keyword implements INamed, IMeta {
 
         @NotNull
         public Builder setNamespace(@Nullable String ns) {
-            if(ns != null) {
-                assert Util.isValidNamespace(ns) : String.format("Illegal namespace '%s'!", ns);
+            if(ns != null && !Util.isValidNamespace(ns))
+                throw new RuntimeException(String.format("Illegal namespace '%s'!", ns));
 
-                this.namespace = ns;
-            }
+            this.namespace = ns;
             return this;
         }
 
         @NotNull
         public Builder setMeta(@NotNull Map meta) {
-            assert meta != null : "Metadata cannot be null";
+            if(meta == null)
+                throw new RuntimeException("Metadata cannot be null");
 
             this.meta = meta;
             return this;
