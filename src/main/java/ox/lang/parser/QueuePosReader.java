@@ -1,4 +1,4 @@
-package ox.lang;
+package ox.lang.parser;
 
 import java.io.File;
 import java.io.FileNotFoundException;

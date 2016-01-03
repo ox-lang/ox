@@ -1,4 +1,4 @@
-package ox.lang;
+package ox.lang.parser;
 
 import java.io.Reader;
 import java.io.BufferedReader;
