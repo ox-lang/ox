@@ -17,7 +17,9 @@ import java.util.Map;
  * itself is just a holder for metadata, a getName, possibly a namespace and
  * possibly metadata.
  */
-public class Symbol implements INamed, IMeta {
+public class Symbol
+        extends AObj
+        implements INamed, IMeta {
     private final String name;
     private final String namespace;
     private final Map meta;

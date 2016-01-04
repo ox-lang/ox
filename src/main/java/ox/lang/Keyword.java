@@ -11,7 +11,9 @@ import java.util.Map;
  * A Keyword must have a non-null, legal getName.
  * A Keyword may have a namespace, but it may be null.
  */
-public class Keyword implements INamed, IMeta {
+public class Keyword
+        extends AObj
+        implements INamed, IMeta {
     private final String name;
     private final String namespace;
     private final Map meta;
