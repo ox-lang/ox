@@ -142,12 +142,10 @@
         (let [chr (peek-chr r)]
           (cond
             (= chr endc)
-            ,,(let [end (get-pos r)]
+            ,,(let [end (get-pos r)
+                    res (builder (.toArray acc))]
                 (.pop r)
-                #_(do (doseq [e *terminators*]
-                        (println startc endc "  " e))
-                      (println startc endc "  ^d"))
-                (vector (builder (.toArray acc)) start end))
+                (vector res start end))
 
             (= :eof chr)
             ,,(*unterminated-form-fn*)
