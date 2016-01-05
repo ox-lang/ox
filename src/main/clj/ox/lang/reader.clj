@@ -3,13 +3,17 @@
   (:require [clj-tuple :refer [vector]]
             [clojure.core.match :refer [match]])
   (:import java.lang.StringBuilder
-           java.io.Reader
-           java.io.StringReader
-           java.io.BufferedReader
-           java.io.FileReader
            java.util.ArrayList
-           ox.lang.Position
-           ox.lang.QueuePosReader))
+
+           (java.io
+            ,,Reader
+            ,,StringReader
+            ,,BufferedReader
+            ,,FileReader)
+           
+           (ox.lang.reader
+            ,,Position
+            ,,QueuePosReader)))
 
 (defn file? [o]
   (instance? java.io.File o))
