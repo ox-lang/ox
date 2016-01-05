@@ -59,7 +59,7 @@ public class Box
             .setMeta(meta)
             .build();
     }
-    
+
     // IRef
     public Object deref() {
         return value;

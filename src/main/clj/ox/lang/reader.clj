@@ -13,10 +13,10 @@
             ,,FileReader)
 
            clojure.lang.IMeta
-           
+
            (ox.lang
             ,,Box)
-           
+
            (ox.lang.parser
             ,,Position
             ,,QueuePosReader)))
@@ -262,7 +262,7 @@
             ,,(let [end (get-pos r)]
                 (pop-chr! r)
                 (vector (.toString buff) start end))
-            
+
             (\\ )
             ,,(let [[chr _ _] (char-reader r nil)]
                 (.append buff chr)

@@ -22,8 +22,8 @@
   (cond
     (instance? ox.lang.IMeta o)
     ,,(.getMeta ^ox.lang.IMeta o)
-    
+
     (instance? clojure.lang.IMeta o)
     ,,(clojure.core/meta o)
-    
+
     :else {}))
