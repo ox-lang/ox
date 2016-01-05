@@ -27,3 +27,8 @@
     ,,(clojure.core/meta o)
 
     :else {}))
+
+(defn unbox [o]
+  (if (instance? ox.lang.IRef o)
+    (.deref o) o))
+
