@@ -1,17 +1,20 @@
 package ox.lang;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ObjectArrays;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Arrays;
 
 /**
  * Created by arrdem on 11/2/15.
  */
-public class ArraySeq implements ISeq, IMeta {
-    private final Map meta;
+public class ArraySeq extends AObj
+    implements ISeq {
     private final Object[] backing;
     private final int index;
+    private final Map meta;
 
     private ArraySeq(Object[] backing, int index, @NotNull Map meta) {
         this.meta = meta;
@@ -135,5 +138,57 @@ public class ArraySeq implements ISeq, IMeta {
         } else {
             return null;
         }
+    }
+
+    private Object[] backing() {
+        return backing;
+    }
+
+    private int index() {
+        return index;
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if(other == null)
+            return false;
+
+        if(other instanceof ArraySeq) {
+            ArraySeq o = (ArraySeq) other;
+            return (Arrays.equals(backing, o.backing()) &&
+                    index == o.index());
+        } else if(other instanceof ISeq) {
+            ISeq o = (ISeq) other;
+            ISeq me = this;
+
+            while(me != null && o != null &&
+                  me.first() == o.first()) {
+                me = me.rest();
+                o = o.rest();
+            }
+
+            // FIXME: fukkn slooooow
+            if(me == o) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append('(');
+        for (int i = index; i < backing.length; i++) {
+            if(i != index)
+                builder.append(',');
+            Object o = backing[i].toString();
+            builder.append(Util.toString(o));
+        }
+        builder.append(')');
+        return builder.toString();
     }
 }

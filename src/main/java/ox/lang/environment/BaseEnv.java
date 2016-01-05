@@ -1,14 +1,15 @@
 package ox.lang.environment;
 
 import com.google.common.collect.ImmutableMap;
+import org.jetbrains.annotations.NotNull;
 import ox.lang.Symbol;
+import ox.lang.environment.binding.ABinding;
 import ox.lang.environment.binding.SpecialBinding;
 import ox.lang.environment.binding.ValueBinding;
 
-import java.beans.Statement;
+import java.util.Collection;
 import java.util.Map;
-
-import static ox.lang.Symbol.of;
+import java.util.Set;
 
 /**
  * Created by arrdem on 9/26/15.
@@ -16,7 +17,8 @@ import static ox.lang.Symbol.of;
  * Represents the binding of all the language special forms. Immutable, has no parent and no
  * metadata.
  */
-public class BaseEnv extends AEnvironment {
+public class BaseEnv
+        extends AEnvironment {
     private static String _ns = "ox.lang.rt";
 
     private static Symbol _if_star    = Symbol.of(_ns, "if*");
@@ -50,11 +52,6 @@ public class BaseEnv extends AEnvironment {
     }
 
     @Override
-    public ABinding getBinding(Symbol name) {
-        return (ABinding) baseEnvMap.get(name);
-    }
-
-    @Override
     public Map getMeta() {
         return mempty;
     }
@@ -62,5 +59,9 @@ public class BaseEnv extends AEnvironment {
     @Override
     public Object withMeta(Map meta) {
         return this;
+    }
+
+    public Map<Symbol, ABinding> asMap() {
+        return baseEnvMap;
     }
 }

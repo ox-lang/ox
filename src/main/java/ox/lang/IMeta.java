@@ -1,7 +1,6 @@
 package ox.lang;
 
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Map;
 
 /**
@@ -27,4 +26,10 @@ public interface IMeta {
      */
     @NotNull
     Object withMeta(@NotNull Map meta);
+
+    /*
+     * @return A String representation including the metadata
+     */
+    @NotNull
+    String toStringWithMeta();
 }

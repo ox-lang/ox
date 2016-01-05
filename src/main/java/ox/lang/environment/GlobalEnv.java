@@ -1,8 +1,10 @@
 package ox.lang.environment;
 
 import com.google.common.collect.ImmutableMap;
+import org.jetbrains.annotations.NotNull;
 import ox.lang.IMeta;
 import ox.lang.Symbol;
+import ox.lang.environment.binding.ABinding;
 
 import java.util.Map;
 
@@ -113,9 +115,10 @@ public class GlobalEnv
         return parent;
     }
 
+    @NotNull
     @Override
-    public ABinding getBinding(Symbol name) {
-        return (ABinding) bindings.get(name);
+    public Map<Symbol, ABinding> asMap() {
+        return bindings;
     }
 
     @Override

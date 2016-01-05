@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ox.lang.Symbol;
-import ox.lang.environment.ABinding;
 
 import java.util.Map;
 
@@ -15,7 +14,8 @@ import java.util.Map;
  * down some more, since evaluating an alias in some context is very much nontrivial. But for now
  * it exists.
  */
-public class AliasBinding extends ABinding {
+public class AliasBinding
+        extends ABinding {
     private final Symbol name;
     private final Symbol value;
     private final Map meta;

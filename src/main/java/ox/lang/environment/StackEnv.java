@@ -1,14 +1,17 @@
 package ox.lang.environment;
 
 import com.google.common.collect.ImmutableMap;
+import org.jetbrains.annotations.NotNull;
 import ox.lang.Symbol;
+import ox.lang.environment.binding.ABinding;
 
 import java.util.Map;
 
 /**
  * Created by arrdem on 9/26/15.
  */
-public class StackEnv extends AEnvironment {
+public class StackEnv
+        extends AEnvironment {
     private final AEnvironment parent;
     private final Map<Symbol, ABinding> bindings;
     private final Map meta;
@@ -97,9 +100,10 @@ public class StackEnv extends AEnvironment {
         return parent;
     }
 
+    @NotNull
     @Override
-    public ABinding getBinding(Symbol name) {
-        return (ABinding) bindings.get(name);
+    public Map<Symbol, ABinding> asMap() {
+        return bindings;
     }
 
     @Override

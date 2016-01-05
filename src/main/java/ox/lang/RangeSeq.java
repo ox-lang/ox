@@ -9,7 +9,9 @@ import java.util.Map;
 /**
  * Created by arrdem on 11/2/15.
  */
-public class RangeSeq implements IMeta, ISeq<Long> {
+public class RangeSeq
+        extends AObj
+        implements ISeq<Long> {
     private final Map meta;
     private final long base, step, end;
 
@@ -53,5 +55,22 @@ public class RangeSeq implements IMeta, ISeq<Long> {
             return null;
         else
             return of(next, step, end, meta);
+    }
+
+    @NotNull
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for(long i = base; i < end; i += step) {
+            if(i != base)
+                builder.append(',');
+            builder.append(i);
+        }
+        return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return false;
     }
 }

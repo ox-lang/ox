@@ -4,9 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ox.lang.Symbol;
-import ox.lang.environment.ABinding;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * Created by arrdem on 9/26/15.
@@ -83,6 +83,11 @@ public class SpecialBinding extends ABinding {
     @NotNull
     public Object withMeta(@NotNull Map meta) {
         return of(name, meta);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("#special [%s]", name.toString());
     }
 
     @Nullable

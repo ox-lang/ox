@@ -1,10 +1,15 @@
 package ox.lang;
+
+import com.google.common.collect.ImmutableMap;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /* This class serves as a holding tank for snippets of Java code which
  * are both stateless, and serve as helpers in interacting with the ox
- * implementation and datastructures.
+ * implementation and data structures.
  *
  * As a helper class, this class should have no instance variables or
  * methods. Constants and statics are OK.
@@ -52,5 +57,23 @@ public class Util {
     public static boolean isValidNamespace(String ns) {
         Matcher m = namespacePattern.matcher(ns);
         return m.matches();
+    }
+
+    @NotNull
+    public static String toString(Object val) {
+        if(val == null) {
+            return "nil";
+        } else {
+            return val.toString();
+        }
+    }
+
+    @NotNull
+    public static Map getMeta(Object o) {
+        if(o instanceof IMeta) {
+            return ((IMeta) o).getMeta();
+        } else {
+            return ImmutableMap.of();
+        }
     }
 }
