@@ -1,8 +1,6 @@
-package ox.lang;
+package ox.lang.parser;
 
-import javafx.geometry.Pos;
 import org.junit.Test;
-
 import java.io.Reader;
 import java.io.StringReader;
 
