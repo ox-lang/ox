@@ -33,7 +33,7 @@ public class Position {
   }
 
   public String toString() {
-    return String.format("%s (%d:%d)"
+    return String.format("#position [%s %d %d]"
                          , getFileName()
                          , line
                          , column
