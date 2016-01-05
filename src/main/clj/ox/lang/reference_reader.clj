@@ -25,6 +25,9 @@
 (defn tag-meta-reader [m e]
   [:with-meta e {:tag m}])
 
+(defn ns-reader [ns]
+  (.substring ns 0 (dec (count ns))))
+
 (defn keyword-reader [sym]
   (keyword (namespace sym) (name sym)))
 
@@ -48,7 +51,7 @@
    
    :keyword  keyword-reader
    :symbol   punt1
-   :ns       punt1
+   :ns       ns-reader
    :name     punt1
    :sym      symbol
    :qsym     symbol})

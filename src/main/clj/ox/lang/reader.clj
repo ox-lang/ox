@@ -1,7 +1,7 @@
-(ns ox.lang.parser
+(ns ox.lang.reader
   (:refer-clojure :exclude [read read-string vector])
-  (:require [clj-tuple :refer [vector]]
-            [clojure.core.match :refer [match]])
+  (:require [ox.lang.core :as ox]
+            [clj-tuple :refer [vector]])
   (:import java.lang.StringBuilder
            java.util.ArrayList
 
@@ -11,6 +11,9 @@
             ,,BufferedReader
             ,,File
             ,,FileReader)
+
+           (ox.lang
+            ,,Box)
            
            (ox.lang.parser
             ,,Position
@@ -100,6 +103,9 @@
 ;; Otherwise the 3-tuple is used to return a result to the parent
 ;; context.
 
+(declare number-reader
+         char-reader)
+
 (defn form-reader [^QueuePosReader r]
   (let [[reader pos] (get-reader r)]
     (if reader
@@ -111,7 +117,7 @@
     (cond
       (and (= res :nothing)
            (= :eof (peek-chr r)))
-      ,,(*unterminated-form-fn*)
+      ,,:nothing
 
       (= res :nothing)
       ,,(recur (form-reader r))
@@ -136,9 +142,9 @@
             (= chr endc)
             ,,(let [end (get-pos r)]
                 (.pop r)
-                (do (doseq [e *terminators*]
-                      (println startc endc "  " e))
-                    (println startc endc "  ^d"))
+                #_(do (doseq [e *terminators*]
+                        (println startc endc "  " e))
+                      (println startc endc "  ^d"))
                 (vector (builder (.toArray acc)) start end))
 
             (= :eof chr)
@@ -147,14 +153,14 @@
             :else
             ,,(let [res (form-reader r)]
                 (when-not (= :nothing res)
-                  (.append acc (first res)))
+                  (.add acc (first res)))
                 (recur acc))))))))
 
 (def list-reader
-  (make-list-reader \( \) seq))
+  (make-list-reader \( \) (partial apply list)))
 
 (def vector-reader
-  (make-list-reader \[ \] vec))
+  (make-list-reader \[ \] (partial apply vector)))
 
 (def map-reader
   (make-list-reader \{ \} (partial apply hash-map)))
@@ -212,11 +218,11 @@
     (let [buff (StringBuilder.)]
       (loop []
         (let [c (peek-chr r)]
-          (println "symbol-reader" c)
+          #_(println "symbol-reader" c)
           (cond
             (or (= :eof c)
                 (get *reader-dispatch* c))
-            ,,[(list 'symbol (.toString buff)) start (get-pos r)]
+            ,,[(symbol (.toString buff)) start (get-pos r)]
 
             :else
             ,,(do (.append buff c)
@@ -295,6 +301,7 @@
                  \{       set-reader
                  \_       discard-reader
                  :default dispatch-reader}
+       :eof     :close
        :default symbol-reader}
 
       ;; A hat trick for binding a lot of characters in one go
@@ -348,24 +355,30 @@
   Reader
   (as-reader [r] r))
 
+(defn unbox [o]
+  (if (instance? Box o)
+    (.deref ^Box o)
+    o))
+
 (defn read-reader [r]
   {:pre [(reader? r)]}
   (let [res (read-something r)]
-    (cons
-     (when-not (= :nothing res)
-       (first res))
-     (when-not (= :nothing res)
-       (lazy-seq
-        (read-reader r))))))
+    (when-not (= res :nothing)
+      (let [[res start end] res
+            meta            {:start start :end end}]
+        #_(println (.toString meta))
+        (. Box (of res meta))))))
 
 (defn read-file [^File f]
   {:pre [(file? f)]}
   (-> f
       (as-reader)
-      (read-reader)))
+      (read-reader)
+      (unbox)))
 
 (defn read-string [^String s]
   {:pre [(string? s)]}
   (-> s
       (as-reader)
-      (read-reader)))
+      (read-reader)
+      (unbox)))
