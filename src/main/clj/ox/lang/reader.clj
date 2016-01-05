@@ -368,20 +368,16 @@
     (when-not (= res :nothing)
       (let [[res start end] res
             meta            {:start start :end end}]
-        (if (instance? IMeta res)
-          (with-meta res meta)
-          res)))))
+        (ox/with-meta res meta)))))
 
 (defn read-file [^File f]
   {:pre [(file? f)]}
   (-> f
       (as-reader)
-      (read-reader)
-      (unbox)))
+      (read-reader)))
 
 (defn read-string [^String s]
   {:pre [(string? s)]}
   (-> s
       (as-reader)
-      (read-reader)
-      (unbox)))
+      (read-reader)))
