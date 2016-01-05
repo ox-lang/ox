@@ -100,6 +100,19 @@
                     (recur e' *1 forms)
                     res)))
 
+            ;; FIXME: This is bloody hard. I think that the approach
+            ;; here is that you iterate across the loop body, using
+            ;; interpreting eval as is normal in the other special
+            ;; forms.
+            ;;
+            ;; The problem is how to track the context of being in a
+            ;; tail position where recur is legal. Also what should
+            ;; recur be capable of? It's been debated as to whether
+            ;; recur should be able to cross methods.. all kinds of
+            ;; stuff.
+            (loop)
+            ,,nil
+
             ;; FIXME: for now, lambda* and fn* do the same thing which is just
             ;; to return the function term unmodified. The interpreting apply
             ;; will do the leg work.
