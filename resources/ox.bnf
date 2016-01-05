@@ -1,0 +1,24 @@
+forms ::= form *
+  form ::=  <discard> | list | vector | map | meta | quote | atom
+    <discard> ::= '#_' form
+    list ::= <'('> form * <')'>
+    vector ::= <'['> form * <']'>
+    
+    map ::= <'{'> pair * <'}'>
+      pair ::= form form
+      
+    meta ::= <'^'> ( map-meta / tag-meta )
+      tag-meta ::= form form
+      map-meta ::= map form
+
+    quote ::= <"'"> form
+
+    atom ::= number | keyword | symbol
+      number ::= #"\d+"
+      keyword ::= <':'> symbol
+      
+      symbol ::= qsym / sym
+        qsym ::= ns name
+        sym  ::= name
+        ns   ::= #"[\D&&[^/()\[\]{}#'\";:\s]][^/()\[\]{}#'\";:\s]*" <'/'>
+        name ::= #"/|[\D&&[^/()\[\]{}#'\";:\s]][^/()\[\]{}#'\";:\s]*"
