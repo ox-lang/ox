@@ -71,6 +71,10 @@ public class Box
         return Util.toString(value);
     }
 
+    public int hashCode() {
+        return value.hashCode();
+    }
+
     public boolean equals(Object other) {
         if(other == null && value == null)
             return true;
