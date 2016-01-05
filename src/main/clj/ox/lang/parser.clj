@@ -1,4 +1,4 @@
-(ns ox.lang.reader
+(ns ox.lang.parser
   (:refer-clojure :exclude [read read-string vector])
   (:require [clj-tuple :refer [vector]]
             [clojure.core.match :refer [match]])
@@ -12,7 +12,7 @@
             ,,File
             ,,FileReader)
            
-           (ox.lang.reader
+           (ox.lang.parser
             ,,Position
             ,,QueuePosReader)))
 
@@ -76,19 +76,19 @@
         start (get-pos r)]
     (loop [table  *reader-dispatch*
            buffer (StringBuilder.)]
-      (let [c   (peek-chr r)
-            val (or (get table c)
-                    (get table :default :not-found))]
-        (.append buffer c)
-        (if-not (fn? val)
-          (if (#{:not-found :close} val)
-            (*unhandled-character-reader* start (.toString buffer))
-            (do (pop-chr! r)
-                (recur val buffer)))
-          (vector val start))))))
+      (let [c (peek-chr r)]
+        (if-not (= c :eof)
+          (let [val (or (get table c)
+                        (get table :default ::not-found))]
+            (.append buffer c)
+            (if-not (fn? val)
+              (if (#{::not-found :close} val)
+                (*unhandled-character-reader* start (.toString buffer))
+                (do (pop-chr! r)
+                    (recur val buffer)))
+              (vector val start)))
 
-;; FIXME: Implement these
-(declare number-reader char-reader)
+          )))))
 
 ;; Readers return either:
 ;; - :nothing
@@ -102,7 +102,9 @@
 
 (defn form-reader [^QueuePosReader r]
   (let [[reader pos] (get-reader r)]
-    (reader r pos)))
+    (if reader
+      (reader r pos)
+      :nothing)))
 
 (defn read-something [^QueuePosReader r]
   (loop [res (form-reader r)]
@@ -134,9 +136,9 @@
             (= chr endc)
             ,,(let [end (get-pos r)]
                 (.pop r)
-                #_(do (doseq [e *terminators*]
-                        (println startc endc "  " e))
-                      (println startc endc "  ^d"))
+                (do (doseq [e *terminators*]
+                      (println startc endc "  " e))
+                    (println startc endc "  ^d"))
                 (vector (builder (.toArray acc)) start end))
 
             (= :eof chr)
@@ -204,7 +206,9 @@
 
 (defn symbol-reader [^QueuePosReader r ^Position start]
   {:pre [(qpr? r)]}
-  (binding [*reader-dispatch* (apply dissoc *reader-dispatch* "0123456789")]
+  (binding [*reader-dispatch* (as-> *reader-dispatch* d
+                                (apply dissoc d "0123456789")
+                                (assoc d :eof :close))]
     (let [buff (StringBuilder.)]
       (loop []
         (let [c (peek-chr r)]
@@ -327,27 +331,41 @@
 
 
 
+(defprotocol AReadable
+  (as-reader [_]))
+
+(extend-protocol AReadable
+  String
+  (as-reader [s]
+    (->> s
+         (StringReader. )
+         (QueuePosReader. )))
+
+  File
+  (as-reader [f]
+    (QueuePosReader. ^File f))
+
+  Reader
+  (as-reader [r] r))
+
 (defn read-reader [r]
   {:pre [(reader? r)]}
-  (let [r (if-not (qpr? r)
-            (QueuePosReader. r)
-            r)]
-    (let [res (read-something r)]
-      (cons
-       (when-not (= :nothing res)
-         (first res))
-       (when-not (= :nothing res)
-         (lazy-seq
-          (read-reader r)))))))
+  (let [res (read-something r)]
+    (cons
+     (when-not (= :nothing res)
+       (first res))
+     (when-not (= :nothing res)
+       (lazy-seq
+        (read-reader r))))))
 
-(defn read-file [f]
+(defn read-file [^File f]
   {:pre [(file? f)]}
   (-> f
-      (QueuePosReader.)
+      (as-reader)
       (read-reader)))
 
-(defn read-string [s]
+(defn read-string [^String s]
   {:pre [(string? s)]}
   (-> s
-      (StringReader.)
+      (as-reader)
       (read-reader)))
