@@ -9,6 +9,7 @@
             ,,Reader
             ,,StringReader
             ,,BufferedReader
+            ,,File
             ,,FileReader)
            
            (ox.lang.reader
@@ -16,7 +17,7 @@
             ,,QueuePosReader)))
 
 (defn file? [o]
-  (instance? java.io.File o))
+  (instance? File o))
 
 (defn reader? [o]
   (instance? Reader o))
