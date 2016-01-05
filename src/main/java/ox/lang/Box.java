@@ -75,12 +75,18 @@ public class Box
         if(other == null && value == null)
             return true;
 
-        if(other instanceof IRef) {
-            IRef r = (IRef) other;
-            Object v = r.deref();
+        if(value != null) {
+            if(value == other) {
+                return true;
+            } else if(other instanceof IRef) {
+                IRef r = (IRef) other;
+                Object v = r.deref();
 
-            return (value == v ||
-                    (value != null && value.equals(v)));
+                return (value == v ||
+                        (value != null && value.equals(v)));
+            } else {
+                return value.equals(other);
+            }
         } else {
             return false;
         }
