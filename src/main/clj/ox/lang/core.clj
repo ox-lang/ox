@@ -1,5 +1,5 @@
 (ns ox.lang.core
-  (:refer-clojure :only [defn defmethod let cond instance? or])
+  (:refer-clojure :only [defn defmethod let cond instance? or print-method nil? reduce if-not reduced boolean empty?])
   (:import [ox.lang
             ,,AObj
             ,,Box]
@@ -32,3 +32,17 @@
   (if (instance? ox.lang.IRef o)
     (.deref o) o))
 
+(defn =
+  ([x] true)
+  ([x y]
+   (if-not (nil? x)
+     (.equals x y)
+     (if-not (nil? y)
+       (.equals y x)
+       true)))
+  ([x y & [head & more' :as more]]
+   (if (= x y)
+     (if-not (empty? more)
+       (recur y head more')
+       true)
+     false)))
