@@ -38,3 +38,8 @@
   (prop/for-all [l (gen/list gen/symbol-ns)]
     (let [s (pr-str l)]
       (all-read-ok? s))))
+
+(defspec vec-sym-read-equality
+  (prop/for-all [l (gen/vector gen/symbol-ns)]
+    (let [s (pr-str l)]
+      (all-read-ok? s))))
