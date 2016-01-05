@@ -113,6 +113,9 @@
             (loop)
             ,,nil
 
+            (recur)
+            ,,nil
+            
             ;; FIXME: for now, lambda* and fn* do the same thing which is just
             ;; to return the function term unmodified. The interpreting apply
             ;; will do the leg work.
