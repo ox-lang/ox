@@ -19,9 +19,6 @@ public abstract class AObj
 
     // FIXME: maybe not my best idea ever
     public String toStringWithMeta() {
-        return String.format("#%s [%s, %s]",
-                             getClass().getName(),
-                             toString(),
-                             getMeta().toString());
+        return String.format("^%s %s", getMeta().toString(),toString());
     }
 }
