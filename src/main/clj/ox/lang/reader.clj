@@ -357,11 +357,6 @@
   Reader
   (as-reader [r] r))
 
-(defn unbox [o]
-  (if (instance? Box o)
-    (.deref ^Box o)
-    o))
-
 (defn read-reader [r]
   {:pre [(reader? r)]}
   (let [res (read-something r)]
