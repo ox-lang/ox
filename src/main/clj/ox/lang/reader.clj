@@ -12,6 +12,8 @@
             ,,File
             ,,FileReader)
 
+           clojure.lang.IMeta
+           
            (ox.lang
             ,,Box)
            
@@ -366,8 +368,9 @@
     (when-not (= res :nothing)
       (let [[res start end] res
             meta            {:start start :end end}]
-        #_(println (.toString meta))
-        (. Box (of res meta))))))
+        (if (instance? IMeta res)
+          (with-meta res meta)
+          res)))))
 
 (defn read-file [^File f]
   {:pre [(file? f)]}
