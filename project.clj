@@ -24,8 +24,6 @@
                  [instaparse "1.4.1"
                   :exclusions [org.clojure/clojure]]]
 
-  :auto {"test" {:file-pattern #"\.(clj|cljs|cljc|edn|java|ox)$"}}
-  
   :profiles {:test {:dependencies      [[junit/junit "4.11"]]
                     :java-source-paths ["src/test/java"]
                     :junit             ["src/test/java"]}
