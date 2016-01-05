@@ -135,9 +135,7 @@
             ;; General case of invocation.
             ;; `(apply (eval (first f)) (map eval (rest f)))`
             ;; or whatever that translates to given all the environment stuff that I have to deal with here.
-            :else
-            ,,(let []
-                (apply vm interpreting-eval)))
+            (apply vm interpreting-eval))
 
         ;; FIXME: Clojure has a whole bunch of stuff which behaves like a
         ;; function, keep or chuck? this imp'l chucks.
