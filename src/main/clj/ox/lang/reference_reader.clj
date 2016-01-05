@@ -1,4 +1,5 @@
 (ns ox.lang.reference-reader
+  (:refer-clojure :exclude [read])
   (:require [ox.lang.reference-parser :refer [parser]]
             [instaparse.core :as insta]))
 
