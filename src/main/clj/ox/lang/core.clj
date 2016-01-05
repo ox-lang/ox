@@ -1,5 +1,8 @@
 (ns ox.lang.core
-  (:refer-clojure :only [defn defmethod let cond instance? or print-method nil? reduce if-not reduced boolean empty? assert])
+  (:refer-clojure :only [defn defmethod let cond instance? or format
+                         print-method nil? reduce if-not reduced
+                         boolean empty? assert ->> for])
+  (:require clojure.string)
   (:import [ox.lang
             ,,AObj
             ,,Box]
@@ -49,3 +52,14 @@
              (recur y head more')
              true))
        false))))
+
+(defn eq-table
+  "FIXME: this will _not_ stay in core"
+  [col]
+  (->> (for [i col]
+         (format "%5s %5s"
+                 (= i j)
+                 (= j i)))
+       (clojure.string/join "|")
+       (for [j col])
+       (clojure.string/join "\n")))
