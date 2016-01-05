@@ -131,7 +131,6 @@
             (ns*)
             ,,nil
 
-
             ;; General case of invocation.
             ;; `(apply (eval (first f)) (map eval (rest f)))`
             ;; or whatever that translates to given all the environment stuff that I have to deal with here.
