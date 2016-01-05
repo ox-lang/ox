@@ -1,5 +1,5 @@
 (ns ox.lang.core
-  (:refer-clojure :only [defn defmethod let cond instance? or print-method nil? reduce if-not reduced boolean empty?])
+  (:refer-clojure :only [defn defmethod let cond instance? or print-method nil? reduce if-not reduced boolean empty? assert])
   (:import [ox.lang
             ,,AObj
             ,,Box]
@@ -41,8 +41,11 @@
        (.equals y x)
        true)))
   ([x y & [head & more' :as more]]
-   (if (= x y)
-     (if-not (empty? more)
-       (recur y head more')
-       true)
-     false)))
+   (let [x (unbox x)
+         y (unbox y)]
+     (if (= x y)
+       (do (assert (= y x) "Transitive equality violation!")
+           (if-not (empty? more)
+             (recur y head more')
+             true))
+       false))))
