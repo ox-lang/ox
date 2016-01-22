@@ -36,13 +36,16 @@
     (.deref o) o))
 
 (defn =
-  ([x] true)
+  ([x]
+   true)
+  
   ([x y]
    (if-not (nil? x)
      (.equals x y)
      (if-not (nil? y)
        (.equals y x)
        true)))
+
   ([x y & [head & more' :as more]]
    (let [x (unbox x)
          y (unbox y)]
