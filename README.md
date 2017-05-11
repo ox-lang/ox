@@ -6,7 +6,7 @@
 | Develop | [![Build Status](https://travis-ci.org/ox-lang/ox.svg?branch=develop)](https://travis-ci.org/ox-lang/ox) |
 
 Ox is the child of my efforts on [Oxcart](https://github.com/oxlang/oxcart), in that Ox is an experiment aimed at building a simpler, static lisp in a spirit like that of Clojure.
-See [my blog posts](http://arrdem.com/2014/09/10/ox:_a_preface/) for some real motivational information.
+See [my blog posts](https://www.arrdem.com/2014/09/10/ox_a_preface/) for some real motivational information.
 
 ## Community
 
