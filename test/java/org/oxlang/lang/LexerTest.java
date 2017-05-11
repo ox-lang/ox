@@ -2,9 +2,7 @@ package org.oxlang.lang;
 
 import java.util.List;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.*;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -47,14 +45,38 @@ public class LexerTest {
   }
 
   @Test
-  public void testLexNumber() throws Exception {
+  public void testLexInteger() throws Exception {
     assertEquals(lexTokenType("1"),
-        OxlangLexer.NUMBER);
+        OxlangLexer.INTEGER);
 
     assertEquals(lexTokenType("-2"),
-        OxlangLexer.NUMBER);
+        OxlangLexer.INTEGER);
 
+    assertEquals(lexTokenType("100_000_000"),
+        OxlangLexer.INTEGER);
+  }
+
+  @Test
+  public void testLexFloat() throws Exception {
     assertEquals(lexTokenType("1.1"),
-        OxlangLexer.NUMBER);
+        OxlangLexer.FLOAT);
+
+    assertEquals(lexTokenType("-1.0"),
+        OxlangLexer.FLOAT);
+
+    assertEquals(lexTokenType("+3.14159"),
+        OxlangLexer.FLOAT);
+
+    assertEquals(lexTokenType("1e0"),
+        OxlangLexer.FLOAT);
+
+    assertEquals(lexTokenType("-1e0"),
+        OxlangLexer.FLOAT);
+
+    assertEquals(lexTokenType("1e0"),
+        OxlangLexer.FLOAT);
+
+    assertEquals( lexTokenType("2e-15"),
+        OxlangLexer.FLOAT);
   }
 }

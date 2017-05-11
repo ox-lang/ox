@@ -10,17 +10,9 @@ java_library(
   name='reader',
   sources=['Reader.java'],
   dependencies=[
-    '3rdparty/jvm:antlr-runtime',
-    'src/antlr/org/oxlang/lang:parser'
+    'src/antlr/org/oxlang/lang:parser',
+    '3rdparty/jvm:antlr4',
   ]
-)
-
-jvm_binary(
-  name='reader_test',
-  source='ReaderTest.java',
-  dependencies=[
-    ':reader',
-  ],
 )
 
 java_library(
