@@ -16,5 +16,5 @@ cache:
 
 # Selectively run the changed tests
 script:
- - "git fetch origin develop"
- - "./pants test-changed --changed-since=origin/develop ::"
+ - "./pants test ::"
+
