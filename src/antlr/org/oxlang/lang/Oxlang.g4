@@ -12,6 +12,10 @@ vector
   : '[' sexpr* ']'
   ;
 
+set
+  : '#{' sexpr* '}'
+  ;
+
 mapping
   : '{' pair* '}'
   ;
@@ -20,8 +24,8 @@ pair
   : sexpr sexpr
   ;
 
-metaexpr
-  : META (SYMBOL | list) sexpr
+tagexpr
+  : META (symbol | list) sexpr
   ;
 
 quote
@@ -30,34 +34,56 @@ quote
 
 sexpr
   : quote
-  | metaexpr
+  | tagexpr
   | atom
   | list
   | vector
   | mapping
+  | set
   ;
 
 atom
-  : STRING
-  | NUMBER
-  | SYMBOL
+  : string
+  | number
+  | symbol
   ;
 
+string: STRING;
 STRING
   : '"' ('\\' . | ~ ('\\' | '"'))* '"'
   ;
 
-NUMBER
-  : ('+' | '-')? DIGIT+ ('.' DIGIT +)?
+number
+  : INTEGER
+  | FLOAT
   ;
 
+FLOAT
+  : SIGN? INTEGER ('.' INTEGER)? ('e' SIGN? INTEGER)?
+  ;
+
+INTEGER
+  : SIGN? (DIGIT ('_'? DIGIT)*)
+  ;
+
+fragment SIGN
+  : '+' | '-'
+  ;
+
+symbol: SYMBOL;
 SYMBOL
   : '/'
   | SYMBOL_START (SYMBOL_START | DIGIT | '/')*
   ;
 
 SYMBOL_START
-  : ~('0' .. '9' | '/' | '^' | '(' | ')' | '[' | ']' | '{' | '}')
+  : ~(// Not numbers
+      '0' .. '9'
+      // Not whitespace
+      | ' ' | ',' | '\n' | '\t' | '\r'
+      // Not punctuation
+      | '/' | '^' | '(' | ')' | '[' | ']' | '{' | '}' | '#'
+      )
   ;
 
 DIGIT: '0' .. '9';
