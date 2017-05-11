@@ -14,8 +14,7 @@ public class LexerDriver {
     try {
       OxlangLexer l = new OxlangLexer(CharStreams.fromStream(System.in));
       CommonTokenStream ts = new CommonTokenStream(l);
-      ts.fill();
-      for (Token t: ts.getTokens())
+      for (Token t: new TokenSequence(ts))
         System.out.println(t);
 
       System.out.println(String.format("Got %d tokens", ts.size()));
