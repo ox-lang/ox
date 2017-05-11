@@ -1,4 +1,20 @@
-language: clojure
+---
 sudo: false
+
+# Set the JDK version
 jdk:
-  - oraclejdk8
+ - oraclejdk8
+
+# Compile everything to pull in dependencies for caching
+install:
+ - "./pants bootstrap"
+
+cache:
+ directories:
+  - '~/.cache/'
+  - '~/.m2/'
+
+# Selectively run the changed tests
+script:
+ - "git fetch origin develop"
+ - "./pants test-changed --changed-since=origin/develop ::"
