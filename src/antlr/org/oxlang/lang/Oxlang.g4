@@ -5,23 +5,33 @@ file
   ;
 
 list
-  : LPAREN sexpr* RPAREN
+  : '(' sexpr* ')'
   ;
 
 vector
-  : LBRACKET sexpr* RBRACKET
+  : '[' sexpr* ']'
   ;
 
 mapping
-  : LBRACE pair* RBRACE
+  : '{' pair* '}'
   ;
 
 pair
   : sexpr sexpr
   ;
 
+metaexpr
+  : META (SYMBOL | list) sexpr
+  ;
+
+quote
+  : QUOTE sexpr
+  ;
+
 sexpr
-  : atom
+  : quote
+  | metaexpr
+  | atom
   | list
   | vector
   | mapping
@@ -29,52 +39,43 @@ sexpr
 
 atom
   : STRING
-  | KEYWORD
-  | SYMBOL
   | NUMBER
-  | DOT
+  | SYMBOL
   ;
 
 STRING
   : '"' ('\\' . | ~ ('\\' | '"'))* '"'
   ;
 
-WHITESPACE
-  : (' ' | ',' | '\n' | '\t' | '\r') + -> skip
-  ;
-
 NUMBER
-  : ('+' | '-')? (DIGIT) + ('.' (DIGIT) +)?
+  : ('+' | '-')? DIGIT+ ('.' DIGIT +)?
   ;
 
 SYMBOL
-  : SYMBOL_START (SYMBOL_START | DIGIT)*
+  : '/'
+  | SYMBOL_START (SYMBOL_START | DIGIT | '/')*
   ;
 
-KEYWORD
-  : ':' SYMBOL
+SYMBOL_START
+  : ~('0' .. '9' | '/' | '^' | '(' | ')' | '[' | ']' | '{' | '}')
   ;
 
-LPAREN
-  : '('
+DIGIT: '0' .. '9';
+
+META: '^';
+
+QUOTE: '\'';
+
+// For now, comments are discarded.
+//
+// This is less than ideal, but is sufficient for a bootstrap reader.
+COMMENT
+  : ';' . *? '\n' -> skip
   ;
 
-RPAREN
-  : ')'
-  ;
-
-LBRACKET
-  : '['
-  ;
-
-RBRACKET
-  : ']'
-  ;
-
-fragment SYMBOL_START
-  : ('a' .. 'z') | ('A' .. 'Z') | '+' | '-' | '*' | '.'
-  ;
-
-fragment DIGIT
-  : ('0' .. '9')
+// For now, whitespace is discarded.
+//
+// This is less than ideal, but is sufficient for a bootstrap reader.
+WHITESPACE
+  : (' ' | ',' | '\n' | '\t' | '\r')+ -> skip
   ;
