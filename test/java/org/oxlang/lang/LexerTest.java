@@ -1,15 +1,13 @@
 package org.oxlang.lang;
 
-import java.io.StringReader;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Token;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class LexerTest {
@@ -17,28 +15,24 @@ public class LexerTest {
   static List<Token> lexString(String text) {
     OxlangLexer l = new OxlangLexer(CharStreams.fromString(text));
     CommonTokenStream t = new CommonTokenStream(l);
+    t.fill();
     return t.getTokens();
-  }
-
-  static Token lexToken(String text) {
-    return lexString(text).get(0);
-  }
-
-  static int lexTokenType(String text) {
-    return lexToken(text).getType();
   }
 
   static void assertToken(String text, int type) {
     List<Token> tokens = lexString(text);
     if (tokens != null) {
 
-      boolean flag = tokens.size() == 1;
+      // Either we got one token, or we got two tokens, one of which is EOF.
+      boolean flag = (tokens.size() == 1
+                      || (tokens.size() == 2
+                          && tokens.get(1).getType() == OxlangLexer.EOF));
       assertTrue(
           String.format(
               "Expected '%s' to lex to a single token (%d), got %d (%s)",
               text, type, tokens.size(),
               tokens.stream()
-                  .map(token -> Integer.toString(token.getType()))
+                  .map(token -> token.toString())
                   .collect(Collectors.joining(", "))),
           flag);
 
@@ -48,31 +42,31 @@ public class LexerTest {
         flag = t.getType() == type;
         assertTrue(
             String.format(
-              "Expected '%s' to lext to token %d, got %d",
-              text, type, t.getType()),
+                "Expected '%s' to lext to token %d, got %d",
+                text, type, t.getType()),
             flag);
       }
     }
   }
 
   @Test
-  public void testLexSymbol() throws Exception {
-    String[] examples = {"foo", "foo/bar", "/", "+", "-"};
+  public void testLexSymbol() {
+    String[] examples = {"foo", "bar13", "foo/bar", "/", "+", "-"};
 
-    for (String s: examples)
+    for (String s : examples)
       assertToken(s, OxlangLexer.SYMBOL);
   }
 
   @Test
-  public void testLexInteger() throws Exception {
+  public void testLexInteger() {
     String[] examples = {"1", "-2", "100_000_000"};
 
-    for (String s: examples)
-      assertToken(s, OxlangLexer.SYMBOL);
+    for (String s : examples)
+      assertToken(s, OxlangLexer.INTEGER);
   }
 
   @Test
-  public void testLexFloat() throws Exception {
+  public void testLexFloat() {
     String[] examples = {"1.0", "1.1", "-1.2", "+1.3", "1e0", "-1e15", "2.0e-15"};
 
     for (String s : examples)

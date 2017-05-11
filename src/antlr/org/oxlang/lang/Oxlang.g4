@@ -54,12 +54,14 @@ STRING
   ;
 
 number
-  : INTEGER
-  | FLOAT
+  : FLOAT
+  | INTEGER
   ;
 
 FLOAT
-  : SIGN? INTEGER ('.' INTEGER)? ('e' SIGN? INTEGER)?
+  : SIGN? INTEGER ('.' INTEGER)
+  | SIGN? INTEGER ('e' SIGN? INTEGER)
+  | SIGN? INTEGER ('.' INTEGER) ('e' SIGN? INTEGER)
   ;
 
 INTEGER
