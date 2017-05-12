@@ -76,6 +76,7 @@ public class LexerTest {
         "bar13",
         "foo/bar",
         "/",
+        "foo//",
         "+",
         "-",
         "_",
@@ -95,6 +96,7 @@ public class LexerTest {
         "#foo",
         "^foo",
         "\\foo",
+        "foo///", // Not a legal single symbol!
     };
 
     for (String s: counterExamples)

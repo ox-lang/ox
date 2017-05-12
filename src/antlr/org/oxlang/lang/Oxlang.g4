@@ -8,12 +8,8 @@ list
   : '(' sexpr* ')'
   ;
 
-vector
+sqlist
   : '[' sexpr* ']'
-  ;
-
-set
-  : '#{' sexpr* '}'
   ;
 
 mapping
@@ -22,6 +18,10 @@ mapping
 
 pair
   : sexpr sexpr
+  ;
+
+set
+  : '#{' sexpr* '}'
   ;
 
 tagexpr
@@ -37,7 +37,7 @@ sexpr
   | tagexpr
   | atom
   | list
-  | vector
+  | sqlist
   | mapping
   | set
   ;
@@ -75,7 +75,12 @@ fragment SIGN
 symbol: SYMBOL;
 SYMBOL
   : '/'
-  | SYMBOL_START (SYMBOL_START | DIGIT | '/')*
+  | SIMPLE_SYMBOL
+  | SIMPLE_SYMBOL '/' ('/' | SIMPLE_SYMBOL)
+  ;
+
+SIMPLE_SYMBOL
+  : SYMBOL_START (SYMBOL_START | DIGIT)*
   ;
 
 SYMBOL_START
