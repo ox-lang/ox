@@ -1,71 +1,114 @@
 grammar Oxlang;
 
-sexpr
-   : item* EOF
-   ;
-
-item
-   : atom
-   | list
-   | LPAREN item DOT item RPAREN
-   ;
-
-list
-   : LPAREN item* RPAREN
-   ;
-
-atom
-   : STRING
-   | KEYWORD
-   | SYMBOL
-   | NUMBER
-   | DOT
-   ;
-
-
-STRING
-   : '"' ('\\' . | ~ ('\\' | '"'))* '"'
-   ;
-
-
-WHITESPACE
-   : (' ' | '\n' | '\t' | '\r') + -> skip
-   ;
-
-
-NUMBER
-   : ('+' | '-')? (DIGIT) + ('.' (DIGIT) +)?
-   ;
-
-
-SYMBOL
-   : SYMBOL_START (SYMBOL_START | DIGIT)*
-   ;
-
-KEYWORD
-  : ':' SYMBOL
+file
+  : sexpr* EOF
   ;
 
-LPAREN
-   : '('
-   ;
+list
+  : '(' sexpr* ')'
+  ;
 
+sqlist
+  : '[' sexpr* ']'
+  ;
 
-RPAREN
-   : ')'
-   ;
+mapping
+  : '{' pair* '}'
+  ;
 
+pair
+  : sexpr sexpr
+  ;
 
-DOT
-   : '.'
-   ;
+set
+  : '#{' sexpr* '}'
+  ;
 
+tagexpr
+  : META (symbol | list) sexpr
+  ;
 
-fragment SYMBOL_START
-   : ('a' .. 'z') | ('A' .. 'Z') | '+' | '-' | '*' | '.'
-   ;
+quote
+  : QUOTE sexpr
+  ;
 
+sexpr
+  : quote
+  | tagexpr
+  | atom
+  | list
+  | sqlist
+  | mapping
+  | set
+  ;
 
-fragment DIGIT
-   : ('0' .. '9')
-   ;
+atom
+  : string
+  | number
+  | symbol
+  ;
+
+string: STRING;
+STRING
+  : '"' ('\\' . | ~ ('\\' | '"'))* '"'
+  ;
+
+number
+  : FLOAT
+  | INTEGER
+  ;
+
+FLOAT
+  : SIGN? INTEGER ('.' INTEGER)
+  | SIGN? INTEGER ('e' SIGN? INTEGER)
+  | SIGN? INTEGER ('.' INTEGER) ('e' SIGN? INTEGER)
+  ;
+
+INTEGER
+  : SIGN? (DIGIT ('_'? DIGIT)*)
+  ;
+
+fragment SIGN
+  : '+' | '-'
+  ;
+
+symbol: SYMBOL;
+SYMBOL
+  : '/'
+  | SIMPLE_SYMBOL
+  | SIMPLE_SYMBOL '/' ('/' | SIMPLE_SYMBOL)
+  ;
+
+SIMPLE_SYMBOL
+  : SYMBOL_START (SYMBOL_START | DIGIT)*
+  ;
+
+SYMBOL_START
+  : ~(// Not numbers
+      '0' .. '9'
+      // Not whitespace
+      | ' ' | ',' | '\n' | '\t' | '\r'
+      // Not punctuation
+      | '/' | '^' | '(' | ')' | '[' | ']' | '{' | '}' | '#'
+      )
+  ;
+
+DIGIT: '0' .. '9';
+
+META: '^';
+
+QUOTE: '\'';
+
+// For now, comments are discarded.
+//
+// This is less than ideal, but is sufficient for a bootstrap reader.
+COMMENT
+  : ';' . *? '\n' -> skip
+  ;
+
+// For now, whitespace is discarded.
+//
+// This is less than ideal, but is sufficient for a bootstrap reader.
+WHITESPACE
+  : (' ' | ',' | '\n' | '\t' | '\r')+ -> skip
+  ;

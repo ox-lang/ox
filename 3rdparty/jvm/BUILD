@@ -6,8 +6,10 @@ jar_library(
 )
 
 jar_library(
-  name='antlr-runtime',
+  name='antlr4',
   jars=[
+    jar('org.antlr', 'antlr4', '4.7'),
     jar('org.antlr', 'antlr4-runtime', '4.7'),
   ],
+  scope='forced'
 )
