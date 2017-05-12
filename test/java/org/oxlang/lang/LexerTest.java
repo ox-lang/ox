@@ -67,7 +67,7 @@ public class LexerTest {
 
   @Test
   public void testLexFloat() {
-    String[] examples = {"1.0", "1.1", "-1.2", "+1.3", "1e0", "-1e15", "2.0e-15"};
+    String[] examples = {"100_000.0", "1.1", "-1.2", "+1.3", "1e0", "-1e15", "2.0e-15_000"};
 
     for (String s : examples)
       assertToken(s, OxlangLexer.FLOAT);
