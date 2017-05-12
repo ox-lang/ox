@@ -10,7 +10,7 @@ See [my blog posts](https://www.arrdem.com/2014/09/10/ox_a_preface/) for some re
 
 ## Documentation
 
-[check out the doctree!](./docs/index.md)
+[check out the doctree!](./doc/index.md)
 
 ## Community
 
