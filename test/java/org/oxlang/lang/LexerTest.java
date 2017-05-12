@@ -49,25 +49,92 @@ public class LexerTest {
     }
   }
 
+  static void assertNotToken(String text, int type) {
+    List<Token> tokens = lexString(text);
+    if (tokens != null) {
+      // We should have gotten literally anything but a token, or a token and an EOF
+      boolean flag = (
+          tokens.size() != 1
+          || (tokens.size() == 2
+              && tokens.get(1).getType() != OxlangLexer.EOF
+              && tokens.get(0).getType() != type));
+      assertTrue(
+          String.format(
+              "Expected '%s' not to lex to a single token, got (%s)",
+              text,
+              tokens.stream()
+                  .map(token -> token.toString())
+                  .collect(Collectors.joining(", "))),
+          flag);
+    }
+  }
+
   @Test
   public void testLexSymbol() {
-    String[] examples = {"foo", "bar13", "foo/bar", "/", "+", "-", "_", "_foo", "_13"};
+    String[] examples = {
+        "foo",
+        "bar13",
+        "foo/bar",
+        "/",
+        "+",
+        "-",
+        "_",
+        "_foo",
+        "_13",
+    };
 
-    for (String s : examples)
+    for (String s: examples)
       assertToken(s, OxlangLexer.SYMBOL);
+
+    String[] counterExamples = {
+        "1",
+        "1e",
+        "[foo",
+        "(foo",
+        "{foo",
+        "#foo",
+        "^foo",
+        "\\foo",
+    };
+
+    for (String s: counterExamples)
+      assertNotToken(s, OxlangLexer.SYMBOL);
   }
 
   @Test
   public void testLexInteger() {
-    String[] examples = {"1", "-2", "100_000_000"};
+    String[] examples = {
+        "1",
+        "-2",
+        "100_000_000",
+    };
 
     for (String s : examples)
       assertToken(s, OxlangLexer.INTEGER);
+
+    String[] counterExamples = {
+        "1f2",
+        "X3",
+        "_4",
+        "-",
+        "+",
+    };
+
+    for (String s: counterExamples)
+      assertNotToken(s, OxlangLexer.INTEGER);
   }
 
   @Test
   public void testLexFloat() {
-    String[] examples = {"100_000.0", "1.1", "-1.2", "+1.3", "1e0", "-1e15", "2.0e-15_000"};
+    String[] examples = {
+        "100_000.0",
+        "1.1",
+        "-1.2",
+        "+1.3",
+        "1e0",
+        "-1e15",
+        "2.0e-15_000",
+    };
 
     for (String s : examples)
       assertToken(s, OxlangLexer.FLOAT);
