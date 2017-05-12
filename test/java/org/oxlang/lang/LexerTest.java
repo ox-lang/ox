@@ -72,4 +72,17 @@ public class LexerTest {
     for (String s : examples)
       assertToken(s, OxlangLexer.FLOAT);
   }
+
+  @Test
+  public void testLexString() {
+    String[] examples = {
+        "\"foo\"",
+        "\"foo \\\"bar baz\"",
+        "\"\"",
+        "\"\\\"\\\"\\\"\\\"\"",
+    };
+
+    for (String s : examples)
+      assertToken(s, OxlangLexer.STRING);
+  }
 }
