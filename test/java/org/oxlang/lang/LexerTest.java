@@ -51,7 +51,7 @@ public class LexerTest {
 
   @Test
   public void testLexSymbol() {
-    String[] examples = {"foo", "bar13", "foo/bar", "/", "+", "-"};
+    String[] examples = {"foo", "bar13", "foo/bar", "/", "+", "-", "_", "_foo", "_13"};
 
     for (String s : examples)
       assertToken(s, OxlangLexer.SYMBOL);
