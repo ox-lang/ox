@@ -4,5 +4,5 @@ java_library(
     'src/java/org/oxlang/data',
     'src/java/org/oxlang/io',
     'src/java/org/oxlang/lang',
-  ]
+  ],
 )
