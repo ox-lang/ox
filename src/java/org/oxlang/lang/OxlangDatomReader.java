@@ -81,6 +81,18 @@ class OxlangDatomReader
   }
 
   @Override
+  public Object visitQuote(OxlangParser.QuoteContext ctx) {
+    // FIXME: Technically what quote means, but it's not super useful.
+    return Lists.from(new Object[]{Symbol.of("quote"), visit(ctx.sexpr())});
+  }
+
+  @Override
+  public Object visitTagexpr(OxlangParser.TagexprContext ctx) {
+    // FIXME: Not discarding tags would be great
+    return visit(ctx.sexpr());
+  }
+
+  @Override
   public Object visitSqlist(OxlangParser.SqlistContext ctx) {
     IList coll = Lists.EMPTY;
     for (OxlangParser.SexprContext sctx: ctx.sexpr()) {
