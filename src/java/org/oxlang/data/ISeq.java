@@ -2,26 +2,26 @@ package org.oxlang.data;
 
 /**
  * Created by arrdem on 11/2/15.
- *
+ * <p>
  * Logically equivalent to Clojure's sequence interface.
  */
 public interface ISeq<T> {
-    T first();
+  T first();
 
-    ISeq<T> rest();
+  ISeq<T> rest();
 
-    default T nth(int n) {
-        ISeq<T> head = this;
+  default T nth(int n) {
+    ISeq<T> head = this;
 
-        while(n != 0) {
-            head = rest();
-            n--;
-        }
-
-        if(head != null) {
-            return head.first();
-        } else {
-            return null;
-        }
+    while (n != 0) {
+      head = rest();
+      n--;
     }
+
+    if (head != null) {
+      return head.first();
+    } else {
+      return null;
+    }
+  }
 }

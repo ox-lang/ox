@@ -12,14 +12,14 @@ public class KeywordTest {
     @Test
     public void testGetName() throws Exception {
         assertEquals(
-                Keyword.of("foo").getName(),
+                Keyword.of(null, "foo").getName(),
                 "foo");
     }
 
     @Test
     public void testGetNamespace() throws Exception {
         assertEquals(
-                Keyword.of("foo").getNamespace(),
+                Keyword.of(null, "foo").getNamespace(),
                 null);
 
         assertEquals(
@@ -30,19 +30,19 @@ public class KeywordTest {
     @Test
     public void testEquals() throws Exception {
         assertEquals(
-                Keyword.of("foo"),
-                Keyword.of("foo"));
+                Keyword.of(":foo"),
+                Keyword.of(":foo"));
 
         assertEquals(
                 Keyword.of("foo", "bar"),
                 Keyword.of("foo", "bar"));
 
         assertNotEquals(
-                Keyword.of("foo"),
-                Keyword.of("bar"));
+                Keyword.of(":foo"),
+                Keyword.of(":bar"));
 
         assertNotEquals(
-                Keyword.of("foo"),
+                Keyword.of(":foo"),
                 null);
     }
 }

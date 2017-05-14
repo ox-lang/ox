@@ -26,11 +26,6 @@ public class SymbolTest {
     }
 
     @Test
-    public void testToString() throws Exception {
-        assertEquals(name.toString(), _NS_+"/"+_NAME_);
-    }
-
-    @Test
     public void testEquals() throws Exception {
         name.equals(Symbol.of(_NS_, _NAME_));
     }

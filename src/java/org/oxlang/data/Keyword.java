@@ -4,125 +4,123 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Created by arrdem on 9/19/15.
- *
+ * <p>
  * A Keyword must have a non-null, legal getName.
  * A Keyword may have a namespace, but it may be null.
  */
 public class Keyword
-        extends AObj
-        implements Named {
-    private final String name;
-    private final String namespace;
+    implements Named<Keyword> {
+  private static final WeakHashMap<String, Keyword> internMap = new WeakHashMap<String, Keyword>();
 
-    private Keyword(@NotNull String n,
-                    @Nullable String ns) {
-        this.name = n;
-        this.namespace = ns;
+  private final Symbol symbol;
+
+  private Keyword(@NotNull Symbol symbol) {
+    this.symbol = symbol;
+  }
+
+  /**
+   * Parses a String, which could constitute a valid Keyword, and returns the parsed Keyword or
+   * throws IllegalArgumentException.
+   *
+   * @param text
+   * @return
+   */
+  @NotNull
+  public static synchronized Keyword of(@NotNull String text)
+      throws IllegalArgumentException
+  {
+    if (text == null)
+      throw new NullArgumentException("text cannot be null!");
+
+    Keyword val = internMap.get(text);
+    if (val != null) {
+      return val;
+    } else {
+      if (!text.startsWith(":"))
+        throw new IllegalArgumentException("Keywords are all ':' prefixed!");
+
+      val = new Keyword(Symbol.of(text.substring(1)));
+      internMap.put(text, val);
+      return val;
     }
+  }
 
-    public static final class Builder {
-        private String name;
-        private String namespace;
-        private Keyword result;
+  /**
+   *
+   * @param namespace
+   * @param name
+   * @return
+   */
+  @NotNull
+  public static Keyword of(String namespace,
+                           @NotNull String name)
+      throws IllegalArgumentException
+  {
+    if (name == null)
+      throw new NullArgumentException("name cannot be null!");
 
-        public Builder() {
-            namespace = null;
-            name = null;
-            result = null;
-        }
+    String text = String.format(":%s%s%s",
+        namespace == null ? "" : namespace,
+        namespace == null ? "" : "/",
+        name);
 
-        @NotNull
-        public Keyword build() {
-            if(result != null) {
-                return result;
-            } else {
-                assert name != null : "Name cannot be null";
+    return of(text);
+  }
 
-                result = new Keyword(name, namespace);
-                return result;
-            }
-        }
+  /**
+   * Named
+   */
+  @Override
+  @NotNull
+  public String getName() { return symbol.getName(); }
 
-        @NotNull
-        public Builder setName(@NotNull String name) {
-            if(name == null)
-                throw new RuntimeException("Name cannot be null");
+  /**
+   * Named
+   */
+  @Override
+  @Nullable
+  public String getNamespace() {
+    return symbol.getNamespace();
+  }
 
-            if(!Named.isValidName(name))
-                throw new RuntimeException(String.format("Illegal name '%s'", name));
+  /**
+   * Named
+   */
+  @Override
+  @NotNull
+  public Symbol asSymbol() {
+    return symbol;
+  }
 
-            this.name = name;
-            return this;
-        }
-
-        @NotNull
-        public Builder setNamespace(@Nullable String ns) {
-            if(ns != null && !Named.isValidNamespace(ns))
-                throw new RuntimeException(String.format("Illegal namespace '%s'!", ns));
-
-            this.namespace = ns;
-            return this;
-        }
+  /**
+   * Object
+   */
+  @NotNull
+  public String toString() {
+    if (getNamespace() != null) {
+      return String.format("<Keyword '%s' '%s'>", getNamespace(), getName());
+    } else {
+      return String.format("<Keyword '%s'>", getName());
     }
+  }
 
-    @NotNull
-    public static Keyword of(@NotNull String name) {
-        return new Builder()
-                .setName(name)
-                .build();
+  /**
+   * Object equality :|
+   */
+  @Override
+  public boolean equals(Object other) {
+    if (other == null)
+      return false;
+
+    if (other instanceof Keyword) {
+      Keyword otherT = (Keyword) other;
+      return otherT == this || namespacesEqual(otherT)  && namesEqual(otherT);
+    } else {
+      return false;
     }
-
-    public static Keyword of(String namespace,
-                             @NotNull String name) {
-        return new Builder()
-                .setNamespace(namespace)
-                .setName(name)
-                .build();
-    }
-
-    /* Named
-     */
-    @Override
-    @NotNull
-    public String getName() {
-        return name;
-    }
-
-    /* Named
-     */
-    @Override
-    @Nullable
-    public String getNamespace() {
-        return namespace;
-    }
-
-    /* Object
-     */
-    @NotNull
-    public String toString() {
-        if(namespace != null) {
-            return String.format(":%s/%s", namespace, name);
-        } else {
-            return String.format(":%s", name);
-        }
-    }
-
-    /* Object
-     */
-    public boolean equals(Object other) {
-        if(other == null)
-            return false;
-
-        if(other instanceof Keyword) {
-            Keyword otherK = (Keyword) other;
-            return ((name.equals(otherK.name)) &&
-                    ((namespace == null && otherK.namespace == null) ||
-                     (namespace.equals(otherK.namespace))));
-        } else {
-            return false;
-        }
-    }
+  }
 }
