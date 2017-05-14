@@ -26,3 +26,14 @@ jvm_binary(
     '3rdparty/jvm:antlr4',
   ]
 )
+
+jvm_binary(
+  name='reader_driver',
+  source='ReaderDriver.java',
+  main='org.oxlang.lang.ReaderDriver',
+  dependencies=[
+    'src/antlr/org/oxlang/lang:parser',
+    'src/java/org/oxlang/lang',
+    '3rdparty/jvm:antlr4',
+  ]
+)

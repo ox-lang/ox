@@ -2,7 +2,11 @@ java_library(
   name='lang',
   sources=globs('*.java'),
   dependencies=[
+    'src/java/io/lacuna/bifurcan',
     'src/antlr/org/oxlang/lang:parser',
+    'src/java/org/oxlang/data',
+    'src/java/org/oxlang/io',
+    '3rdparty/jvm:jetbrains-annotations',
     '3rdparty/jvm:antlr4',
   ],
 )

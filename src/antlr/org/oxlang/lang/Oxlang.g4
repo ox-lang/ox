@@ -1,15 +1,19 @@
 grammar Oxlang;
 
 file
-  : sexpr* EOF
+  : sexpr* eof
+  ;
+
+eof
+  : EOF
   ;
 
 list
-  : '(' sexpr* ')'
+  : '(' data=sexpr* ')'
   ;
 
 sqlist
-  : '[' sexpr* ']'
+  : '[' data=sexpr* ']'
   ;
 
 mapping
@@ -17,7 +21,7 @@ mapping
   ;
 
 pair
-  : sexpr sexpr
+  : key=sexpr value=sexpr
   ;
 
 set
@@ -46,6 +50,7 @@ atom
   : string
   | number
   | symbol
+  | keyword
   ;
 
 string: STRING;
@@ -54,8 +59,16 @@ STRING
   ;
 
 number
+  : floating
+  | integer
+  ;
+
+floating
   : FLOAT
-  | INTEGER
+  ;
+
+integer
+  : INTEGER
   ;
 
 FLOAT
@@ -70,6 +83,11 @@ INTEGER
 
 fragment SIGN
   : '+' | '-'
+  ;
+
+keyword: KEYWORD;
+KEYWORD
+  : ':' SYMBOL
   ;
 
 symbol: SYMBOL;
@@ -88,6 +106,8 @@ SYMBOL_START
       '0' .. '9'
       // Not whitespace
       | ' ' | ',' | '\n' | '\t' | '\r'
+      // Not a backslash
+      | '\\'
       // Not punctuation
       | '/' | '^' | '(' | ')' | '[' | ']' | '{' | '}' | '#'
       )

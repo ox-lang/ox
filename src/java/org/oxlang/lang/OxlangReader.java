@@ -2,22 +2,17 @@ package org.oxlang.lang;
 
 /* Generated source files from antlr4 */
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Iterator;
 
-import org.oxlang.lang.OxlangLexer;
-import org.oxlang.lang.OxlangParser;
-import org.oxlang.lang.OxlangBaseListener;
-import org.oxlang.lang.OxlangBaseVisitor;
-
-/* Import the antlr runtime */
-import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
+
+/* Import the antlr runtime */
 
 public class OxlangReader {
 
@@ -41,8 +36,20 @@ public class OxlangReader {
    * @return The parsed s-expression
    * @throws IOException
    */
+  public static Object read(Reader rdr, OxlangBaseVisitor v) throws IOException {
+    ParseTree t = parseReader(rdr).sexpr();
+    return v.visit(t);
+  }
+
+  /**
+   * By default we read to datastructures, although other readers could be used.
+   *
+   * @param rdr
+   * @return
+   * @throws IOException
+   */
   public static Object read(Reader rdr) throws IOException {
-    return parseReader(rdr).sexpr();
+    return read(rdr, new OxlangDatomReader());
   }
 
   /**
@@ -65,5 +72,29 @@ public class OxlangReader {
    */
   public static Object read(File f) throws IOException {
     return read(new FileReader(f));
+  }
+
+  /**
+   * Parses an entire reader on a streaming basis, returning a streaming iterator of parsed forms.
+   *
+   * @param rdr
+   * @param v
+   * @return
+   * @throws IOException
+   */
+  public static Iterator readAll(Reader rdr, OxlangBaseVisitor v) throws IOException {
+    OxlangParser p = parseReader(rdr);
+    return p.file().sexpr().stream().map(ctx -> (Object)v.visit(ctx)).iterator();
+  }
+
+  /**
+   * A partial apply of readAll(rdr, visitor) using OxlangDatomReader
+   *
+   * @param rdr
+   * @return
+   * @throws IOException
+   */
+  public static Iterator readAll(Reader rdr) throws IOException {
+    return readAll(rdr, new OxlangDatomReader());
   }
 }
