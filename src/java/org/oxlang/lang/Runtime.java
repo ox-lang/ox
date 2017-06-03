@@ -8,5 +8,4 @@ import io.lacuna.bifurcan.Map;
  * Created by rmckenzie on 5/13/17.
  */
 public class Runtime {
-
 }
