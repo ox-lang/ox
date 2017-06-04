@@ -12,60 +12,42 @@ import org.oxlang.data.SimpleSymbol;
  */
 class Namespace
     implements
-        IDefinition,
-        IForkable<IMap<SimpleSymbol, IDefinition>>,
-        ILinearizable<IMap<SimpleSymbol, IDefinition>>,
-        IMap<SimpleSymbol, IDefinition>
+        IDefinition
 {
-  public final NamespaceIdentifier id;
-  public final IMap<SimpleSymbol, IDefinition> contents;
-  public final IMap<SimpleSymbol, NamespaceIdentifier> aliases;
-  public final String documentation;
+  @NotNull public final NamespaceIdentifier id;
+  @NotNull public final Map metadada;
+  @NotNull public final Map<FormIdentifier, Form> forms;
+  @NotNull public final Map<SimpleSymbol, IDefinition> contents;
+  @NotNull public final Map<SimpleSymbol, SimpleSymbol> aliases;
+  @NotNull public final String documentation;
 
   public Namespace(@NotNull NamespaceIdentifier id,
-                   @Nullable IMap<SimpleSymbol, IDefinition> contents,
-                   @Nullable IMap<SimpleSymbol, NamespaceIdentifier> aliases,
+                   @Nullable Map metadata,
+                   @Nullable Map<FormIdentifier, Form> forms,
+                   @Nullable Map<SimpleSymbol, IDefinition> contents,
+                   @Nullable Map<SimpleSymbol, SimpleSymbol> aliases,
                    @Nullable String documentation) {
     if (id == null)
       throw new IllegalArgumentException("Got nil `id`!");
+
+    if (forms == null) {
+      forms = (Map<FormIdentifier, Form>) Maps.EMPTY;
+    }
 
     if (contents == null) {
       contents = (Map<SimpleSymbol, IDefinition>) Maps.EMPTY;
     }
 
     if (aliases == null) {
-      aliases = (Map<SimpleSymbol, NamespaceIdentifier>) Maps.EMPTY;
+      aliases = (Map<SimpleSymbol, SimpleSymbol>) Maps.EMPTY;
     }
 
     this.id = id;
+    this.forms = forms;
     this.contents = contents;
     this.aliases = aliases;
     this.documentation = documentation;
-  }
-
-  @Override
-  public IDefinition get(@NotNull SimpleSymbol name, IDefinition defaultValue) {
-    return contents.get(name).orElse(defaultValue);
-  }
-
-  @Override
-  public boolean contains(SimpleSymbol key) {
-    return contents.contains(key);
-  }
-
-  @Override
-  public IList<IEntry<SimpleSymbol, IDefinition>> entries() {
-    return contents.entries();
-  }
-
-  @Override
-  public long size() {
-    return contents.size();
-  }
-
-  @Override
-  public Namespace put(@NotNull SimpleSymbol name, IDefinition def) {
-    return new Namespace(id, contents.put(name, def), aliases, documentation);
+    this.metadada = metadata;
   }
 
   @Override
@@ -75,17 +57,11 @@ class Namespace
 
   @Override
   public Namespace withDocumentation(String documentation) {
-    return new Namespace(id, contents, aliases, documentation);
+    return new Namespace(id, metadada, forms, contents, aliases, documentation);
   }
 
-  @Override
-  public IMap<SimpleSymbol, IDefinition> forked() {
-    return new Namespace(id, contents.forked(), aliases, documentation);
-  }
-
-  @Override
-  public IMap<SimpleSymbol, IDefinition> linear() {
-    return new Namespace(id, contents.linear(), aliases, documentation);
+  public Namespace withForm(Form f) {
+    return new Namespace(id, metadada, forms.put(new FormIdentifier((int) forms.size()), f), contents, aliases, documentation);
   }
 
   @Override
