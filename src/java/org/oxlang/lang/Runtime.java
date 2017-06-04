@@ -26,6 +26,10 @@ public class Runtime {
     public AnalysisException(String message) {
       super(message);
     }
+
+    public AnalysisException(String message, Throwable cause) {
+      super(message, cause);
+    }
   }
 
   /**
@@ -35,17 +39,28 @@ public class Runtime {
     public IllegalNsException(String message) {
       super(message);
     }
+
+    public IllegalNsException(String message, Throwable cause) {
+      super(message, cause);
+    }
   }
 
   public static class IllegalRequireException extends IllegalNsException {
     public IllegalRequireException(String message) {
       super(message);
     }
+
+    public IllegalRequireException(String message, Throwable cause) {
+      super(message, cause);
+    }
   }
 
   public static class IllegalRequireManipulationException extends IllegalRequireException {
     public IllegalRequireManipulationException(String message) {
       super(message);
+    }
+    public IllegalRequireManipulationException(String message, Throwable cause) {
+      super(message, cause);
     }
   }
 
@@ -61,7 +76,6 @@ public class Runtime {
    * Analyzes a single top level form. While there are four cases, this handles only the ns form.
    *
    * 1. (ns $name ...)
-   *
    *
    * @param nsid
    * @param form
@@ -84,7 +98,7 @@ public class Runtime {
 
     Map metadata = null;
     String docstring = null;
-    Map contents = (Map) Maps.EMPTY;
+    Map<DefinitionIdentifier, IDefinition> contents = (Map) Maps.EMPTY;
     Map aliases = (Map) Maps.EMPTY;
 
     for (long idx = 2; idx <= sexpr.size(); idx++) {
@@ -134,6 +148,20 @@ public class Runtime {
               throw new IllegalRequireManipulationException(
                   String.format("Analyzing ns %s, subform %d (%s), got illegal refer form. Referrals must be a List of Symbols, got %s.",
                       nsid, idx, subform, manipulation.nth(2).getClass().getCanonicalName()));
+
+            try {
+              Symbol source = (Symbol) manipulation.nth(1);
+              aliases = aliases.put(source, source);
+
+              for (Symbol requirement : (List<Symbol>) manipulation.nth(2)) {
+                contents = contents.put(new DefinitionIdentifier(nsid, requirement.getName()), );
+              }
+            } catch (ClassCastException ex) {
+              throw new IllegalRequireManipulationException(
+                  String.format("Analyzing ns %s, subform %d (%s), got illegal refer form. Referrals must be a List of Symbols. Encountered a casting exception indicative of a mal-formed referrals list.",
+                      nsid, idx, subform, manipulation.nth(2).getClass().getCanonicalName()),
+                  ex);
+            }
 
           } else if (AS_SYM.equals(manipulation.first())) {
             // Case 4.2.2) (as <ns> <alias>)
