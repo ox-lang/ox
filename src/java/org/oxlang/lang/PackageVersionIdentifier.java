@@ -3,7 +3,7 @@ package org.oxlang.lang;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by rmckenzie on 6/8/17.
+ * Created by arrdem on 6/8/17.
  */
 public class PackageVersionIdentifier {
   @NotNull

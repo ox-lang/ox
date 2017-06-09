@@ -1,7 +1,7 @@
 package org.oxlang.data;
 
 /**
- * Created by rmckenzie on 5/13/17.
+ * Created by arrdem on 5/13/17.
  *
  * Special case of IllegalArgumentException which represents an illegal null.
  */

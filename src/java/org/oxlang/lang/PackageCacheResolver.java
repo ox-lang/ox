@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import io.lacuna.bifurcan.List;
 
 /**
- * Created by rmckenzie on 6/8/17.
+ * Created by arrdem on 6/8/17.
  */
 public class PackageCacheResolver extends PackageResolver {
   public final Path root;
