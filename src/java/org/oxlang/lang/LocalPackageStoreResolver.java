@@ -106,6 +106,7 @@ public class LocalPackageStoreResolver extends PackageResolver {
 
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(_pathOf(pid))) {
       for (Path p : stream) {
+        // FIXME (arrdem 6/9/2017) should use a ConcreteVersionParser or something instead of hard-coding semver
         l = l.addFirst(new PackageVersionIdentifier(pid, SemVersion.of(p.getFileName().toString())));
       }
     } catch (IOException e) {
