@@ -1,6 +1,7 @@
 package org.oxlang.lang;
 
 /* Generated source files from antlr4 */
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -84,7 +85,7 @@ public class OxlangReader {
    */
   public static Iterator readAll(Reader rdr, OxlangBaseVisitor v) throws IOException {
     OxlangParser p = parseReader(rdr);
-    return p.file().sexpr().stream().map(ctx -> (Object)v.visit(ctx)).iterator();
+    return p.file().sexpr().stream().map(ctx -> (Object) v.visit(ctx)).iterator();
   }
 
   /**

@@ -2,10 +2,14 @@ package org.oxlang.lang;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * SemVer versions can be compared for equality and for ordering.
  */
 public class SemVersion extends ConcreteVersion implements Comparable<SemVersion> {
+  private static final Pattern PATTERN = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+)$");
   public final int major;
   public final int minor;
   public final int patch;
@@ -25,6 +29,24 @@ public class SemVersion extends ConcreteVersion implements Comparable<SemVersion
       throw new IllegalArgumentException("Got illegal negative patch version!");
 
     this.patch = patch;
+  }
+
+  public static SemVersion of(String text) {
+    Matcher m = PATTERN.matcher(text);
+    if (m.find()) {
+      try {
+        return new SemVersion(
+            Integer.parseInt(m.group(1)),
+            Integer.parseInt(m.group(2)),
+            Integer.parseInt(m.group(3)));
+      } catch (NumberFormatException e) {
+        throw new IllegalArgumentException(
+            String.format("Could not parse '%s' as a SemVer version!", text));
+      }
+    } else {
+      throw new IllegalArgumentException(
+          String.format("Could not parse '%s' as a SemVer version!", text));
+    }
   }
 
   @Override

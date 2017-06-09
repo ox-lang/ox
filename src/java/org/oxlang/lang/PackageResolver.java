@@ -14,10 +14,10 @@ import java.util.Iterator;
 
 /**
  * Created by arrdem on 6/3/17.
- *
+ * <p>
  * Provides a way to map package identifiers to resources (whether files or buffers) which may be
  * loaded.
- *
+ * <p>
  * Examples will (presumably) include resolving packages from an FTP/HTTP(S) service, and from
  * filesystem caches.
  */
@@ -108,15 +108,24 @@ public abstract class PackageResolver {
     }
   }
 
+  public abstract boolean exists(GroupIdentifier gid);
+
   public abstract boolean exists(PackageIdentifier pid);
 
   public abstract boolean exists(PackageVersionIdentifier pvid);
 
   @NotNull
+  public abstract List<GroupIdentifier> listGroups();
+
+  @NotNull
+  public abstract List<PackageIdentifier> listGroup(GroupIdentifier id)
+      throws NoSuchGroupException;
+
+  @NotNull
   public abstract List<PackageVersionIdentifier> listVersions(PackageIdentifier pid)
-      throws NoSuchPackageException;
+      throws NoSuchGroupException, NoSuchPackageException;
 
   @NotNull
   public abstract PrePackage resolveContents(PackageVersionIdentifier pvid)
-      throws NoSuchPackageException;
+      throws NoSuchGroupException, NoSuchPackageException;
 }
