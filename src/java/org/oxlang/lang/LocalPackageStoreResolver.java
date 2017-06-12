@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -121,51 +123,35 @@ public class LocalPackageStoreResolver extends PackageResolver {
 
   @NotNull
   @Override
-  public List<GroupIdentifier> listGroups() {
-    List<GroupIdentifier> l = (List<GroupIdentifier>) Lists.EMPTY;
-
-    try (DirectoryStream<Path> stream = Files.newDirectoryStream(root)) {
-      for (Path p : stream) {
-        l = l.addFirst(new GroupIdentifier(p.getFileName().toString()));
-      }
+  public Stream<GroupIdentifier> groups() {
+    try {
+      return Util.fromIterator(Files.newDirectoryStream(root).iterator())
+              .map((Path p) -> new GroupIdentifier(p.getFileName().toString()));
     } catch (IOException e) {
-      return (List<GroupIdentifier>) Lists.EMPTY;
+      return Lists.EMPTY.stream();
     }
-
-    return l;
   }
 
   @NotNull
   @Override
-  public List<PackageIdentifier> listGroup(GroupIdentifier id) throws NoSuchGroupException {
-    List<PackageIdentifier> l = (List<PackageIdentifier>) Lists.EMPTY;
-
+  public Stream<PackageIdentifier> groupPackages(GroupIdentifier id) throws NoSuchGroupException {
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(pathOf(id))) {
-      for (Path p : stream) {
-        l = l.addFirst(new PackageIdentifier(id, p.getFileName().toString()));
-      }
+      return Util.fromIterator(stream.iterator())
+              .map(p -> new PackageIdentifier(id, p.getFileName().toString()));
     } catch (IOException e) {
-      return (List<PackageIdentifier>) Lists.EMPTY;
+      return Lists.EMPTY.stream();
     }
-
-    return l;
   }
 
   @NotNull
   @Override
-  public List<PackageVersionIdentifier> listVersions(PackageIdentifier pid) throws NoSuchGroupException, NoSuchPackageException {
-    List<PackageVersionIdentifier> l = (List<PackageVersionIdentifier>) Lists.EMPTY;
-
+  public Stream<PackageVersionIdentifier> packageVersions(PackageIdentifier pid) throws NoSuchGroupException, NoSuchPackageException {
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(pathOf(pid))) {
-      for (Path p : stream) {
-        // FIXME (arrdem 6/9/2017) should use a ConcreteVersionParser or something instead of hard-coding semver
-        l = l.addFirst(new PackageVersionIdentifier(pid, SemPackageVersion.of(p.getFileName().toString())));
-      }
+       return Util.fromIterator(stream.iterator())
+              .map(p -> new PackageVersionIdentifier(pid, SemPackageVersion.of(p.getFileName().toString())));
     } catch (IOException e) {
-      return (List<PackageVersionIdentifier>) Lists.EMPTY;
+      return Lists.EMPTY.stream();
     }
-
-    return l;
   }
 
   @NotNull

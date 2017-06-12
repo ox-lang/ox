@@ -2,9 +2,11 @@ package org.oxlang.lang;
 
 import io.lacuna.bifurcan.IMap;
 import io.lacuna.bifurcan.List;
+import io.lacuna.bifurcan.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 /**
  * Created by arrdem on 6/3/17.
@@ -105,17 +107,35 @@ public abstract class PackageResolver {
   public abstract boolean exists(PackageVersionIdentifier pvid);
 
   @NotNull
-  public abstract List<GroupIdentifier> listGroups();
+  public abstract Stream<GroupIdentifier> groups();
 
   @NotNull
-  public abstract List<PackageIdentifier> listGroup(GroupIdentifier id)
-      throws NoSuchGroupException;
+  public abstract Stream<PackageIdentifier> groupPackages(GroupIdentifier id)
+      throws PackageResolverException;
 
   @NotNull
-  public abstract List<PackageVersionIdentifier> listVersions(PackageIdentifier pid)
-      throws NoSuchGroupException, NoSuchPackageException;
+  public Stream<PackageIdentifier> safeGroupPackages(GroupIdentifier gid) {
+    try {
+      return groupPackages(gid);
+    } catch (PackageResolverException e) {
+      return Lists.EMPTY.stream();
+    }
+  }
+
+  @NotNull
+  public abstract Stream<PackageVersionIdentifier> packageVersions(PackageIdentifier pid)
+      throws PackageResolverException;
+
+  @NotNull
+  public Stream<PackageVersionIdentifier> safePackageVersions(PackageIdentifier pid) {
+    try {
+      return packageVersions(pid);
+    } catch (PackageResolverException e) {
+      return Lists.EMPTY.stream();
+    }
+  }
 
   @NotNull
   public abstract PrePackage getPackage(PackageVersionIdentifier pvid)
-      throws NoSuchGroupException, NoSuchPackageException, NoSuchVersionException;
+      throws PackageResolverException;
 }
