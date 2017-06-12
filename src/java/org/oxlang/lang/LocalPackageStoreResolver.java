@@ -252,7 +252,7 @@ public class LocalPackageStoreResolver extends PackageResolver {
       }
 
       throw new IllegalStateException(
-          String.format("Searching for source of registerd namespace '%s' (%s) didn't find it in the backing archive!",
+          String.format("Searching for source of registered namespace '%s' (%s) didn't find it in the backing archive!",
               id, entryName));
     }
   }
