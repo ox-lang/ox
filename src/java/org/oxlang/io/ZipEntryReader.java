@@ -2,6 +2,7 @@ package org.oxlang.io;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.ByteBuffer;
@@ -46,5 +47,21 @@ public class ZipEntryReader extends Reader {
 
   @Override
   public void close() throws IOException {
+  }
+
+  public static ZipEntryReader readEntry(ZipInputStream stream, String name) throws IOException {
+    ZipEntry e;
+    while ((e = stream.getNextEntry()) != null) {
+      if (e.getName().equals(name)) {
+        return new ZipEntryReader(stream, e);
+      } else {
+        System.out.println("Found " + e.getName());
+      }
+    }
+    return null;
+  }
+
+  public static ZipEntryReader readEntry(String fname, String name) throws IOException {
+    return readEntry(new ZipInputStream(new FileInputStream(fname)), name);
   }
 }

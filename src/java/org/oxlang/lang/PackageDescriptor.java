@@ -46,6 +46,9 @@ public class PackageDescriptor {
   }
 
   public static PackageDescriptor of(Object sexpr) {
+    /**
+     * FIXME (rmckenzie 6/11/2017)
+     */
     return null;
   }
 }
