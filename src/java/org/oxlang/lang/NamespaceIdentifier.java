@@ -6,18 +6,18 @@ import org.jetbrains.annotations.NotNull;
  * Created by arrdem on 5/23/17.
  */
 public class NamespaceIdentifier {
-  public final PackageIdentifier packageIdentifier;
+  public final PackageVersionIdentifier pvid;
   public final String name;
 
-  public NamespaceIdentifier(@NotNull PackageIdentifier packageIdentifier,
+  public NamespaceIdentifier(@NotNull PackageVersionIdentifier pvid,
                              @NotNull String name) {
-    this.packageIdentifier = packageIdentifier;
+    this.pvid = pvid;
     this.name = name;
   }
 
   @Override
   public String toString() {
-    return String.format("<NamespaceIdentifier %s '%s'>", packageIdentifier.toString(), name);
+    return String.format("<NamespaceIdentifier %s '%s'>", pvid.toString(), name);
   }
 
   @Override
@@ -27,13 +27,13 @@ public class NamespaceIdentifier {
 
     NamespaceIdentifier that = (NamespaceIdentifier) o;
 
-    if (!packageIdentifier.equals(that.packageIdentifier)) return false;
+    if (!pvid.equals(that.pvid)) return false;
     return name.equals(that.name);
   }
 
   @Override
   public int hashCode() {
-    int result = packageIdentifier.hashCode();
+    int result = pvid.hashCode();
     result = 31 * result + name.hashCode();
     return result;
   }

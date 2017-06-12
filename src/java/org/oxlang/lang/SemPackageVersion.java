@@ -8,13 +8,13 @@ import java.util.regex.Pattern;
 /**
  * SemVer versions can be compared for equality and for ordering.
  */
-public class SemVersion extends ConcreteVersion implements Comparable<SemVersion> {
+public class SemPackageVersion extends ConcretePackageVersion implements Comparable<SemPackageVersion> {
   private static final Pattern PATTERN = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+)$");
   public final int major;
   public final int minor;
   public final int patch;
 
-  public SemVersion(int major, int minor, int patch) {
+  public SemPackageVersion(int major, int minor, int patch) {
     if (major < 0)
       throw new IllegalArgumentException("Got illegal negative major version!");
 
@@ -31,11 +31,11 @@ public class SemVersion extends ConcreteVersion implements Comparable<SemVersion
     this.patch = patch;
   }
 
-  public static SemVersion of(String text) {
+  public static SemPackageVersion of(String text) {
     Matcher m = PATTERN.matcher(text);
     if (m.find()) {
       try {
-        return new SemVersion(
+        return new SemPackageVersion(
             Integer.parseInt(m.group(1)),
             Integer.parseInt(m.group(2)),
             Integer.parseInt(m.group(3)));
@@ -50,7 +50,7 @@ public class SemVersion extends ConcreteVersion implements Comparable<SemVersion
   }
 
   @Override
-  public boolean matches(ConcreteVersion v) {
+  public boolean matches(ConcretePackageVersion v) {
     return this.equals(v);
   }
 
@@ -59,7 +59,7 @@ public class SemVersion extends ConcreteVersion implements Comparable<SemVersion
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    SemVersion version = (SemVersion) o;
+    SemPackageVersion version = (SemPackageVersion) o;
 
     if (major != version.major) return false;
     if (minor != version.minor) return false;
@@ -75,7 +75,7 @@ public class SemVersion extends ConcreteVersion implements Comparable<SemVersion
   }
 
   @Override
-  public int compareTo(@NotNull SemVersion o) {
+  public int compareTo(@NotNull SemPackageVersion o) {
     // Short circuit
     if (this.equals(o))
       return 0;

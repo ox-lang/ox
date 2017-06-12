@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created by arrdem on 6/11/17.
@@ -15,16 +16,16 @@ import java.io.Reader;
  */
 public class BoundedReader extends Reader {
   private final Reader rdr;
-  private int limit;
+  private long limit;
 
-  public BoundedReader(Reader rdr, int limit) {
+  public BoundedReader(Reader rdr, long limit) {
     this.rdr = rdr;
     this.limit = limit;
   }
 
   @Override
   public int read(@NotNull char[] chars, int off, int len) throws IOException {
-    int read = rdr.read(chars, off, Math.min(limit, len));
+    int read = rdr.read(chars, off, (int) Math.min(limit, (long)len));
     this.limit -= read;
     return read;
   }

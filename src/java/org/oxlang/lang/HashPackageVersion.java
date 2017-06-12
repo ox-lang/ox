@@ -7,11 +7,11 @@ import org.jetbrains.annotations.NotNull;
  * compared to one-annother except for equality, because they derive their ordering from other
  * sources.
  */
-public class HashVersion extends ConcreteVersion implements Comparable<HashVersion> {
+public class HashPackageVersion extends ConcretePackageVersion implements Comparable<HashPackageVersion> {
   @NotNull
   public final String hash;
 
-  public HashVersion(@NotNull String hash) {
+  public HashPackageVersion(@NotNull String hash) {
     this.hash = hash;
   }
 
@@ -20,7 +20,7 @@ public class HashVersion extends ConcreteVersion implements Comparable<HashVersi
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    HashVersion that = (HashVersion) o;
+    HashPackageVersion that = (HashPackageVersion) o;
 
     return hash.equals(that.hash);
   }
@@ -31,12 +31,12 @@ public class HashVersion extends ConcreteVersion implements Comparable<HashVersi
   }
 
   @Override
-  public int compareTo(@NotNull HashVersion o) {
+  public int compareTo(@NotNull HashPackageVersion o) {
     return 0;
   }
 
   @Override
-  public boolean matches(ConcreteVersion v) {
+  public boolean matches(ConcretePackageVersion v) {
     return this.equals(v);
   }
 

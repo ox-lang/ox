@@ -76,6 +76,4 @@ public class Runtime {
   public static Runtime of(PackageResolver r, PackageIdentifier ... packages) {
     return null;
   }
-
-
 }

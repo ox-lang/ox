@@ -9,10 +9,10 @@ public class PackageVersionIdentifier {
   @NotNull
   public final PackageIdentifier pkg;
   @NotNull
-  public final ConcreteVersion version;
+  public final ConcretePackageVersion version;
 
   public PackageVersionIdentifier(@NotNull PackageIdentifier pkg,
-                                  @NotNull ConcreteVersion version)
+                                  @NotNull ConcretePackageVersion version)
   {
     this.pkg = pkg;
     this.version = version;

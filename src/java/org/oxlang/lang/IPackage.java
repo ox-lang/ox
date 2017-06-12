@@ -40,7 +40,7 @@ public interface IPackage<T extends Comparable>
    * @return A set of all the packages on which this package depends.
    */
   @NotNull
-  ISet<PackageIdentifier> getDependencies();
+  IMap<PackageIdentifier, Iterable<PackageVersionConstraint>> getDependencies();
 
   /**
    * @return The identifier for this package.

@@ -2,15 +2,9 @@ package org.oxlang.lang;
 
 import io.lacuna.bifurcan.IMap;
 import io.lacuna.bifurcan.List;
-import io.lacuna.bifurcan.Map;
-import io.lacuna.bifurcan.Maps;
 import org.jetbrains.annotations.NotNull;
-import org.oxlang.data.SimpleSymbol;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Path;
-import java.util.Iterator;
 
 /**
  * Created by arrdem on 6/3/17.
@@ -99,9 +93,9 @@ public abstract class PackageResolver {
       this.id = id;
     }
 
-    public abstract Iterable<PackageIdentifier> getDependencies() throws IOException;
+    public abstract IMap<PackageIdentifier, Iterable<PackageVersionConstraint>> getDependencies() throws IOException;
     public abstract Iterable<NamespaceIdentifier> getNamespaces() throws IOException;
-    public abstract Readable getNamespaceSource() throws PackageResolverException, IOException;
+    public abstract Readable getNamespaceSource(NamespaceIdentifier id) throws PackageResolverException, IOException;
   }
 
   public abstract boolean exists(GroupIdentifier gid);

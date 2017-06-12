@@ -2,17 +2,22 @@ package org.oxlang.lang;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import io.lacuna.bifurcan.Lists;
+import io.lacuna.bifurcan.*;
 import org.jetbrains.annotations.NotNull;
 
-import io.lacuna.bifurcan.List;
+import org.oxlang.io.BoundedReader;
+import org.oxlang.io.ZipEntryReader;
 
 /**
  * Created by arrdem on 6/8/17.
@@ -161,7 +166,7 @@ public class LocalPackageStoreResolver extends PackageResolver {
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(pathOf(pid))) {
       for (Path p : stream) {
         // FIXME (arrdem 6/9/2017) should use a ConcreteVersionParser or something instead of hard-coding semver
-        l = l.addFirst(new PackageVersionIdentifier(pid, SemVersion.of(p.getFileName().toString())));
+        l = l.addFirst(new PackageVersionIdentifier(pid, SemPackageVersion.of(p.getFileName().toString())));
       }
     } catch (IOException e) {
       return (List<PackageVersionIdentifier>) Lists.EMPTY;
@@ -184,33 +189,78 @@ public class LocalPackageStoreResolver extends PackageResolver {
 
   private static class ArchivePrePackage extends PrePackage {
     private final Path path;
+    private PackageDescriptor descriptor = null;
+    private Map<NamespaceIdentifier, String> namespaces = (Map<NamespaceIdentifier, String>) Maps.EMPTY;
 
     public ArchivePrePackage(PackageVersionIdentifier pvid, Path path) {
       super(pvid);
       this.path = path;
     }
 
-    @Override
-    public Iterable<PackageIdentifier> getDependencies() throws IOException {
-      ZipInputStream stream = new ZipInputStream(new FileInputStream(this.path.toFile()));
-      ZipEntry e;
-      while ((e = stream.getNextEntry()) != null) {
-        if (!e.isDirectory() && e.getName() == PACKAGE_FILE_NAME) {
-          // Read the file contents to a buffer we can parse as an s-expression
-          return null;
+    private PackageDescriptor getDescriptor() throws IOException {
+      if (this.descriptor != null) {
+        return descriptor;
+      } else {
+        ZipInputStream stream = new ZipInputStream(new FileInputStream(this.path.toFile()));
+        ZipEntry e;
+        while ((e = stream.getNextEntry()) != null) {
+          if (!e.isDirectory()) {
+            if (e.getName() == PACKAGE_FILE_NAME) {
+              // Read the file contents to a buffer we can parse as an s-expression
+              Object packageForm = OxlangReader.read(new ZipEntryReader(stream, e));
+
+              // FIXME (arrdem 6/11/2017) need to call the interpreter with the package context to get a Package Desc.
+              this.descriptor = PackageDescriptor.of(packageForm);
+              break;
+            } else if (e.getName().endsWith(".ox")) {
+              NamespaceIdentifier nsid = new NamespaceIdentifier(this.id, e.getName()
+                  .replace(".ox", "")
+                  .replace("/", "."));
+              namespaces = namespaces.put(nsid, e.getName());
+            }
+          }
         }
+        return this.descriptor;
       }
-      return null;
+    }
+
+    @Override
+    public IMap<PackageIdentifier, Iterable<PackageVersionConstraint>> getDependencies() throws IOException {
+      return (IMap) getDescriptor().requirements;
     }
 
     @Override
     public Iterable<NamespaceIdentifier> getNamespaces() throws IOException {
-      return null;
+      // Call for effect so that namespaces is populated. May throw.
+      getDescriptor();
+
+      // We just need the keyset.
+      return namespaces.keys();
     }
 
     @Override
-    public Readable getNamespaceSource() throws PackageResolverException, IOException {
-      return null;
+    public Readable getNamespaceSource(NamespaceIdentifier id) throws PackageResolverException, IOException {
+      // Call for effect so that the namespaces map gets populated. May throw.
+      getDescriptor();
+
+      if (!namespaces.contains(id))
+        throw new NoSuchNamespaceException(
+            String.format("No such namespace '%s' in package '%s'", id.name, this.id));
+
+      // This can't throw because we already checked
+      String entryName = namespaces.get(id).get();
+
+      ZipInputStream stream = new ZipInputStream(new FileInputStream(this.path.toFile()));
+      ZipEntry e;
+      while ((e = stream.getNextEntry()) != null) {
+        if (e.getName().equals(entryName)) {
+          return new ZipEntryReader(stream, e);
+        }
+      }
+
+      throw new IllegalStateException(
+          String.format("Searching for source of registerd namespace '%s' (%s) didn't find it in the backing archive!",
+              id, entryName));
     }
   }
 }
