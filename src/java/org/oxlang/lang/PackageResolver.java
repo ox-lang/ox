@@ -75,37 +75,33 @@ public abstract class PackageResolver {
     }
   }
 
+  public static class NoSuchNamespaceException extends PackageResolverException {
+    public NoSuchNamespaceException(String message) {
+      super(message);
+    }
+
+    public NoSuchNamespaceException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  }
+
   /**
-   * A value class containing the name of the package, and the list of Paths
-   * which contain code
+   * A base class for logical handles to packages. Provides the requisite machinery for reading source from whatever
+   * the archive implementation may be, and for listing the namespaces and dependencies of the archive.
+   *
+   * The goal of this class is to provide an interface which sufficiently generic to describe both package stores
+   * backed by straight filesystem source trees as well as archive files and network resources.
    */
-  public static class PrePackage {
-    public final PackageIdentifier name;
-    public final Map<NamespaceIdentifier, Path> namespaces;
+  public static abstract class PrePackage {
+    public final PackageVersionIdentifier id;
 
-    public PrePackage(@NotNull PackageIdentifier name,
-                      @NotNull Map<NamespaceIdentifier, Path> namespaces) {
-      this.name = name;
-      this.namespaces = namespaces;
+    public PrePackage(PackageVersionIdentifier id) {
+      this.id = id;
     }
 
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-
-      PrePackage that = (PrePackage) o;
-
-      if (!name.equals(that.name)) return false;
-      return namespaces.equals(that.namespaces);
-    }
-
-    @Override
-    public int hashCode() {
-      int result = name.hashCode();
-      result = 31 * result + namespaces.hashCode();
-      return result;
-    }
+    public abstract Iterable<PackageIdentifier> getDependencies() throws IOException;
+    public abstract Iterable<NamespaceIdentifier> getNamespaces() throws IOException;
+    public abstract Readable getNamespaceSource() throws PackageResolverException, IOException;
   }
 
   public abstract boolean exists(GroupIdentifier gid);
@@ -126,6 +122,6 @@ public abstract class PackageResolver {
       throws NoSuchGroupException, NoSuchPackageException;
 
   @NotNull
-  public abstract PrePackage resolveContents(PackageVersionIdentifier pvid)
-      throws NoSuchGroupException, NoSuchPackageException;
+  public abstract PrePackage getPackage(PackageVersionIdentifier pvid)
+      throws NoSuchGroupException, NoSuchPackageException, NoSuchVersionException;
 }
