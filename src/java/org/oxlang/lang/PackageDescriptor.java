@@ -9,21 +9,23 @@ import org.jetbrains.annotations.NotNull;
  *
  * A package.ox file is of the form
  *
- *     (define-package (package-version $GROUP $NAME (semver-version M N R))
- *       ;; requirements are either pinned or are constraints
- *       [(package-requirement (package-identifier $GROUP $NAME)
- *           [(semver-version M N R)])
- *        (package-requirement (package-identifier $GROUP $NAME)
- *           [(version-lt (semver-version 2 0 0))
- *            (version-gte (semver-version 1 2 0))])])
+ *     (cond-expand
+ *        (package
+ *         (define-package (package-version $GROUP $NAME (semver-version M N R))
+ *            ;; requirements are either pinned or are constraints
+ *            {(package-identifier $GROUP $NAME)  [(semver-version M N R)]
+ *             (package-identifier $GROUP $NAME)  [(version-lt (semver-version 2 0 0))
+ *                                                 (version-gte (semver-version 1 2 0))]})))
  *
  * A package.lock file is of the form
  *
- *     (define-package (package-version $GROUP $NAME (semver-version M N R))
- *       ;; requirements are pinned rather than being constraints
- *       [(package-version $GROUP $NAME (semver-version ...) [])
- *        (package-version $GROUP $NAME (semver-version ...) [])
- *        (package-version $GROUP $NAME (semver-version ...) [])])
+ *     (cond-expand
+ *        (package
+ *         (define-package (package-version $GROUP $NAME (semver-version M N R))
+ *            ;; requirements are pinned rather than being constraints
+ *            {(package-identifier $GROUP $NAME) [(semver-version ...)]
+ *             (package-identifier $GROUP $NAME) [(semver-version ...)]
+ *             (package-identifier $GROUP $NAME) [(semver-version ...)]})))
  *
  * A package.lock can be generated from a package.ox when the dependencies are resolved. This is in the same style as
  * the NPM, Gem, Cabal and Cargo infrastructure wherein dependencies can be solved for by constraints, but for most
@@ -39,7 +41,7 @@ public class PackageDescriptor {
   @NotNull
   public final Map<PackageIdentifier, List<PackageVersionConstraint>> requirements;
 
-  private PackageDescriptor(@NotNull PackageVersionIdentifier id,
+  public PackageDescriptor(@NotNull PackageVersionIdentifier id,
                             @NotNull Map<PackageIdentifier, List<PackageVersionConstraint>> requirements) {
     this.id = id;
     this.requirements = requirements;
@@ -47,7 +49,10 @@ public class PackageDescriptor {
 
   public static PackageDescriptor of(Object sexpr) {
     /**
-     * FIXME (rmckenzie 6/11/2017)
+     * FIXME (rmckenzie 6/11/2017) implementing this is gonna be Capital H Hard. It requires that I've stood up the
+     * entire macro system, and an evaluator using some strategy because the package.ox files are actually totally
+     * legitimate Ox source code making use of SRFI-0 cond-expand macros. That in and of itself may be a feature which
+     * gets dropped, but it's in here for now and so here it shall stay.
      */
     return null;
   }
