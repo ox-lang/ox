@@ -15,9 +15,9 @@ class Package<T extends Comparable>
 {
   public final Set<PackageIdentifier> dependencies;
   public final IMap<SimpleSymbol, Namespace> contents;
-  public final PackageIdentifier<T> id;
+  public final PackageIdentifier id;
 
-  public Package(@NotNull PackageIdentifier<T> id,
+  public Package(@NotNull PackageIdentifier id,
                  @NotNull Set<PackageIdentifier> dependencies,
                  @NotNull IMap<SimpleSymbol, Namespace> contents)
   {

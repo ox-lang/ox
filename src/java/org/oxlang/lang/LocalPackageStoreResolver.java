@@ -197,10 +197,11 @@ public class LocalPackageStoreResolver extends PackageResolver {
       while ((e = stream.getNextEntry()) != null) {
         if (!e.isDirectory() && e.getName() == PACKAGE_FILE_NAME) {
           // Read the file contents to a buffer we can parse as an s-expression
-
+          return null;
         }
       }
-    };
+      return null;
+    }
 
     @Override
     public Iterable<NamespaceIdentifier> getNamespaces() throws IOException {

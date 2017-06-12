@@ -19,7 +19,7 @@ public interface IPackage<T extends Comparable>
    * @return
    */
   @NotNull
-  IPackage<T> withPackageIdentifier(@NotNull PackageIdentifier<T> newId);
+  IPackage<T> withPackageIdentifier(@NotNull PackageIdentifier newId);
 
   /**
    * Returns an IPackage which has an additional dependency.
@@ -28,23 +28,23 @@ public interface IPackage<T extends Comparable>
    * @return
    */
   @NotNull
-  IPackage<T> withDependency(@NotNull PackageIdentifier<T> newDependency);
+  IPackage<T> withDependency(@NotNull PackageIdentifier newDependency);
 
   /**
    * @return A mapping of package qualified symbols to the namespaces in this package.
    */
   @NotNull
-  IMap<PackageSymbol, Namespace> getNamespaces();
+  IMap<NamespaceIdentifier, Namespace> getNamespaces();
 
   /**
    * @return A set of all the packages on which this package depends.
    */
   @NotNull
-  ISet<PackageIdentifier<T>> getDependencies();
+  ISet<PackageIdentifier> getDependencies();
 
   /**
    * @return The identifier for this package.
    */
   @NotNull
-  PackageIdentifier<T> getIdentifier();
+  PackageIdentifier getIdentifier();
 }
