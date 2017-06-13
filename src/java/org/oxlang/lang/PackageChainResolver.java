@@ -2,7 +2,9 @@ package org.oxlang.lang;
 
 import io.lacuna.bifurcan.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -73,20 +75,22 @@ public class PackageChainResolver extends PackageResolver {
             .distinct();
   }
 
+  @Nullable
+  private static PrePackage tryGetPackage(PackageResolver r, PackageVersionIdentifier pvid) {
+    try {
+      return r.getPackage(pvid);
+    } catch (PackageResolverException e) {
+      return null;
+    }
+  }
+
   @NotNull
   @Override
   public PrePackage getPackage(PackageVersionIdentifier pvid) throws PackageResolverException {
-    PrePackage[] packages = (PrePackage[]) Stream.of(resolvers)
-            .map(r -> {
-              try {
-                return Optional.of(r.getPackage(pvid));
-              } catch (PackageResolverException e) {
-                return Optional.empty();
-              }
-            })
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .toArray();
+    PrePackage[] packages = Stream.of(resolvers)
+            .map(r -> tryGetPackage(r, pvid))
+            .filter(Objects::nonNull)
+            .toArray(PrePackage[]::new);
 
     if (packages.length != 1)
       throw new PackageResolverConflictException(
