@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Iterator;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -33,10 +32,6 @@ import java.util.zip.ZipInputStream;
  *
  */
 public class LocalPackageStoreResolver extends PackageResolver {
-  static final String PACKAGE_ARCHIVE_EXTENSION = "oxpkg";
-  static final String PACKAGE_METADATA_EXTENSION = "odn";
-  static final String PACKAGE_FILE_NAME = "package." + PACKAGE_METADATA_EXTENSION;
-  static final String PACKAGE_LOCK_FILE_NAME = "package.lock";
 
   public final Path root;
 

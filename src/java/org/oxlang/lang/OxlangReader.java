@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.file.Path;
 import java.util.Iterator;
 
 import org.antlr.v4.runtime.CharStreams;
@@ -73,6 +74,10 @@ public class OxlangReader {
    */
   public static Object read(File f) throws IOException {
     return read(new FileReader(f));
+  }
+
+  public static Object read(Path p) throws IOException {
+    return read(p.toFile());
   }
 
   /**

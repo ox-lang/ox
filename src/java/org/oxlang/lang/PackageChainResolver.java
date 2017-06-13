@@ -1,11 +1,9 @@
 package org.oxlang.lang;
 
-import io.lacuna.bifurcan.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 /**

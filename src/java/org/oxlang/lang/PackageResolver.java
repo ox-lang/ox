@@ -19,6 +19,11 @@ import java.util.stream.Stream;
  */
 public abstract class PackageResolver {
 
+  static final String PACKAGE_ARCHIVE_EXTENSION = "oxpkg";
+  static final String PACKAGE_METADATA_EXTENSION = "odn";
+  static final String PACKAGE_FILE_NAME = "package." + PACKAGE_METADATA_EXTENSION;
+  static final String PACKAGE_LOCK_FILE_NAME = "package.lock";
+
   /**
    * Base exception instance for things that go wrong in package resolution.
    */

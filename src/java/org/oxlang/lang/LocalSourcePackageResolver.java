@@ -2,10 +2,15 @@ package org.oxlang.lang;
 
 import io.lacuna.bifurcan.IMap;
 import io.lacuna.bifurcan.Lists;
+import io.lacuna.bifurcan.Map;
+import io.lacuna.bifurcan.Maps;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.stream.Stream;
 
 /**
@@ -86,20 +91,68 @@ public class LocalSourcePackageResolver extends PackageResolver {
   private static class SourcePrePackage extends PrePackage {
     private final Path root;
     private PackageDescriptor descriptor = null;
+    private Map<NamespaceIdentifier, Path> namespaces = null;
 
     public SourcePrePackage(PackageVersionIdentifier id, Path root) {
       super(id);
       this.root = root;
     }
 
+    private PackageDescriptor getDescriptor() throws IOException {
+      if (this.descriptor == null) {
+        // FIXME (arrdem 6/12/2017) turn off respecting lockfiles?
+        Path packageFilePath = this.root.resolve(PackageResolver.PACKAGE_LOCK_FILE_NAME);
+        if (!Files.exists(packageFilePath)) {
+          packageFilePath = this.root.resolve(PackageResolver.PACKAGE_FILE_NAME);
+        }
+
+        if (!Files.exists(packageFilePath)) {
+          throw new NoSuchFileException(
+              String.format("Unable to resolve either package file or package lock file in directory %s for package %s",
+                            this.root, this.id));
+        }
+
+        try {
+          Object sexpr = OxlangReader.read(packageFilePath);
+          this.descriptor = PackageDescriptor.of(sexpr);
+        } catch (IOException e) {
+          throw new IOException(
+              String.format("Unable to load package file '%s' for package '%s'",
+                            packageFilePath.toFile().getAbsolutePath().toString(), this.id),
+              e);
+        }
+      }
+
+      return this.descriptor;
+    }
+
     @Override
     public IMap<PackageIdentifier, Iterable<PackageVersionConstraint>> getDependencies() throws IOException {
-      return null;
+      return (IMap) getDescriptor().requirements;
     }
 
     @Override
     public Iterable<NamespaceIdentifier> getNamespaces() throws IOException {
-      return null;
+      if (this.namespaces == null) {
+        PathMatcher m = root.getFileSystem().getPathMatcher("glob:*.ox");
+
+        Files.walk(this.root, new SimpleFileVisitor<Path>() {
+          @Override
+          public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
+            if (m.matches(file)) {
+              namespaces = namespaces.put(
+                  new NamespaceIdentifier(id, file.relativize(root)
+                                               .toString()
+                                               .replace(".ox", "")
+                                               .replace("/", ".")),
+                  file);
+            }
+            return FileVisitResult.CONTINUE;
+          }
+        });
+      }
+
+      return this.namespaces.keys();
     }
 
     @Override

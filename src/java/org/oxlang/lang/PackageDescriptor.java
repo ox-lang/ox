@@ -42,7 +42,7 @@ public class PackageDescriptor {
   public final Map<PackageIdentifier, List<PackageVersionConstraint>> requirements;
 
   public PackageDescriptor(@NotNull PackageVersionIdentifier id,
-                            @NotNull Map<PackageIdentifier, List<PackageVersionConstraint>> requirements) {
+                           @NotNull Map<PackageIdentifier, List<PackageVersionConstraint>> requirements) {
     this.id = id;
     this.requirements = requirements;
   }
