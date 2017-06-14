@@ -36,9 +36,9 @@ A `package.ox` consists of a single legal Ox form, being a use of `define-packag
 ;; -*- mode: ox; -*-
 ;; package.ox
 ;;
-;; This is an example package file, which defines a package org.oxlang/demo@0.0.0
-;; That is, a package with the group "org.oxlang", the name "demo" and the version
-;; 0.0.0 in Semantic Version notation.
+;; This is an example package file, which defines a package
+;; org.oxlang/demo@0.0.0 That is, a package with the group "org.oxlang", the
+;; name "demo" and the version 0.0.0 in Semantic Version notation.
 ;;
 ;; This package is defined using the define-package form,
 ;;
@@ -47,31 +47,32 @@ A `package.ox` consists of a single legal Ox form, being a use of `define-packag
 ;;      ^(map package-name (list package-constraint))  requirements)
 ;;
 ;; That is, define-package accepts a fully version qualified package identifier,
-;; and a mapping of version unqualified package names to lists of version constraints.
+;; and a mapping of version unqualified package names to lists of version
+;; constraints.
 ;;
 ;;   (package-version ^string group ^string name ^version version)
 ;;
-;; Constructs and returns a fully version qualified package name. That is, a package name
-;; which refers only to a single version.
+;; Constructs and returns a fully version qualified package name. That is, a
+;; package name which refers only to a single version.
 ;;
 ;;   (semver-version ^pos-int major ^pos-int minor ^pos-int patch)
 ;;
 ;; Constructs and returns a record representing a Semantic Versioning version.
-;; SemVer versions are themselves version constraints (they match only equal versions),
-;; and they can be used to construct version comparisons.
+;; SemVer versions are themselves version constraints (they match only equal
+;; versions), and they can be used to construct version comparisons.
 ;;
 ;;   (version-< ^semver-version v)
 ;;
-;; Constructs and returns a version constraint which matches only versions less than
-;; the given version. There's also `version->=` which matches versions greater than or
-;; equal to the given version, `version-<=`, `version->` and `version-!= with the 
-;; semantics you'd expect.
+;; Constructs and returns a version constraint which matches only versions less
+;; than the given version. There's also `version->=` which matches versions
+;; greater than or equal to the given version, `version-<=`, `version->` and
+;; `version-!= with the semantics you'd expect.
 
 (define-package (package-version "org.oxlang" "demo" (semver-version 0 0 0))
-   ;; requirements are either pinned or are constraints
-   {(package-identifier "org.oxlang" "ox") [(semver-version 0 1 0)]
-    (package-identifier "com.foo" "bar")   [(version-< (semver-version 2 0 0))
-                                            (version->= (semver-version 1 2 0))]})))
+	;; requirements are either pinned or are constraints
+	{(package-identifier "org.oxlang" "ox") [(semver-version 0 1 0)]
+   (package-identifier "com.foo" "bar")   [(version-< (semver-version 2 0 0))
+                                           (version->= (semver-version 1 2 0))]})
 ```
 
 The requirements of an Ox package form a dependency list which may be resolved against a set of package sources or
