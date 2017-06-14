@@ -25,8 +25,8 @@ another potentially conflicting version is directly depended on if an exposed fu
 depended package returns or contains a transitively depended data type.
 
 **aside:** Internally, Ox always refers to all symbols in a manner fully qualified by versioned package name and
-*namespace. This means that even a seeming conflict where multiple versions of a single type become visible are still
-*actually trivial and safe.
+namespace. This means that even a seeming conflict where multiple versions of a single type become visible are still
+actually trivial and safe.
 
 ### package.ox
 
