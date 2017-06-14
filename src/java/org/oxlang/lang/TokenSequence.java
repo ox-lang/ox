@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
 
 /**
- * Created by rmckenzie on 5/11/17.
+ * Created by arrdem on 5/11/17.
  */
 public class TokenSequence implements Iterable<Token> {
   private TokenStream stream;

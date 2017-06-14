@@ -1,11 +1,13 @@
 package org.oxlang.lang;
 
 /* Generated source files from antlr4 */
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.file.Path;
 import java.util.Iterator;
 
 import org.antlr.v4.runtime.CharStreams;
@@ -74,6 +76,10 @@ public class OxlangReader {
     return read(new FileReader(f));
   }
 
+  public static Object read(Path p) throws IOException {
+    return read(p.toFile());
+  }
+
   /**
    * Parses an entire reader on a streaming basis, returning a streaming iterator of parsed forms.
    *
@@ -84,7 +90,7 @@ public class OxlangReader {
    */
   public static Iterator readAll(Reader rdr, OxlangBaseVisitor v) throws IOException {
     OxlangParser p = parseReader(rdr);
-    return p.file().sexpr().stream().map(ctx -> (Object)v.visit(ctx)).iterator();
+    return p.file().sexpr().stream().map(ctx -> (Object) v.visit(ctx)).iterator();
   }
 
   /**

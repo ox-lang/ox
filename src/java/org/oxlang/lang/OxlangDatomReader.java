@@ -11,7 +11,7 @@ import io.lacuna.bifurcan.Maps;
 import io.lacuna.bifurcan.Sets;
 
 /**
- * Created by rmckenzie on 5/13/17.
+ * Created by arrdem on 5/13/17.
  */
 class OxlangDatomReader
     extends OxlangBaseVisitor<Object>

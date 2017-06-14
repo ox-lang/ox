@@ -17,18 +17,9 @@ import java.util.regex.Matcher;
  * itself is just a holder for metadata, a getName, possibly a namespace and
  * possibly metadata.
  */
-public class Symbol
+public abstract class Symbol
     implements Named<Symbol> {
-  private static final WeakHashMap<String, Symbol> internMap = new WeakHashMap<String, Symbol>();
-
-  private String name;
-  private String namespace;
-
-  private Symbol(@Nullable String ns,
-                 @NotNull String n) {
-    this.name = n;
-    this.namespace = ns;
-  }
+  public static final WeakHashMap<String, Symbol> internMap = new WeakHashMap<String, Symbol>();
 
   /**
    * Handles using the intern map, validated source text and fragments to return or build a Symbol.
@@ -36,7 +27,7 @@ public class Symbol
   private static synchronized Symbol ofLegalParsedParts(@NotNull String text,
                                                         @Nullable String namespace,
                                                         @NotNull String name) {
-    Symbol val = new Symbol(namespace, name);
+    Symbol val = namespace == null ? new SimpleSymbol(name) : new QualifiedSymbol(namespace, name);
     internMap.put(text, val);
     return val;
   }
@@ -103,7 +94,6 @@ public class Symbol
     }
   }
 
-
   /**
    * Parses a pair of Strings which could constitute a valid fully qualified Symbol.
    * <p>
@@ -135,21 +125,15 @@ public class Symbol
   }
 
   /**
-   * Named
+   * Object
    */
-  @Override
   @NotNull
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * Named
-   */
-  @Override
-  @Nullable
-  public String getNamespace() {
-    return namespace;
+  public String toString() {
+    if (getNamespace() != null) {
+      return String.format("<Symbol '%s', '%s'>", getNamespace(), getName());
+    } else {
+      return String.format("<Symbol '%s'>", getName());
+    }
   }
 
   /**
@@ -158,19 +142,6 @@ public class Symbol
   public Symbol asSymbol() {
     return this;
   }
-
-  /**
-   * Object
-   */
-  @NotNull
-  public String toString() {
-    if (namespace != null) {
-      return String.format("<Symbol '%s', '%s'>", namespace, name);
-    } else {
-      return String.format("<Symbol '%s'>", name);
-    }
-  }
-
 
   /**
    * Object equality :|
