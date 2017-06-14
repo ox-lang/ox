@@ -23,6 +23,14 @@ used. Transitively depended on packages (that is the dependencies of direct depe
 are entirely opaque and cannot be accessed directly. This makes it possible for conflicting
 versions of a single package to become loaded, and to be used by different packages.
 
+There is an exception to this rule: data types defined in transitively depended packages can become visible even if
+another potentially conflicting version is directly depended on if an exposed function or data type in a directly
+depended package returns or contains a transitively depended data type.
+
+**aside:** Internally, Ox always refers to all symbols in a manner fully qualified by versioned package name and
+namespace. This means that even a seeming conflict where multiple versions of a single type become visible are still
+actually trivial and safe.
+
 ### package.ox
 
 A `package.ox` consists of a single legal Ox form, being a use of `define-package`.
