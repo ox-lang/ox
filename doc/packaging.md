@@ -7,7 +7,7 @@ Consequently Ox includes the concepts of packages, package versions and packagin
 
 ## Packages
 
-Every collection of source files, every project and every dependency in Ox has a package.
+Every Ox program exists within the context of a package.
 
 A package is a named and versioned collection of dependencies and Ox namespaces, together with a package file,
 `package.ox`. The package file sits at the root of the source tree, and states the name and version of the package,
