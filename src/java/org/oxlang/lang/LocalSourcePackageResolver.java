@@ -6,6 +6,7 @@ import io.lacuna.bifurcan.Map;
 import io.lacuna.bifurcan.Maps;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -136,7 +137,7 @@ public class LocalSourcePackageResolver extends PackageResolver {
       if (this.namespaces == null) {
         PathMatcher m = root.getFileSystem().getPathMatcher("glob:*.ox");
 
-        Files.walk(this.root, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(this.root, new SimpleFileVisitor<Path>() {
           @Override
           public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
             if (m.matches(file)) {
@@ -157,7 +158,14 @@ public class LocalSourcePackageResolver extends PackageResolver {
 
     @Override
     public Readable getNamespaceSource(NamespaceIdentifier id) throws PackageResolverException, IOException {
-      return null;
+      getNamespaces();
+
+      if (!this.namespaces.contains(id))
+        throw new NoSuchNamespaceException(
+            String.format("Unable to resolve namespace '%s' in package '%s'",
+                          id, this.id));
+
+      return new FileReader(root.resolve(this.namespaces.get(id).get()).toFile());
     }
   }
 }
