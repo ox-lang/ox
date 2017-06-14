@@ -23,3 +23,4 @@ The trick is getting all of this on one place.
 
  - [License](./license.md)
  - [Syntax](./syntax.md)
+ - [Packaging](./packaging.md)
