@@ -13,3 +13,10 @@ jar_library(
   ],
   scope='forced'
 )
+
+jar_library(
+  name='bifurcan',
+  jars=[
+    jar('io.lacuna', 'bifurcan', '0.1.0-alpha1'),
+  ]
+)
