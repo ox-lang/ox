@@ -14,7 +14,7 @@ cache:
   - '~/.cache/'
   - '~/.m2/'
 
-# Selectively run the changed tests
+# Find changed targets, run all directly & transitively impacted tests
 script:
- - "./pants test ::"
-
+ - "git fetch origin develop:refs/remotes/origin/develop" # Make sure we have the origin/develop ref
+ - "./pants changed --changed-parent=origin/develop --changed-include-dependees=transitive | xargs ./pants test"
