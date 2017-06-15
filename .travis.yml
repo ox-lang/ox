@@ -16,5 +16,11 @@ cache:
 
 # Find changed targets, run all directly & transitively impacted tests
 script:
- - "git fetch origin develop:refs/remotes/origin/develop" # Make sure we have the origin/develop ref
- - "./pants changed --changed-parent=origin/develop --changed-include-dependees=transitive | xargs ./pants test"
+ # Make sure we have the origin/develop ref
+ - "git fetch origin develop:refs/remotes/origin/develop"
+
+ # Get the set of pants targets which have changed with respect to origin/develop (local changes)
+ - "TARGETS=$(./pants changed --changed-parent=origin/develop --changed-include-dependees=transitive)"
+ 
+ # Run all those tests, or :: if there weren't changed targets
+ - "./pants test ${TARGETS:-::}"
