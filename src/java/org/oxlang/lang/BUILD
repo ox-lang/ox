@@ -5,8 +5,8 @@ java_library(
     'src/antlr/org/oxlang/lang:parser',
     'src/java/org/oxlang/data',
     'src/java/org/oxlang/io',
-    '3rdparty/jvm:jetbrains-annotations',
     '3rdparty/jvm:antlr4',
     '3rdparty/jvm:bifurcan',
+    '3rdparty/jvm:jetbrains-annotations',
   ],
 )
