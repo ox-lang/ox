@@ -9,7 +9,7 @@ junit_tests(
 
 junit_tests(
   name='reader_test',
-  sources=['OxlangReaderTest.java'],
+  sources=['ReaderTest.java'],
   dependencies=[
     'src/java/org/oxlang/lang',
     '3rdparty/jvm:antlr4',

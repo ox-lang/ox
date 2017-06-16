@@ -13,7 +13,7 @@ import io.lacuna.bifurcan.Sets;
 /**
  * Created by arrdem on 5/13/17.
  */
-class OxlangDatomReader
+class DatomReader
     extends OxlangBaseVisitor<Object>
 {
 

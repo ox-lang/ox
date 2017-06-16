@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.Token;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class OxlangReaderTest {
+public class ReaderTest {
 
   @Test
   void testReadSymbol() {

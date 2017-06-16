@@ -3,15 +3,13 @@ package org.oxlang.lang;
 import io.lacuna.bifurcan.IMap;
 import io.lacuna.bifurcan.Lists;
 import io.lacuna.bifurcan.Map;
-import io.lacuna.bifurcan.Maps;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.stream.Stream;
 
 /**
@@ -114,7 +112,7 @@ public class LocalSourcePackageResolver extends PackageResolver {
         }
 
         try {
-          Object sexpr = OxlangReader.read(packageFilePath);
+          Object sexpr = Reader.read(packageFilePath);
           this.descriptor = PackageDescriptor.of(sexpr);
         } catch (IOException e) {
           throw new IOException(

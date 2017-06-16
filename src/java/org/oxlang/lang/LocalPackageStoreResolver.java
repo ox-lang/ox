@@ -181,7 +181,7 @@ public class LocalPackageStoreResolver extends PackageResolver {
           if (!e.isDirectory()) {
             if (e.getName() == PACKAGE_FILE_NAME) {
               // Read the file contents to a buffer we can parse as an s-expression
-              Object packageForm = OxlangReader.read(new ZipEntryReader(stream, e));
+              Object packageForm = Reader.read(new ZipEntryReader(stream, e));
 
               // FIXME (arrdem 6/11/2017) need to call the interpreter with the package context to get a Package Desc.
               this.descriptor = PackageDescriptor.of(packageForm);

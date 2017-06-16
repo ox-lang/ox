@@ -3,14 +3,6 @@ package org.oxlang.lang;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Iterator;
-
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Token;
-
-import static org.oxlang.lang.OxlangReader.*;
 
 /**
  * Created by rmckenzie on 5/13/17.
@@ -27,7 +19,7 @@ public class ReaderDriver {
       BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
       for(String expr = readLine(br); expr != null; expr = readLine(br)) {
         try {
-          Object val = OxlangReader.read(expr + "\n");
+          Object val = Reader.read(expr + "\n");
           System.out.println(val);
         } catch (Exception e) {
           System.out.println(e.getClass());
