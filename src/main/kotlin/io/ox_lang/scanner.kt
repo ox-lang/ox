@@ -3,10 +3,9 @@
 
 package io.ox_lang.scanner
 
-import java.io.PushbackInputStream
-import java.io.ByteArrayInputStream
-import java.io.InputStream
-import java.io.InputStreamReader
+import java.io.PushbackReader
+import java.io.StringReader
+import java.io.Reader
 import java.lang.Character
 import java.lang.StringBuilder
 import java.util.Iterator
@@ -51,12 +50,16 @@ public data class Token<T>(
 
 // Before we can define the scanner, we need the exception it throws
 
-public class ScannerException(val location: StreamLocation<Object>, message: String, cause: Throwable? = null) : Exception(message, cause)
+public class ScannerException(
+  val location: StreamLocation<Object>,
+  message: String,
+  cause: Throwable? = null
+) : Exception(message, cause)
 
 // And now for the scanner
 
 private class TokenScanner<T>(
-  val stream: PushbackInputStream,
+  val stream: PushbackReader,
   val streamIdentifer: T,
   val offset: Long = 0,
   val lineNumber: Long = 0,
@@ -90,7 +93,7 @@ private class TokenScanner<T>(
           this.curLoc.offset + 1,
           this.curLoc.lineNumber + 1,
           firstColumnIndex
-        );
+        )
       } else {
         // Yes this is broken for tabs, no I don't care, tabs are 1spc
         this.nextLoc = StreamLocation<T>(
@@ -98,7 +101,7 @@ private class TokenScanner<T>(
           this.curLoc.offset + 1,
           this.curLoc.lineNumber,
           this.curLoc.columnNumber + 1
-        );
+        )
       }
 
       return c
@@ -115,7 +118,7 @@ private class TokenScanner<T>(
       if (i == -1) {
         throw ScannerException(
           start as StreamLocation<Object>,
-          "Reached end of stream while scanning a string!");
+          "Reached end of stream while scanning a string!")
       } else {
         val c = i.toChar()
         if (escaped) {
@@ -137,33 +140,52 @@ private class TokenScanner<T>(
     return Token(tt, curLoc, buff.toString())
   }
 
-  private fun scanSymbol(tt: TokenType, startChar: Char): Token<T> {
-    val start = curLoc
-    val buff = StringBuilder()
-    val piped = when (startChar) {
-      '|' -> true
-      else -> {buff.append(startChar); false}
-    }
-
+  private fun scanSimpleSymbol(buff: StringBuilder) {
     read@ while (true) {
       val i = this.read()
-      if (i == -1 && !piped) {
-        break
-      } else if (i == -1 && piped) {
-        throw ScannerException(
-          start as StreamLocation<Object>,
-          String.format("Encountered end of stream while scanning a piped symbol!")
-        );
+      if (i == -1) {
+        return
       } else {
         val c = i.toChar()
         when (c) {
-          '|' -> break@read
-          else -> buff.append(c)
+          '(', ')', '[', ']', '{', '}', ';', '#', '\'', ',' -> { this.stream.unread(i); break@read }
+          else -> when {
+            Character.isWhitespace(i) -> { this.stream.unread(i); break@read }
+            else -> buff.append(c)
+          }
         }
       }
     }
+  }
 
-    return Token(tt, curLoc, buff.toString())
+  private fun scanPipedSymbol(start: StreamLocation<T>, buff: StringBuilder) {
+    while (true) {
+      val i = this.read()
+      if (i == -1) {
+        throw ScannerException(
+          start as StreamLocation<Object>,
+          String.format("Encountered end of stream while scanning a piped symbol!")
+        )
+      } else {
+        val c = i.toChar()
+        if (c == '|') {
+          break
+        } else {
+          buff.append(c)
+        }
+      }
+    }
+  }
+
+  private fun scanSymbolKw(tt: TokenType, startChar: Char, start: StreamLocation<T> = curLoc): Token<T> {
+    val buff = StringBuilder()
+    when (startChar) {
+      '|' -> scanPipedSymbol(start, buff)
+      ':' -> return scanSymbolKw(TokenType.KEYWORD, this.read().toChar(), curLoc)
+      else -> { buff.append(startChar); scanSimpleSymbol(buff) }
+    }
+
+    return Token(tt, start, buff.toString())
   }
 
   override fun hasNext(): Boolean {
@@ -198,6 +220,7 @@ private class TokenScanner<T>(
       '#' -> TokenType.HASH
       '\'' -> TokenType.QUOTE
       '\"' -> TokenType.STRING
+      ',' -> TokenType.WHITESPACE
 
       else -> when {
         // really getting fancy here, gonna need some more logic
@@ -210,7 +233,7 @@ private class TokenScanner<T>(
     // String scanning
     when (tt) {
       TokenType.STRING -> return scanString(tt, ch)
-      TokenType.SYMBOL -> return scanSymbol(tt, ch)
+      TokenType.SYMBOL -> return scanSymbolKw(tt, ch)
       // FIXME (arrdem 2019-05-21):
       //   Process numbers
       else -> return Token(tt, curLoc, ch)
@@ -224,14 +247,14 @@ private class TokenScanner<T>(
 
 // Forcing the generated class name
 object Scanner {
-  public fun <T> scan(stream: InputStream, streamIdentifier: T): Iterator<Token<T>> {
+  public fun <T> scan(stream: Reader, streamIdentifier: T): Iterator<Token<T>> {
     // yo dawg I heard u leik streams
-    return TokenScanner<T>(PushbackInputStream(InputStreamReader(stream, "UTF-8") as InputStream), streamIdentifier)
+    return TokenScanner<T>(PushbackReader(stream), streamIdentifier)
   }
 
   @JvmStatic fun main(args: Array<String>) {
     for ((index, arg) in args.withIndex()) {
-      val scanner = scan(ByteArrayInputStream(arg.toByteArray()), String.format("Arg %d", index))
+      val scanner = scan(StringReader(arg), String.format("Arg %d", index))
       while (scanner.hasNext()) {
         System.out.println(scanner.next())
       }
