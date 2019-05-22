@@ -34,7 +34,7 @@ public enum class TokenType {
   NEWLINE, WHITESPACE,
 
   // reader macros
-  HASH, QUOTE, COMMENT,
+  HASH, QUOTE, META, COMMENT,
 
   // atoms
   STRING, NUMBER, SYMBOL, KEYWORD
@@ -148,7 +148,10 @@ private class TokenScanner<T>(
       } else {
         val c = i.toChar()
         when (c) {
-          '(', ')', '[', ']', '{', '}', ';', '#', '\'', ',' -> { this.stream.unread(i); break@read }
+          '(', ')', '[', ']', '{', '}', ';', '#', '\'', ',', '^' -> {
+            this.stream.unread(i)
+            break@read
+          }
           else -> when {
             Character.isWhitespace(i) -> { this.stream.unread(i); break@read }
             else -> buff.append(c)
@@ -188,6 +191,59 @@ private class TokenScanner<T>(
     return Token(tt, start, buff.toString())
   }
 
+  private fun scanComment(tt: TokenType, startChar: Char, start: StreamLocation<T> = curLoc): Token<T> {
+    val buff = StringBuilder()
+    buff.append(startChar)
+    while (true) {
+      val i = this.read()
+      if (i == -1) {
+        break
+      } else {
+        val c = i.toChar()
+        if (c == '\n') {
+          break
+        } else {
+          buff.append(c)
+        }
+      }
+    }
+
+    return Token(tt, start, buff.toString())
+  }
+
+  private fun scanNumber(tt: TokenType, startChar: Char, start: StreamLocation<T> = curLoc): Token<T> {
+    /* Problems here:
+     * - Doesn't do bases other than 10
+     * - Doesn't do decimal
+     * - Doesn't do exponents
+     * - Doesn't do fractions/rationals
+     *
+     * It does however do signs which is at least something
+     */
+    var value = when (startChar) {
+      '-', '+' -> 0
+      else -> startChar.toInt() - 48
+    }
+    val negated: Boolean = when (startChar) {
+      '-' -> true
+      else -> false
+    }
+
+    while (true) {
+      val i = this.read()
+      if (i == -1) {
+        break
+      } else if (Character.isDigit(i)) {
+        value = value * 10 + (i - 48) // 48 is ord('0')
+      } else {
+        // Argh. The NrM and 0X and 0.0 and 0e notation all gets dropped >.>
+        break
+      }
+    }
+
+    return Token(tt, start, if (negated) -1 * value else value)
+  }
+
   override fun hasNext(): Boolean {
     // I think this is correct - the iterator has
     // SOMETHING as long as the underlying PBR has
@@ -221,6 +277,21 @@ private class TokenScanner<T>(
       '\'' -> TokenType.QUOTE
       '\"' -> TokenType.STRING
       ',' -> TokenType.WHITESPACE
+      '^' -> TokenType.META
+
+      // Note that - is ambiguous without lookahead - so look ahead and cheat
+      '-', '+' -> {
+        val next: Int = this.stream.read()
+        try {
+          when {
+            next == -1 -> TokenType.SYMBOL
+            Character.isDigit(next) -> TokenType.NUMBER
+            else -> TokenType.SYMBOL
+          }
+        } finally {
+          this.stream.unread(next)
+        }
+      }
 
       else -> when {
         // really getting fancy here, gonna need some more logic
@@ -234,8 +305,8 @@ private class TokenScanner<T>(
     when (tt) {
       TokenType.STRING -> return scanString(tt, ch)
       TokenType.SYMBOL -> return scanSymbolKw(tt, ch)
-      // FIXME (arrdem 2019-05-21):
-      //   Process numbers
+      TokenType.COMMENT -> return scanComment(tt, ch)
+      TokenType.NUMBER -> return scanNumber(tt, ch)
       else -> return Token(tt, curLoc, ch)
     }
   }
@@ -246,15 +317,28 @@ private class TokenScanner<T>(
 }
 
 // Forcing the generated class name
-object Scanner {
-  public fun <T> scan(stream: Reader, streamIdentifier: T): Iterator<Token<T>> {
+public object Scanner {
+  @JvmStatic public fun <T> scan(stream: Reader, streamIdentifier: T): Iterator<Token<T>> {
     // yo dawg I heard u leik streams
     return TokenScanner<T>(PushbackReader(stream), streamIdentifier)
   }
 
-  @JvmStatic fun main(args: Array<String>) {
+  @JvmStatic public fun <T> scanStr(buff: String, streamIdentifier: T): Iterator<Token<T>> {
+    return this.scan<T>(StringReader(buff), streamIdentifier)
+  }
+
+  @JvmStatic public fun <T> scanStrEager(buff: String, streamIdentifier: T): Iterable<Token<T>> {
+    val l = java.util.ArrayList<Token<T>>()
+    val iter = this.scanStr<T>(buff, streamIdentifier)
+    while (iter.hasNext()) {
+      l.add(iter.next())
+    }
+    return l
+  }
+
+  @JvmStatic public fun main(args: Array<String>) {
     for ((index, arg) in args.withIndex()) {
-      val scanner = scan(StringReader(arg), String.format("Arg %d", index))
+      val scanner = this.scanStr(arg, String.format("Arg %d", index))
       while (scanner.hasNext()) {
         System.out.println(scanner.next())
       }
