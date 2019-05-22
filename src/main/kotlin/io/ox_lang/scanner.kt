@@ -108,6 +108,11 @@ private class TokenScanner<T>(
     }
   }
 
+  private fun unread(c: Int): Unit {
+    this.stream.unread(c)
+    this.nextLoc = this.curLoc
+  }
+
   private fun scanString(tt: TokenType, _c: Char): Token<T> {
     val start = curLoc
     val buff = StringBuilder()
@@ -161,7 +166,7 @@ private class TokenScanner<T>(
     }
   }
 
-  private fun scanPipedSymbol(start: StreamLocation<T>, buff: StringBuilder) {
+  private fun scanPipedSymbol(start: StreamLocation<T>, buff: StringBuilder): Unit {
     while (true) {
       val i = this.read()
       if (i == -1) {
@@ -194,6 +199,7 @@ private class TokenScanner<T>(
   private fun scanComment(tt: TokenType, startChar: Char, start: StreamLocation<T> = curLoc): Token<T> {
     val buff = StringBuilder()
     buff.append(startChar)
+
     while (true) {
       val i = this.read()
       if (i == -1) {
@@ -201,6 +207,7 @@ private class TokenScanner<T>(
       } else {
         val c = i.toChar()
         if (c == '\n') {
+          this.unread(i)
           break
         } else {
           buff.append(c)
@@ -278,6 +285,7 @@ private class TokenScanner<T>(
       '\"' -> TokenType.STRING
       ',' -> TokenType.WHITESPACE
       '^' -> TokenType.META
+      '\n' -> TokenType.NEWLINE
 
       // Note that - is ambiguous without lookahead - so look ahead and cheat
       '-', '+' -> {

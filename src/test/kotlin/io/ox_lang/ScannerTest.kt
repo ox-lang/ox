@@ -127,4 +127,21 @@ class ScannerTest {
       scanOne("6", "test-7")
     )
   }
+
+  @Test fun testScanComment(): Unit {
+    assertEquals(
+      Token(TokenType.COMMENT, StreamLocation("test-8", 0, 0, 0), "; foo"),
+      scanOne("; foo", "test-8")
+    )
+
+    assertEquals(
+      listOf<TokenType>(
+        TokenType.SYMBOL,
+        TokenType.WHITESPACE,
+        TokenType.COMMENT,
+        TokenType.NEWLINE
+      ),
+      scanTypes("foo ;bar\n", "test-9")
+    )
+  }
 }
