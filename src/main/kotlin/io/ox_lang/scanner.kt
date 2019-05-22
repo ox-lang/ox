@@ -38,6 +38,12 @@ public enum class TokenType {
 
   // atoms
   STRING, NUMBER, SYMBOL, KEYWORD
+
+  // FIXME:
+  // - NaN
+  // - Inf
+  // - Nil / Null
+  // True, False
 }
 
 // Tokens themselves
@@ -71,8 +77,11 @@ private class TokenScanner<T>(
   //   If we were to compute the "next" position each time we read(), we'd be off by one.
   //   The computed position is after all ONE AHEAD of the current position, which is 0-indexed.
   //   So we do this game where we keep two locations, the "current" and "next" locations.
-  private var curLoc: StreamLocation<T> = StreamLocation<T>(streamIdentifer, 0, 0, 0)
-  private var nextLoc: StreamLocation<T> = StreamLocation<T>(streamIdentifer, offset, lineNumber, columnNumber)
+  private var curLoc: StreamLocation<T> =
+    StreamLocation<T>(streamIdentifer, 0, 0, 0)
+
+  private var nextLoc: StreamLocation<T> =
+    StreamLocation<T>(streamIdentifer, offset, lineNumber, columnNumber)
 
   private fun read(): Int {
     val c: Int = this.stream.read()
@@ -108,7 +117,7 @@ private class TokenScanner<T>(
     }
   }
 
-  private fun unread(c: Int): Unit {
+  private fun unread(c: Int) {
     this.stream.unread(c)
     this.nextLoc = this.curLoc
   }
@@ -166,7 +175,7 @@ private class TokenScanner<T>(
     }
   }
 
-  private fun scanPipedSymbol(start: StreamLocation<T>, buff: StringBuilder): Unit {
+  private fun scanPipedSymbol(start: StreamLocation<T>, buff: StringBuilder) {
     while (true) {
       val i = this.read()
       if (i == -1) {
@@ -185,7 +194,11 @@ private class TokenScanner<T>(
     }
   }
 
-  private fun scanSymbolKw(tt: TokenType, startChar: Char, start: StreamLocation<T> = curLoc): Token<T> {
+  private fun scanSymbolKw(
+    tt: TokenType,
+    startChar: Char,
+    start: StreamLocation<T> = curLoc
+  ): Token<T> {
     val buff = StringBuilder()
     when (startChar) {
       '|' -> scanPipedSymbol(start, buff)
@@ -196,7 +209,11 @@ private class TokenScanner<T>(
     return Token(tt, start, buff.toString())
   }
 
-  private fun scanComment(tt: TokenType, startChar: Char, start: StreamLocation<T> = curLoc): Token<T> {
+  private fun scanComment(
+    tt: TokenType,
+    startChar: Char,
+    start: StreamLocation<T> = curLoc
+  ): Token<T> {
     val buff = StringBuilder()
     buff.append(startChar)
 
@@ -218,7 +235,11 @@ private class TokenScanner<T>(
     return Token(tt, start, buff.toString())
   }
 
-  private fun scanNumber(tt: TokenType, startChar: Char, start: StreamLocation<T> = curLoc): Token<T> {
+  private fun scanNumber(
+    tt: TokenType,
+    startChar: Char,
+    start: StreamLocation<T> = curLoc
+  ): Token<T> {
     /* Problems here:
      * - Doesn't do bases other than 10
      * - Doesn't do decimal
