@@ -1,23 +1,17 @@
 package io.ox_lang;
 
-import java.util.Iterator;
 import kotlin.test.assertEquals;
 import org.junit.Test;
 
-import io.ox_lang.scanner.Token;
-import io.ox_lang.scanner.StreamLocation;
-import io.ox_lang.scanner.TokenType;
-import io.ox_lang.scanner.Scanner;
-
 class ScannerTest {
   fun scanTypes(input: String, exId: String): List<TokenType> {
-    return Scanner.scanStrEager(input, exId).map({t: Token<String> -> t.tokenType})
+    return Scanner.scanStrEager(input, exId).map({ t: Token<String> -> t.tokenType})
   }
 
   fun scanOne(input: String, exId: String): Token<String> {
     return Scanner.scanStrEager(input, exId).first()
   }
-  
+
   @Test fun testScanParens(): Unit {
     assertEquals(
       listOf<TokenType>(
@@ -72,7 +66,7 @@ class ScannerTest {
         TokenType.RPAREN,
 
         TokenType.SYMBOL,
-        
+
         TokenType.LBRACKET,
         TokenType.SYMBOL,
         TokenType.RBRACKET,

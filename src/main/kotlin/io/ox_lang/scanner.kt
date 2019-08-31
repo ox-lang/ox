@@ -1,7 +1,7 @@
 // The Ox scanner.
 // Used to implement the reader.
 
-package io.ox_lang.scanner
+package io.ox_lang
 
 import java.io.PushbackReader
 import java.io.StringReader
@@ -105,6 +105,7 @@ private class TokenScanner<T>(
         )
       } else {
         // Yes this is broken for tabs, no I don't care, tabs are 1spc
+        // Variable width characters too >.>
         this.nextLoc = StreamLocation<T>(
           streamIdentifer,
           this.curLoc.offset + 1,
@@ -276,7 +277,7 @@ private class TokenScanner<T>(
     // I think this is correct - the iterator has
     // SOMETHING as long as the underlying PBR has
     // SOMETHING.
-    var i = this.stream.read()
+    val i = this.stream.read()
     try {
       return i != -1
     } finally {
@@ -346,19 +347,19 @@ private class TokenScanner<T>(
 }
 
 // Forcing the generated class name
-public object Scanner {
+object Scanner {
   @JvmStatic public fun <T> scan(stream: Reader, streamIdentifier: T): Iterator<Token<T>> {
     // yo dawg I heard u leik streams
     return TokenScanner<T>(PushbackReader(stream), streamIdentifier)
   }
 
   @JvmStatic public fun <T> scanStr(buff: String, streamIdentifier: T): Iterator<Token<T>> {
-    return this.scan<T>(StringReader(buff), streamIdentifier)
+    return scan<T>(StringReader(buff), streamIdentifier)
   }
 
   @JvmStatic public fun <T> scanStrEager(buff: String, streamIdentifier: T): Iterable<Token<T>> {
     val l = java.util.ArrayList<Token<T>>()
-    val iter = this.scanStr<T>(buff, streamIdentifier)
+    val iter = scanStr<T>(buff, streamIdentifier)
     while (iter.hasNext()) {
       l.add(iter.next())
     }
@@ -367,7 +368,7 @@ public object Scanner {
 
   @JvmStatic public fun main(args: Array<String>) {
     for ((index, arg) in args.withIndex()) {
-      val scanner = this.scanStr(arg, String.format("Arg %d", index))
+      val scanner = scanStr(arg, String.format("Arg %d", index))
       while (scanner.hasNext()) {
         System.out.println(scanner.next())
       }
