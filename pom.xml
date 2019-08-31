@@ -129,7 +129,7 @@
             <configuration>
               <archive>
                 <manifest>
-                  <mainClass>io.ox_lang.scanner.Scanner</mainClass>
+                  <mainClass>io.ox_lang.Scanner</mainClass>
                 </manifest>
               </archive>
               <descriptorRefs>
@@ -153,6 +153,12 @@
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib</artifactId>
       <version>${kotlin.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>7.1</version>
     </dependency>
 
     <dependency>
