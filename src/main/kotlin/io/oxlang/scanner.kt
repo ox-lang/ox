@@ -1,7 +1,7 @@
 // The Ox scanner.
 // Used to implement the reader.
 
-package io.ox_lang
+package io.oxlang
 
 import java.io.PushbackReader
 import java.io.StringReader
@@ -12,7 +12,7 @@ import java.util.Iterator
 
 // Tokens are read from streams, which are identified by a
 // streamIdentifer of type T, defined by the user.
-public data class StreamLocation<T>(
+data class StreamLocation<T>(
   val streamIdentifer: T,
   val offset: Long,
   val lineNumber: Long,
@@ -367,11 +367,9 @@ object Scanner {
   }
 
   @JvmStatic public fun main(args: Array<String>) {
-    for ((index, arg) in args.withIndex()) {
-      val scanner = scanStr(arg, String.format("Arg %d", index))
-      while (scanner.hasNext()) {
-        System.out.println(scanner.next())
-      }
+    val scanner = scan(System.`in`.reader(), String.format("stdin"))
+    while (scanner.hasNext()) {
+      println(scanner.next())
     }
   }
 }

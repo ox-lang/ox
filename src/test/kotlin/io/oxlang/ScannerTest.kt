@@ -1,4 +1,4 @@
-package io.ox_lang;
+package io.oxlang;
 
 import kotlin.test.assertEquals;
 import org.junit.Test;
