@@ -32,7 +32,7 @@ import io.lacuna.bifurcan.Set as BSet
 typealias EPM = BMap<Any, Function<*>>
 typealias EFN = ((Printer, EPM, OutputStreamWriter, Any) -> Unit)
 typealias PrintMap = BMap<Any, EFN>
-typealias PrintFn = ((Printer, PrintMap, OutputStreamWriter, Any) -> Unit)
+typealias PrintFn = ((Printer, PrintMap, OutputStreamWriter, Any?) -> Unit)
 
 /**
  * Helper for printing sequential types, the grammar for which is "$start(<>($delim<>)+)$end"
@@ -139,12 +139,15 @@ class Printer(val defaultPrinter: PrintFn = Printer::printDefault as PrintFn) {
     printNamespacy(this, pm, w, ":$prefix", o, prefix)
   }
 
-  fun printDefault(pm: PrintMap, s: OutputStreamWriter, o: Any) {
-    s.write(o.toString())
+  fun printDefault(pm: PrintMap, s: OutputStreamWriter, o: Any?) {
+    if (o != null)
+      s.write(o.toString())
+    else
+      s.write("null")
   }
 
-  fun print(pm: PrintMap, w: OutputStreamWriter, o: Any): Unit {
-    val fn = pm.get(o.javaClass as Any, this.defaultPrinter as EFN) as PrintFn
+  fun print(pm: PrintMap, w: OutputStreamWriter, o: Any?): Unit {
+    val fn = pm.get(o?.javaClass ?: null as Any?, this.defaultPrinter as EFN) as PrintFn
     fn(this, pm, w, o)
   }
 }
@@ -201,7 +204,7 @@ object Printers {
     )
 
     @JvmStatic
-    public fun println(o: Any) {
+    public fun println(o: Any?) {
       val w = System.out.writer()
       Printer().print(BASE_PRINT_MAP, w, o)
       w.write("\n")

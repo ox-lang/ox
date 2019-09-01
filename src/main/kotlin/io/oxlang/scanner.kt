@@ -8,10 +8,9 @@
 package io.oxlang
 
 import java.io.PushbackReader
-import java.io.StringReader
 import java.io.Reader
-import java.lang.Character
-import java.lang.StringBuilder
+import java.io.StringReader
+import java.lang.IllegalStateException
 import java.util.Iterator
 
 /**
@@ -28,22 +27,35 @@ data class StreamLocation<T>(
 // Tokens are of a type
 public enum class TokenType {
   // lists are ()
-  LPAREN, RPAREN,
+  LPAREN,
+  RPAREN,
 
   // lists are also []
-  LBRACKET, RBRACKET,
+  LBRACKET,
+  RBRACKET,
 
   // mappings and sets use {}
-  LBRACE, RBRACE,
+  LBRACE,
+  RBRACE,
 
   // Whitespace
-  NEWLINE, WHITESPACE,
+  NEWLINE,
+  WHITESPACE,
 
   // reader macros
-  HASH, QUOTE, META, COMMENT,
+  HASH,          // Used for #foo <expr> reader macros
+  HASH_LPAREN,   // Used for #()
+  HASH_LBRACE,   // Used for #{}
+  HASH_LBRACKET, // Used for #[]
+
+  // More weirdness
+  QUOTE,
+  META,
+  COMMENT,
 
   // atoms
-  STRING, NUMBER, SYMBOL, KEYWORD
+  STRING,
+  NUMBER, SYMBOL, KEYWORD
 
   // FIXME:
   // - NaN
@@ -144,7 +156,9 @@ private class TokenScanner<T>(
         val c = i.toChar()
         if (escaped) {
           when (c) {
-            '\\', '\"' -> { escaped = false; buff.append(c) }
+            '\\', '\"' -> {
+              escaped = false; buff.append(c)
+            }
             else -> throw ScannerException(
               start as StreamLocation<Object>,
               String.format("Encountered illegal escaped character %c while scanning a string!", c))
@@ -174,7 +188,9 @@ private class TokenScanner<T>(
             break@read
           }
           else -> when {
-            Character.isWhitespace(i) -> { this.stream.unread(i); break@read }
+            Character.isWhitespace(i) -> {
+              this.stream.unread(i); break@read
+            }
             else -> buff.append(c)
           }
         }
@@ -210,10 +226,17 @@ private class TokenScanner<T>(
     when (startChar) {
       '|' -> scanPipedSymbol(start, buff)
       ':' -> return scanSymbolKw(TokenType.KEYWORD, this.read().toChar(), curLoc)
-      else -> { buff.append(startChar); scanSimpleSymbol(buff) }
+      else -> {
+        buff.append(startChar); scanSimpleSymbol(buff)
+      }
     }
 
-    return Token(tt, start, buff.toString())
+    val res = when (tt) {
+      TokenType.SYMBOL -> Symbols.of(buff.toString())
+      TokenType.KEYWORD -> Keywords.of(buff.toString())
+      else -> throw IllegalStateException("Got tokentype $tt while processing symbol/kw!")
+    }
+    return Token(tt, start, res)
   }
 
   private fun scanComment(
@@ -299,7 +322,7 @@ private class TokenScanner<T>(
       return null
     }
 
-    val ch = Character.valueOf(c.toChar())
+    var ch = Character.valueOf(c.toChar())
 
     val tt = when (c.toChar()) {
       '(' -> TokenType.LPAREN
@@ -309,7 +332,6 @@ private class TokenScanner<T>(
       '{' -> TokenType.LBRACE
       '}' -> TokenType.RBRACE
       ';' -> TokenType.COMMENT
-      '#' -> TokenType.HASH
       '\'' -> TokenType.QUOTE
       '\"' -> TokenType.STRING
       ',' -> TokenType.WHITESPACE
@@ -330,6 +352,21 @@ private class TokenScanner<T>(
         }
       }
 
+      '#' -> {
+        val next: Int = this.stream.read()
+        ch = Character.valueOf(next.toChar())
+        val tt = when (ch.toChar()) {
+          '{' -> TokenType.HASH_LBRACE
+          '[' -> TokenType.HASH_LBRACKET
+          '(' -> TokenType.HASH_LPAREN
+          else -> {
+            this.stream.unread(next)
+            TokenType.HASH
+          }
+        }
+        return Token(tt, curLoc, "#$ch")
+      }
+
       else -> when {
         // really getting fancy here, gonna need some more logic
         Character.isWhitespace(c) -> TokenType.WHITESPACE
@@ -344,7 +381,7 @@ private class TokenScanner<T>(
       TokenType.SYMBOL -> return scanSymbolKw(tt, ch)
       TokenType.COMMENT -> return scanComment(tt, ch)
       TokenType.NUMBER -> return scanNumber(tt, ch)
-      else -> return Token(tt, curLoc, ch)
+      else -> return Token(tt, curLoc, "$ch")
     }
   }
 
@@ -378,10 +415,14 @@ object Scanner {
 }
 
 object ScannerTest {
-  @JvmStatic public fun main(args: Array<String>) {
+  @JvmStatic
+  public fun main(args: Array<String>) {
     val scanner = Scanner.scan(System.`in`.reader(), String.format("stdin"))
     while (scanner.hasNext()) {
-      println(scanner.next())
+      val obj = scanner.next()
+      if (obj != null) {
+        Printers.println(obj)
+      }
     }
   }
 }
