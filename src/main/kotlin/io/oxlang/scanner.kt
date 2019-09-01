@@ -1,5 +1,9 @@
-// The Ox scanner.
-// Used to implement the reader.
+/**
+ * @author Reid 'arrdem' McKenzie 2019-5-20
+ *
+ * The Ox scanner.
+ * Used to implement the reader.
+ */
 
 package io.oxlang
 
@@ -10,8 +14,10 @@ import java.lang.Character
 import java.lang.StringBuilder
 import java.util.Iterator
 
-// Tokens are read from streams, which are identified by a
-// streamIdentifer of type T, defined by the user.
+/**
+ * Tokens are read from streams, which are identified by a
+ * StreamIdentifer of type T, defined by the user.
+ */
 data class StreamLocation<T>(
   val streamIdentifer: T,
   val offset: Long,
@@ -348,16 +354,19 @@ private class TokenScanner<T>(
 
 // Forcing the generated class name
 object Scanner {
-  @JvmStatic public fun <T> scan(stream: Reader, streamIdentifier: T): Iterator<Token<T>> {
+  @JvmStatic
+  public fun <T> scan(stream: Reader, streamIdentifier: T): Iterator<Token<T>> {
     // yo dawg I heard u leik streams
     return TokenScanner<T>(PushbackReader(stream), streamIdentifier)
   }
 
-  @JvmStatic public fun <T> scanStr(buff: String, streamIdentifier: T): Iterator<Token<T>> {
+  @JvmStatic
+  public fun <T> scanStr(buff: String, streamIdentifier: T): Iterator<Token<T>> {
     return scan<T>(StringReader(buff), streamIdentifier)
   }
 
-  @JvmStatic public fun <T> scanStrEager(buff: String, streamIdentifier: T): Iterable<Token<T>> {
+  @JvmStatic
+  public fun <T> scanStrEager(buff: String, streamIdentifier: T): Iterable<Token<T>> {
     val l = java.util.ArrayList<Token<T>>()
     val iter = scanStr<T>(buff, streamIdentifier)
     while (iter.hasNext()) {
@@ -365,9 +374,11 @@ object Scanner {
     }
     return l
   }
+}
 
+object ScannerTest {
   @JvmStatic public fun main(args: Array<String>) {
-    val scanner = scan(System.`in`.reader(), String.format("stdin"))
+    val scanner = Scanner.scan(System.`in`.reader(), String.format("stdin"))
     while (scanner.hasNext()) {
       println(scanner.next())
     }

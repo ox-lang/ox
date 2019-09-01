@@ -1,3 +1,10 @@
+/**
+ * @author Reid 'arrdem' McKenzie 2019-9-31
+ *
+ * The Ox printer.
+ * Dual to the scanner/reader in theory.
+ */
+
 package io.oxlang
 
 import io.lacuna.bifurcan.Maps
@@ -11,6 +18,10 @@ import io.lacuna.bifurcan.Set as BSet
 typealias PrintMap = BMap<Object, Object>
 typealias PrintFn = ((Printer, PrintMap, OutputStreamWriter, Any) -> Unit)
 
+/**
+ * Helper for printing sequential types, the grammar for which is "$start(<>($delim<>)+)$end"
+ * where <> is taken to mean recursive printing.
+ */
 fun printListy(p: Printer,
                pm: PrintMap,
                w: OutputStreamWriter,
@@ -32,6 +43,11 @@ fun printListy(p: Printer,
   w.write(end)
 }
 
+/**
+ * Helper for printing named types, the grammar for which is
+ * "$prefix(<>(.<>)+)/$name)$suffix"
+ * where <> is taken to be a name segment pulled from a parent namespace.
+ */
 fun <T : Namespaced<out Namespaced<*>>?>
   printNamespacy(p: Printer,
                  pm: PrintMap,
@@ -79,7 +95,7 @@ fun <T : Namespaced<out Namespaced<*>>?>
  * extension capability as a user who isn't aware of this direct linking must discover it the hard
  * way and provide two overloads, not one.
  */
-class Printer() {
+class Printer(val defaultPrinter: PrintFn = Printer::printDefault as PrintFn) {
   fun printMapEntry(pm: PrintMap, w: OutputStreamWriter, o: Maps.Entry<Object, Object>) {
     this.print(pm, w, o.key())
     w.write(" ")
@@ -113,97 +129,104 @@ class Printer() {
   }
 
   fun print(pm: PrintMap, w: OutputStreamWriter, o: Any): Unit {
-    (pm.get(o.javaClass as Object, Printer::printDefault as Object) as PrintFn).invoke(this, pm, w, o)
+    val fn = pm.get(o.javaClass as Object, this.defaultPrinter as Object) as PrintFn
+    fn(this, pm, w, o)
   }
 }
 
-val BASE_PRINT_MAP = (
-  PrintMap()
-    // Print Symbol
-    .put(Symbol::class.java as Object,
-      { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-        p.printSymbol(pm, w, o as Symbol)
-      } as Object)
+object Printers {
+  @JvmStatic val BASE_PRINT_MAP: PrintMap = (
+    PrintMap()
+      // Print Symbol
+      .put(Symbol::class.java as Object,
+        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
+          p.printSymbol(pm, w, o as Symbol)
+        } as Object)
 
-    // Print keyword
-    .put(Keyword::class.java as Object,
-      { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-        p.printKeyword(pm, w, o as Keyword)
-      } as Object)
+      // Print keyword
+      .put(Keyword::class.java as Object,
+        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
+          p.printKeyword(pm, w, o as Keyword)
+        } as Object)
 
-    // Print List
-    .put(BList::class.java as Object,
-      { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-        p.printList(pm, w, o as BList<Object>)
-      } as Object)
+      // Print List
+      .put(BList::class.java as Object,
+        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
+          p.printList(pm, w, o as BList<Object>)
+        } as Object)
 
-    // Print Map.Entry
-    .put(Maps.Entry::class.java as Object,
-      { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-        p.printMapEntry(pm, w, o as Maps.Entry<Object, Object>)
-      } as Object)
+      // Print Map.Entry
+      .put(Maps.Entry::class.java as Object,
+        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
+          p.printMapEntry(pm, w, o as Maps.Entry<Object, Object>)
+        } as Object)
 
-    // Print Map
-    .put(BMap::class.java as Object,
-      { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-        p.printMap(pm, w, o as BMap<Object, Object>)
-      } as Object)
+      // Print Map
+      .put(BMap::class.java as Object,
+        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
+          p.printMap(pm, w, o as BMap<Object, Object>)
+        } as Object)
 
-    // Print Set
-    .put(BSet::class.java as Object,
-      { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-        p.printSet(pm, w, o as BSet<Object>)
-      } as Object)
-  )
+      // Print Set
+      .put(BSet::class.java as Object,
+        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
+          p.printSet(pm, w, o as BSet<Object>)
+        } as Object)
+    )
+}
 
-fun main(args: Array<String>) {
-  val p = Printer()
-  val ow = System.out.writer()
-  val pm = BASE_PRINT_MAP
-  print("The print map ")
-  for (kv in pm) {
-    val key = kv.key()
-    val value = kv.value()
-    println(" $key => $value")
+object PrinterTest {
+  @JvmStatic
+  fun main(args: Array<String>) {
+    val p = Printer()
+    val pm = Printers.BASE_PRINT_MAP
+    val ow = System.out.writer()
+
+    println("The print map ")
+    for (kv in pm) {
+      val key = kv.key()
+      val value = kv.value()
+      println(" $key => $value")
+    }
+
+    // symbols
+    p.print(pm, ow, Symbol(null, "test"))
+    ow.write("\n")
+    ow.flush()
+
+    p.print(pm, ow, Symbol(Symbol(Symbol(null, "me"), "arrdem"), "test"))
+    ow.write("\n")
+    ow.flush()
+
+    p.print(pm, ow, Symbol(null, "piped test"))
+    ow.write("\n")
+    ow.flush()
+
+    // keywords
+    p.print(pm, ow, Keyword(null, "test2"))
+    ow.write("\n")
+    ow.flush()
+
+    p.print(pm, ow, Keyword(Keyword(Keyword(null, "io"), "oxlang"), "test2"))
+    ow.write("\n")
+    ow.flush()
+
+    p.print(pm, ow, Keyword(null, "piped test"))
+    ow.write("\n")
+    ow.flush()
+    // maps
+    p.print(pm, ow, BMap<String, Long>().put("a", 1).put("b", 2).put("c", 3))
+    ow.write("\n")
+    ow.flush()
+
+    // lists
+    p.print(pm, ow, BList.of(1L, 2L, 3L, 4L))
+    ow.write("\n")
+    ow.flush()
+
+    // sets
+    p.print(pm, ow, BSet.of(1L, 2L, 3L, 4L))
+    ow.write("\n")
+    ow.flush()
   }
-
-  // symbols
-  p.print(pm, ow, Symbol(null, "test"))
-  ow.write("\n")
-  ow.flush()
-
-  p.print(pm, ow, Symbol(Symbol(Symbol(null, "me"), "arrdem"), "test"))
-  ow.write("\n")
-  ow.flush()
-
-  p.print(pm, ow, Symbol(null, "piped test"))
-  ow.write("\n")
-  ow.flush()
-
-  // keywords
-  p.print(pm, ow, Keyword(null, "test2"))
-  ow.write("\n")
-  ow.flush()
-
-  p.print(pm, ow, Keyword(Keyword(Keyword(null, "io"), "ox_lang"), "test2"))
-  ow.write("\n")
-  ow.flush()
-
-  p.print(pm, ow, Keyword(null, "piped test"))
-  ow.write("\n")
-  ow.flush()
-  // maps
-  p.print(pm, ow, BMap<String, Long>().put("a", 1).put("b", 2).put("c", 3))
-  ow.write("\n")
-  ow.flush()
-
-  // lists
-  p.print(pm, ow, BList.of(1L, 2L, 3L, 4L))
-  ow.write("\n")
-  ow.flush()
-
-  // sets
-  p.print(pm, ow, BSet.of(1L, 2L, 3L, 4L))
-  ow.write("\n")
-  ow.flush()
 }
