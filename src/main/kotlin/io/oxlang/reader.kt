@@ -2,7 +2,7 @@
  * @author Reid 'arrdem' McKenzie 2019-8-31
  *
  * The Ox reader.
- * Consumes the Scanner to implement reading syntax or data (they aren't entirely the same).
+ * Consumes the Scanners to implement reading syntax or data (they aren't entirely the same).
  *
  * The data reader - DataReader - produces a tree of straight values which makes no attempt to
  * retain syntax information for later analysis.
@@ -16,9 +16,7 @@
 package io.oxlang
 
 import java.io.ByteArrayInputStream
-import java.io.OutputStreamWriter
 import java.util.Iterator
-import javax.swing.text.html.HTML
 
 typealias ERM = Map<TokenType, Function<*>>
 typealias TokenIter = ICurrentIterator<Token<*>>
@@ -232,8 +230,16 @@ object Readers {
       .put(TokenType.RPAREN, Reader::readError)
     )
 
+  @JvmStatic
+  val SYNTAX_READ_MAP: ReadMap = (
+    BASE_READ_MAP
+      .put(TokenType.COMMENT, Reader::readValue)
+      .put(TokenType.WHITESPACE, Reader::readValue)
+      .put(TokenType.NEWLINE, Reader::readValue)
+    )
+
   fun read(rm: ReadMap, reader: java.io.Reader, streamIdentifier: Any): Any? {
-    return Reader().read(rm, CurrentIterator(Scanner.scan(reader, streamIdentifier) as Iterator<Token<*>>))
+    return Reader().read(rm, CurrentIterator(Scanners.scan(reader, streamIdentifier) as Iterator<Token<*>>))
   }
 
   fun read(rm: ReadMap, buff: String, streamIdentifier: Any): Any? {
@@ -251,8 +257,9 @@ object ReaderTest {
       println("  $key => $value")
     }
 
-    val iter = CurrentIterator(Scanner.scan(System.`in`.reader(), "STDIN") as Iterator<Token<*>>)
-    val rdr = SyntaxReader()
+    val iter = CurrentIterator(Scanners.scan(System.`in`.reader(), "STDIN") as Iterator<Token<*>>)
+    //val rdr = SyntaxReader()
+    val rdr = Reader()
 
     while (iter.hasNext()) {
       val obj = rdr.read(Readers.BASE_READ_MAP, iter)

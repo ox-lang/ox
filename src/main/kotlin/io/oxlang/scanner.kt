@@ -7,11 +7,11 @@
 
 package io.oxlang
 
-import java.io.OutputStreamWriter
 import java.io.PushbackReader
 import java.io.Reader
 import java.io.StringReader
 import java.lang.IllegalStateException
+import java.nio.charset.Charset
 import java.util.Iterator
 
 /**
@@ -97,8 +97,16 @@ public class ScannerException(
   cause: Throwable? = null
 ) : Exception(message, cause)
 
-// And now for the scanner
+val ESCAPE_MAP = Map<Char, Char>()
+  .put('n', '\n')
+  .put('t', '\t')
+  .put('r', '\r')
+  .put('"', '"')
+  .put('\\', '\\')
+  .put('f', 12.toChar())
+  .put('b', '\b')
 
+// And now for the scanner
 private class TokenScanner<T>(
   val stream: PushbackReader,
   val streamIdentifer: T,
@@ -172,13 +180,13 @@ private class TokenScanner<T>(
       } else {
         val c = i.toChar()
         if (escaped) {
-          when (c) {
-            '\\', '\"' -> {
-              escaped = false; buff.append(c)
-            }
-            else -> throw ScannerException(
+          when (val escapedChar: Char? = ESCAPE_MAP.get(c, null)) {
+            null -> throw ScannerException(
               start as StreamLocation<Object>,
               String.format("Encountered illegal escaped character %c while scanning a string!", c))
+            else -> {
+              escaped = false; buff.append(escapedChar)
+            }
           }
         } else if (c == '\\') {
           escaped = true
@@ -408,7 +416,7 @@ private class TokenScanner<T>(
 }
 
 // Forcing the generated class name
-object Scanner {
+object Scanners {
   @JvmStatic
   public fun <T> scan(stream: Reader, streamIdentifier: T): Iterator<Token<T>> {
     // yo dawg I heard u leik streams
@@ -434,7 +442,7 @@ object Scanner {
 object ScannerTest {
   @JvmStatic
   public fun main(args: Array<String>) {
-    val scanner = Scanner.scan(System.`in`.reader(), String.format("stdin"))
+    val scanner = Scanners.scan(System.`in`.reader(), String.format("stdin"))
     while (scanner.hasNext()) {
       val obj = scanner.next()
       if (obj != null) {

@@ -129,7 +129,7 @@
             <configuration>
               <archive>
                 <manifest>
-                  <mainClass>io.oxlang.Scanner</mainClass>
+                  <mainClass>io.oxlang.Scanners</mainClass>
                 </manifest>
               </archive>
               <descriptorRefs>

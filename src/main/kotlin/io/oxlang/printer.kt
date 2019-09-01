@@ -159,19 +159,14 @@ class Printer(val defaultPrinter: PrintFn = Printer::printDefault as PrintFn) {
   }
 
   fun printString(pm: PrintMap, w: OutputStreamWriter, s: String) {
+    // As a nice trick re-use the (reversed!) character escape map.
+    val rem = Map.from(ESCAPE_MAP.map { i -> Maps.Entry(i.value(), i.key()) })
+    assert(rem.size() == ESCAPE_MAP.size())
     w.write("\"")
-    //w.write(x.toString());
     for (c in s) {
-      when (c.toInt()) {
-        '\n'.toInt() -> w.write("\\n")
-        '\t'.toInt() -> w.write("\\t")
-        '\r'.toInt() -> w.write("\\r")
-        '"'.toInt() -> w.write("\\\"")
-        '\\'.toInt() -> w.write("\\\\")
-        // Formfeed
-        12 -> w.write("\\f")
-        '\b'.toInt() -> w.write("\\b")
-        else -> w.write(c.toInt())
+      when (val ech = rem.get(c, null)) {
+        null -> w.write(c.toInt())
+        else -> {w.write("\\"); w.write(ech.toInt())}
       }
     }
     w.write("\"")
