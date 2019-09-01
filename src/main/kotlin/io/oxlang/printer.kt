@@ -14,8 +14,24 @@ import io.lacuna.bifurcan.List as BList
 import io.lacuna.bifurcan.Map as BMap
 import io.lacuna.bifurcan.Set as BSet
 
-// Have to ground out at BMap<O, O> to prevent a recursive type signature >.>
-typealias PrintMap = BMap<Object, Object>
+/**
+ * Sadly in Kotlin, type aliases are not recursive.
+ * They're just macros it seems.
+ *
+ * This means that I can't actually capture the recursive type of PrintFn in Kotlin.
+ * So this whole package has to play some games.
+ * Define EPM (Erased Print Map) - the ground type we'll have to upcast from
+ * Define EFN (Erased Print FuNction) - the erased form of the individual print methods
+ * Define the "Real"(est) PrintMap type
+ * Define the "Real"(est) PrintFn type
+ *
+ * When we call PrintFns, we'll have ALMOST the fully recursive type signature to hand.
+ * But when we go through the dispatch table, we'll have to "promote" the erased functions we get
+ * out of the dispatch table to "real" functions which have a near-full signature.
+ */
+typealias EPM = BMap<Any, Function<*>>
+typealias EFN = ((Printer, EPM, OutputStreamWriter, Any) -> Unit)
+typealias PrintMap = BMap<Any, EFN>
 typealias PrintFn = ((Printer, PrintMap, OutputStreamWriter, Any) -> Unit)
 
 /**
@@ -54,13 +70,12 @@ fun <T : Namespaced<out Namespaced<*>>?>
                  w: OutputStreamWriter,
                  prefix: String,
                  o: Namespaced<T>,
-                 suffix: String)
-{
+                 suffix: String) {
   var segments = BList<String>()
   var parent = o.namespace()
-  while (parent.isPresent) {
-    segments = segments.addFirst(parent.get()!!.name())
-    parent = parent.get()!!.namespace() as Optional<T>
+  while (parent != null) {
+    segments = segments.addFirst(parent.name())
+    parent = parent.namespace() as T
   }
 
   w.write(prefix)
@@ -96,21 +111,21 @@ fun <T : Namespaced<out Namespaced<*>>?>
  * way and provide two overloads, not one.
  */
 class Printer(val defaultPrinter: PrintFn = Printer::printDefault as PrintFn) {
-  fun printMapEntry(pm: PrintMap, w: OutputStreamWriter, o: Maps.Entry<Object, Object>) {
+  fun printMapEntry(pm: PrintMap, w: OutputStreamWriter, o: Maps.Entry<Any, Any>) {
     this.print(pm, w, o.key())
     w.write(" ")
     this.print(pm, w, o.value())
   }
 
-  fun printMap(pm: PrintMap, w: OutputStreamWriter, o: BMap<Object, Object>) {
+  fun printMap(pm: PrintMap, w: OutputStreamWriter, o: BMap<Any, Any>) {
     printListy(this, pm, w, o, "{", Printer::print, ", ", "}")
   }
 
-  fun printList(pm: PrintMap, w: OutputStreamWriter, o: BList<Object>) {
-    printListy(this, pm, w, o, "{", Printer::print, ", ", "}")
+  fun printList(pm: PrintMap, w: OutputStreamWriter, o: BList<Any>) {
+    printListy(this, pm, w, o, "(", Printer::print, " ", ")")
   }
 
-  fun printSet(pm: PrintMap, w: OutputStreamWriter, o: BSet<Object>) {
+  fun printSet(pm: PrintMap, w: OutputStreamWriter, o: BSet<Any>) {
     printListy(this, pm, w, o, "#{", Printer::print, " ", "}")
   }
 
@@ -124,55 +139,74 @@ class Printer(val defaultPrinter: PrintFn = Printer::printDefault as PrintFn) {
     printNamespacy(this, pm, w, ":$prefix", o, prefix)
   }
 
-  fun printDefault(pm: PrintMap, s: OutputStreamWriter, o: Object) {
+  fun printDefault(pm: PrintMap, s: OutputStreamWriter, o: Any) {
     s.write(o.toString())
   }
 
   fun print(pm: PrintMap, w: OutputStreamWriter, o: Any): Unit {
-    val fn = pm.get(o.javaClass as Object, this.defaultPrinter as Object) as PrintFn
+    val fn = pm.get(o.javaClass as Any, this.defaultPrinter as EFN) as PrintFn
     fn(this, pm, w, o)
   }
 }
 
 object Printers {
-  @JvmStatic val BASE_PRINT_MAP: PrintMap = (
+  /**
+   * Note that upcasts from EPM to PrintMap are presumed to be safe, as this is hwo we're breaking
+   * type-level recursion which Kotlin doesn't support see the comment at the top of the file
+   * which explains the type aliases.
+   *
+   * Note that upcasts FROM OBJECT TO THE KEY TYPE must be safe by definition of print().
+   *
+   * So we suppress all unchecked (generic to generic) casts.
+   */
+  @JvmStatic
+  @Suppress("UNCHECKED_CAST")
+  val BASE_PRINT_MAP: PrintMap = (
     PrintMap()
       // Print Symbol
-      .put(Symbol::class.java as Object,
-        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-          p.printSymbol(pm, w, o as Symbol)
-        } as Object)
+      .put(Symbol::class.java as Any
+      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
+        p.printSymbol(pm as PrintMap, w, o as Symbol)
+      }
 
       // Print keyword
-      .put(Keyword::class.java as Object,
-        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-          p.printKeyword(pm, w, o as Keyword)
-        } as Object)
+      .put(Keyword::class.java as Any
+      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
+        p.printKeyword(pm as PrintMap, w, o as Keyword)
+      }
 
       // Print List
-      .put(BList::class.java as Object,
-        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-          p.printList(pm, w, o as BList<Object>)
-        } as Object)
+      .put(BList::class.java as Any
+      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
+        p.printList(pm as PrintMap, w, o as BList<Any>)
+      }
 
       // Print Map.Entry
-      .put(Maps.Entry::class.java as Object,
-        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-          p.printMapEntry(pm, w, o as Maps.Entry<Object, Object>)
-        } as Object)
+      .put(Maps.Entry::class.java as Any
+      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
+        p.printMapEntry(pm as PrintMap, w, o as Maps.Entry<Any, Any>)
+      }
 
       // Print Map
-      .put(BMap::class.java as Object,
-        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-          p.printMap(pm, w, o as BMap<Object, Object>)
-        } as Object)
+      .put(BMap::class.java as Any
+      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
+        p.printMap(pm as PrintMap, w, o as BMap<Any, Any>)
+      }
 
       // Print Set
-      .put(BSet::class.java as Object,
-        { p: Printer, pm: PrintMap, w: OutputStreamWriter, o: Any ->
-          p.printSet(pm, w, o as BSet<Object>)
-        } as Object)
+      .put(BSet::class.java as Any
+      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
+        p.printSet(pm as PrintMap, w, o as BSet<Any>)
+      }
     )
+
+    @JvmStatic
+    public fun println(o: Any) {
+      val w = System.out.writer()
+      Printer().print(BASE_PRINT_MAP, w, o)
+      w.write("\n")
+      w.flush()
+    }
 }
 
 object PrinterTest {
@@ -190,28 +224,28 @@ object PrinterTest {
     }
 
     // symbols
-    p.print(pm, ow, Symbol(null, "test"))
+    p.print(pm, ow, Symbols.of("test"))
     ow.write("\n")
     ow.flush()
 
-    p.print(pm, ow, Symbol(Symbol(Symbol(null, "me"), "arrdem"), "test"))
+    p.print(pm, ow, Symbols.of("me.arrdem/test"))
     ow.write("\n")
     ow.flush()
 
-    p.print(pm, ow, Symbol(null, "piped test"))
+    p.print(pm, ow, Symbols.of("piped test"))
     ow.write("\n")
     ow.flush()
 
     // keywords
-    p.print(pm, ow, Keyword(null, "test2"))
+    p.print(pm, ow, Keywords.of("test2"))
     ow.write("\n")
     ow.flush()
 
-    p.print(pm, ow, Keyword(Keyword(Keyword(null, "io"), "oxlang"), "test2"))
+    p.print(pm, ow, Keywords.of("io.oxlang/test2"))
     ow.write("\n")
     ow.flush()
 
-    p.print(pm, ow, Keyword(null, "piped test"))
+    p.print(pm, ow, Keywords.of("piped test"))
     ow.write("\n")
     ow.flush()
     // maps

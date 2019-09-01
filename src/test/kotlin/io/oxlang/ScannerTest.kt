@@ -4,8 +4,8 @@ import kotlin.test.assertEquals;
 import org.junit.Test;
 
 class ScannerTest {
-  fun scanTypes(input: String, exId: String): List<TokenType> {
-    return Scanner.scanStrEager(input, exId).map({ t: Token<String> -> t.tokenType})
+  fun scanTypes(input: String, exId: String): kotlin.collections.List<TokenType> {
+    return Scanner.scanStrEager(input, exId).map { t: Token<String> -> t.tokenType}
   }
 
   fun scanOne(input: String, exId: String): Token<String> {

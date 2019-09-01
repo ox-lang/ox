@@ -271,7 +271,8 @@ private class TokenScanner<T>(
       } else if (Character.isDigit(i)) {
         value = value * 10 + (i - 48) // 48 is ord('0')
       } else {
-        // Argh. The NrM and 0X and 0.0 and 0e notation all gets dropped >.>
+        // We're done. For now. This will have to be more involved later.
+        this.unread(i)
         break
       }
     }
@@ -367,10 +368,10 @@ object Scanner {
 
   @JvmStatic
   public fun <T> scanStrEager(buff: String, streamIdentifier: T): Iterable<Token<T>> {
-    val l = java.util.ArrayList<Token<T>>()
+    var l = List<Token<T>>()
     val iter = scanStr<T>(buff, streamIdentifier)
     while (iter.hasNext()) {
-      l.add(iter.next())
+      l = l.addLast(iter.next())
     }
     return l
   }
