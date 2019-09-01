@@ -16,7 +16,6 @@
 package io.oxlang
 
 import java.io.ByteArrayInputStream
-import java.io.IOException
 import java.util.Iterator
 
 typealias ERM = Map<TokenType, Function<*>>
@@ -50,6 +49,33 @@ class ParseException(val location: StreamLocation<*>?,
 }
 
 class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
+  private fun readListy(startType: TokenType,
+                        endType: TokenType,
+                        msg: String,
+                        ctor: ((Iterable<Any>) -> Any),
+                        rm: ReadMap,
+                        i: TokenIter): Any {
+    val start = i.current().location
+    val actualStartType = i.current().tokenType
+    if (actualStartType != startType) {
+      throw ParseException(start, "$msg: Expected open token $startType, got $actualStartType instead!")
+    }
+    try {
+      i.next() // discard the start token
+      var v = List<Any>()
+      val sentinel = Object()
+      val srm = rm.put(endType, { _: Any, _: Any, _: Any -> sentinel }) as ReadMap
+      while (i.current().tokenType != endType) {
+        val el = this.read(srm, i)
+        if (el != sentinel) v = v.addLast(el)
+      }
+      i.next() // discard the end token
+      return ctor(v)
+    } catch (e: Exception) {
+      throw ParseException(start, msg, e)
+    }
+  }
+
   fun readError(rm: ERM, i: TokenIter): Any? {
     val t = i.current()
     val ttype = t.tokenType
@@ -68,57 +94,36 @@ class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
   }
 
   fun readList(rm: ERM, i: TokenIter): Any? {
-    val start = i.current().location
-    try {
-      i.next() // discard the lparen
-      var v = List<Any>()
-      val sentinel = Object()
-      val srm = rm.put(TokenType.RPAREN, { _: Any, _: Any, _: Any -> sentinel}) as ReadMap
-      while (i.current().tokenType != TokenType.RPAREN) {
-        val el = this.read(srm, i)
-        if (el != sentinel) v = v.addLast(el)
-      }
-      i.next()
-      return v
-    } catch (e: Exception) {
-      throw ParseException(start, "While parsing () list, an exception occurred", e)
-    }
+    return readListy(
+      TokenType.LPAREN,
+      TokenType.RPAREN,
+      "While parsing () list, an exception occurred",
+      { i: Iterable<Any> -> List.from(i) },
+      rm as ReadMap,
+      i
+    )
   }
 
   fun readSqList(rm: ERM, i: TokenIter): Any? {
-    val start = i.current().location
-    try {
-      i.next() // discard the lparen
-      var v = List<Any>()
-      val sentinel = Object()
-      val srm = rm.put(TokenType.RBRACE, { _: Any, _: Any, _: Any -> sentinel}) as ReadMap
-      while (i.current().tokenType != TokenType.RBRACKET) {
-        val el = this.read(srm, i)
-        if (el != sentinel) v = v.addLast(el)
-      }
-      i.next()
-      return v
-    } catch (e: Exception) {
-      throw ParseException(start, "While parsing [] list, an exception occurred", e)
-    }
+    return readListy(
+      TokenType.LBRACKET,
+      TokenType.RBRACKET,
+      "While parsing [] list, an exception occurred",
+      { i: Iterable<Any> -> List.from(i) },
+      rm as ReadMap,
+      i
+    )
   }
 
   fun readSet(rm: ERM, i: TokenIter): Any {
-    val start = i.current().location
-    try {
-      i.next()
-      var v = Set<Any>()
-      val sentinel = Object()
-      val srm = rm.put(TokenType.RBRACE, { _: Any, _: Any, _: Any -> sentinel}) as ReadMap
-      while (i.current().tokenType != TokenType.RBRACE) {
-        val el = this.read(srm, i)
-        if (el != sentinel) v = v.add(el)
-      }
-      i.next()
-      return v
-    } catch (e: Exception) {
-      throw ParseException(start, "While parsing #{} set, an exception occurred", e)
-    }
+    return readListy(
+      TokenType.HASH_LBRACE,
+      TokenType.RBRACE,
+      "While parsing #{} set, an exception occurred",
+      { i: Iterable<Any> -> Set.from(i) },
+      rm as ReadMap,
+      i
+    )
   }
 
   fun readMap(rm: ERM, i: TokenIter): Any {
@@ -127,7 +132,7 @@ class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
       i.next()
       var v = Map<Any, Any>()
       val sentinel = Object()
-      val srm = rm.put(TokenType.RBRACE, { _: Any, _: Any, _: Any -> sentinel}) as ReadMap
+      val srm = rm.put(TokenType.RBRACE, { _: Any, _: Any, _: Any -> sentinel }) as ReadMap
       while (i.current().tokenType != TokenType.RBRACE) {
         val key = this.read(srm, i)
         if (key == sentinel)
@@ -221,7 +226,7 @@ object ReaderTest {
 
     while (iter.hasNext()) {
       val obj = Reader().read(Readers.BASE_READ_MAP, iter)
-      if(obj != null) {
+      if (obj != null) {
         Printers.println(obj)
       }
     }
