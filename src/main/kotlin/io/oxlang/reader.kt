@@ -16,7 +16,9 @@
 package io.oxlang
 
 import java.io.ByteArrayInputStream
+import java.io.OutputStreamWriter
 import java.util.Iterator
+import javax.swing.text.html.HTML
 
 typealias ERM = Map<TokenType, Function<*>>
 typealias TokenIter = ICurrentIterator<Token<*>>
@@ -34,9 +36,18 @@ typealias ReadMap = Map<TokenType, ReadFn>
 
 val Nothing = Object()
 
-data class ReadObject<T>(
+data class SyntaxObject(
   val obj: Any,
-  val start: StreamLocation<T>? = null) {
+  val start: Token<*>? = null):
+  Tagged
+{
+  override fun tag(): Symbol {
+    return Symbols.of("ox.reader/syntax")
+  }
+
+  override fun value(): Any {
+    return List.of(this.obj, this.start)
+  }
 }
 
 class ParseException(val location: StreamLocation<*>?,
@@ -48,7 +59,7 @@ class ParseException(val location: StreamLocation<*>?,
   }
 }
 
-class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
+open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
   private fun readListy(startType: TokenType,
                         endType: TokenType,
                         msg: String,
@@ -159,7 +170,7 @@ class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
     return Meta(tag!!, obj!!)
   }
 
-  fun read(rm: ReadMap, i: TokenIter): Any? {
+  open fun read(rm: ReadMap, i: TokenIter): Any? {
     // yo dawg I heard u leik streams
     while (true) {
       val current: Token<*> = i.current()
@@ -171,6 +182,23 @@ class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
       val res = handler(this, rm as ERM, i)
       if (res != null)
         return res
+    }
+  }
+}
+
+class SyntaxReader(private val notFound: ReadFn = Reader::readError as ReadFn):
+  Reader(notFound = notFound) {
+  override fun read(rm: ReadMap, i: TokenIter): SyntaxObject? {
+    // yo dawg I heard u leik streams
+    while (true) {
+      val current: Token<*> = i.current()
+      if (current == null) {
+        throw ParseException(null, "Ran out of input while reading")
+      }
+      val handler = rm.get(current.tokenType, notFound) as ReadFn
+      val res = handler(this, rm as ERM, i)
+      if (res != null)
+        return SyntaxObject(res, current)
     }
   }
 }
@@ -188,6 +216,7 @@ object Readers {
       .put(TokenType.NUMBER, Reader::readValue)
       .put(TokenType.KEYWORD, Reader::readValue)
       .put(TokenType.SYMBOL, Reader::readValue)
+      .put(TokenType.STRING, Reader::readValue)
 
       // Lists
       .put(TokenType.LPAREN, Reader::readList)
@@ -223,9 +252,10 @@ object ReaderTest {
     }
 
     val iter = CurrentIterator(Scanner.scan(System.`in`.reader(), "STDIN") as Iterator<Token<*>>)
+    val rdr = SyntaxReader()
 
     while (iter.hasNext()) {
-      val obj = Reader().read(Readers.BASE_READ_MAP, iter)
+      val obj = rdr.read(Readers.BASE_READ_MAP, iter)
       if (obj != null) {
         Printers.println(obj)
       }

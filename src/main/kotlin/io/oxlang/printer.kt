@@ -13,6 +13,10 @@ import java.util.*
 import io.lacuna.bifurcan.List as BList
 import io.lacuna.bifurcan.Map as BMap
 import io.lacuna.bifurcan.Set as BSet
+import kotlin.jvm.functions.Function4
+import java.lang.Object
+
+
 
 /**
  * Sadly in Kotlin, type aliases are not recursive.
@@ -33,6 +37,21 @@ typealias EPM = BMap<Any, Function<*>>
 typealias EFN = ((Printer, EPM, OutputStreamWriter, Any) -> Unit)
 typealias PrintMap = BMap<Any, EFN>
 typealias PrintFn = ((Printer, PrintMap, OutputStreamWriter, Any?) -> Unit)
+
+interface Printable {
+  fun print(p: Printer, pm: PrintMap, o: OutputStreamWriter): Unit
+}
+
+interface Tagged: Printable {
+  fun tag(): Symbol
+  fun value(): Any
+
+  override fun print(p: Printer, pm: PrintMap, o: OutputStreamWriter) {
+    o.write("#")
+    p.print(pm, o, this.tag())
+    p.print(pm, o, this.value())
+  }
+}
 
 /**
  * Helper for printing sequential types, the grammar for which is "$start(<>($delim<>)+)$end"
@@ -139,11 +158,33 @@ class Printer(val defaultPrinter: PrintFn = Printer::printDefault as PrintFn) {
     printNamespacy(this, pm, w, ":$prefix", o, prefix)
   }
 
+  fun printString(pm: PrintMap, w: OutputStreamWriter, s: String) {
+    w.write("\"")
+    //w.write(x.toString());
+    for (c in s) {
+      when (c.toInt()) {
+        '\n'.toInt() -> w.write("\\n")
+        '\t'.toInt() -> w.write("\\t")
+        '\r'.toInt() -> w.write("\\r")
+        '"'.toInt() -> w.write("\\\"")
+        '\\'.toInt() -> w.write("\\\\")
+        // Formfeed
+        12 -> w.write("\\f")
+        '\b'.toInt() -> w.write("\\b")
+        else -> w.write(c.toInt())
+      }
+    }
+    w.write("\"")
+  }
+
   fun printDefault(pm: PrintMap, s: OutputStreamWriter, o: Any?) {
-    if (o != null)
-      s.write(o.toString())
-    else
+    if (o == null)
       s.write("null")
+    else if (o is Printable) {
+      o.print(this, pm, s)
+    } else {
+      s.write(o.toString())
+    }
   }
 
   fun print(pm: PrintMap, w: OutputStreamWriter, o: Any?): Unit {
@@ -166,41 +207,36 @@ object Printers {
   @Suppress("UNCHECKED_CAST")
   val BASE_PRINT_MAP: PrintMap = (
     PrintMap()
+      // Print string
+      .put(String::class.java as Any
+      ) { p, pm, w, o -> p.printString(pm as PrintMap, w, o as String) }
       // Print Symbol
       .put(Symbol::class.java as Any
-      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
-        p.printSymbol(pm as PrintMap, w, o as Symbol)
-      }
+      ) { p, pm, w, o -> p.printSymbol(pm as PrintMap, w, o as Symbol) }
 
       // Print keyword
       .put(Keyword::class.java as Any
-      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
-        p.printKeyword(pm as PrintMap, w, o as Keyword)
-      }
+      ) { p, pm, w, o -> p.printKeyword(pm as PrintMap, w, o as Keyword) }
 
       // Print List
       .put(BList::class.java as Any
-      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
-        p.printList(pm as PrintMap, w, o as BList<Any>)
-      }
+      ) { p, pm, w, o -> p.printList(pm as PrintMap, w, o as BList<Any>) }
 
       // Print Map.Entry
       .put(Maps.Entry::class.java as Any
-      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
-        p.printMapEntry(pm as PrintMap, w, o as Maps.Entry<Any, Any>)
-      }
+      ) { p, pm, w, o -> p.printMapEntry(pm as PrintMap, w, o as Maps.Entry<Any, Any>) }
 
       // Print Map
       .put(BMap::class.java as Any
-      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
-        p.printMap(pm as PrintMap, w, o as BMap<Any, Any>)
-      }
+      ) { p, pm , w, o -> p.printMap(pm as PrintMap, w, o as BMap<Any, Any>) }
 
       // Print Set
       .put(BSet::class.java as Any
-      ) { p: Printer, pm: EPM, w: OutputStreamWriter, o: Any ->
-        p.printSet(pm as PrintMap, w, o as BSet<Any>)
-      }
+      ) { p, pm, w, o -> p.printSet(pm as PrintMap, w, o as BSet<Any>) }
+
+      // Print TokenType, which is an enum and a witch to implement manually
+      .put(TokenType::class.java as Any
+      ) { printer, pm, w, v -> w.write(":ox.parser/${v.toString().toLowerCase()}") }
     )
 
     @JvmStatic

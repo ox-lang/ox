@@ -7,6 +7,7 @@
 
 package io.oxlang
 
+import java.io.OutputStreamWriter
 import java.io.PushbackReader
 import java.io.Reader
 import java.io.StringReader
@@ -22,7 +23,15 @@ data class StreamLocation<T>(
   val offset: Long,
   val lineNumber: Long,
   val columnNumber: Long
-)
+): Tagged {
+  override fun tag(): Symbol {
+    return Symbols.of("ox.scanner/streamloc")
+  }
+
+  override fun value(): Any {
+    return List.of(streamIdentifer, offset, lineNumber, columnNumber)
+  }
+}
 
 // Tokens are of a type
 public enum class TokenType {
@@ -70,7 +79,15 @@ public data class Token<T>(
   val tokenType: TokenType,
   val location: StreamLocation<T>,
   val value: Any
-)
+): Tagged {
+  override fun tag(): Symbol {
+    return Symbols.of("ox/token")
+  }
+
+  override fun value(): Any {
+    return List.of(tokenType, location, value)
+  }
+}
 
 // Before we can define the scanner, we need the exception it throws
 
