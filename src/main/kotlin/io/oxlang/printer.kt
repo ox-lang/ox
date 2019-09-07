@@ -8,7 +8,9 @@
 package io.oxlang
 
 import io.lacuna.bifurcan.Maps
+import java.io.ByteArrayOutputStream
 import java.io.OutputStreamWriter
+import java.io.StringWriter
 import java.util.*
 import io.lacuna.bifurcan.List as BList
 import io.lacuna.bifurcan.Map as BMap
@@ -235,7 +237,16 @@ object Printers {
     )
 
     @JvmStatic
-    public fun println(o: Any?) {
+    fun pr(o: Any?): String {
+      val w = ByteArrayOutputStream()
+      val wtr = w.writer()
+      Printer().print(BASE_PRINT_MAP, wtr, o)
+      wtr.close()
+      return String(w.toByteArray())
+    }
+
+    @JvmStatic
+    fun println(o: Any?) {
       val w = System.out.writer()
       Printer().print(BASE_PRINT_MAP, w, o)
       w.write("\n")
