@@ -5,6 +5,8 @@ import io.lacuna.bifurcan.Maps
 import io.lacuna.bifurcan.Sets
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 
 class ReaderTest {
   fun read(input: String, exId: String): Any? {
@@ -54,5 +56,20 @@ class ReaderTest {
     assertEquals("foo bar baz", read("\"foo bar baz\"", "test-6"))
     assertEquals("\n\r\t\b\\", read("\"\n\r\t\b\\\\\"", "test-6"))
     assertEquals("\n\r\t\b\\", read("\"\\n\\r\\t\\b\\\\\"", "test-6"))
+  }
+
+  @Test fun testReadTag() {
+    assertNotNull(read("#foo [1, 2, 3]", "test-7"))
+  }
+
+  @Test fun testReadQuote() {
+    assertEquals(List.of(Symbols.of("quote"), Symbols.of("foo")), read("'foo", "test-8"))
+    assertEquals(List.of(Symbols.of("quote"), 1), read("'1", "test-8"))
+    assertEquals(List.of(Symbols.of("quote"), Maps.EMPTY), read("'{}", "test-8"))
+    assertEquals(List.of(Symbols.of("quote"), Sets.EMPTY), read("'#{}", "test-8"))
+  }
+
+  @Test fun testReadMeta() {
+    assertNotNull(read("^:foo ^:bar baz", "test-9"))
   }
 }

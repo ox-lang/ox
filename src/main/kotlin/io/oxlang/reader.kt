@@ -35,6 +35,7 @@ typealias ReadMap = Map<TokenType, ReadFn>
 
 data class SyntaxObject(
   val obj: Any?,
+  val meta: Any? = null,
   val start: Token<*>? = null):
   Tagged
 {
@@ -160,7 +161,21 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
     i.next()
     val tag = this.read(rm as ReadMap, i)
     val obj = this.read(rm as ReadMap, i)
-    return Meta(tag!!, obj!!)
+    return Tag(tag!!, obj!!)
+  }
+
+  fun readQuote(rm: ERM, discard: Any, i: TokenIter): Any? {
+    i.next()
+    val obj = this.read(rm as ReadMap, i)
+    return List.of(Symbols.of("quote"), obj!!)
+  }
+
+  fun readMeta(rm: ERM, discard: Any, i: TokenIter): Any? {
+    val startToc = i.current()
+    i.next()
+    val meta = this.read(rm as ReadMap, i)
+    val obj = this.read(rm as ReadMap, i)
+    return Meta(meta, obj)
   }
 
   /**
@@ -268,7 +283,9 @@ object Readers {
       .put(TokenType.LBRACE, Reader::readMap)
       .put(TokenType.HASH_LBRACE, Reader::readSet)
 
-      .put(TokenType.META, Reader::readTag)
+      .put(TokenType.META, Reader::readMeta)
+      .put(TokenType.HASH, Reader::readTag)
+      .put(TokenType.QUOTE, Reader::readQuote)
 
       // RHS stuff that is an error by default
       .put(TokenType.RBRACE, Reader::readError)

@@ -102,4 +102,9 @@ object Keywords {
 /**
  * A container for "meta" tag syntax objects.
  */
-data class Meta(public val tag: Any, public val expr: Any);
+data class Meta(val meta: Any?, val expr: Any?);
+
+/**
+ * A container for #tag <> objects.
+ */
+data class Tag(val tag: Any, val expr: Any);

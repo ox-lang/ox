@@ -183,7 +183,7 @@ private class TokenScanner<T>(
           when (val escapedChar: Char? = ESCAPE_MAP.get(c, null)) {
             null -> throw ScannerException(
               start as StreamLocation<Object>,
-              String.format("Encountered illegal escaped character %c while scanning a string!", c))
+              "Encountered illegal escaped character $c (ord $i) while scanning a string!")
             else -> {
               escaped = false; buff.append(escapedChar)
             }
@@ -340,7 +340,7 @@ private class TokenScanner<T>(
     }
   }
 
-  public override fun next(): Token<T>? {
+  override fun next(): Token<T>? {
     val c: Int = this.read()
 
     if (c == -1) {
@@ -401,16 +401,16 @@ private class TokenScanner<T>(
     }
 
     // String scanning
-    when (tt) {
-      TokenType.STRING -> return scanString(tt, ch)
-      TokenType.SYMBOL -> return scanSymbolKw(tt, ch)
-      TokenType.COMMENT -> return scanComment(tt, ch)
-      TokenType.NUMBER -> return scanNumber(tt, ch)
-      else -> return Token(tt, curLoc, "$ch")
+    return when (tt) {
+      TokenType.STRING -> scanString(tt, ch)
+      TokenType.SYMBOL -> scanSymbolKw(tt, ch)
+      TokenType.COMMENT -> scanComment(tt, ch)
+      TokenType.NUMBER -> scanNumber(tt, ch)
+      else -> Token(tt, curLoc, "$ch")
     }
   }
 
-  public override fun remove() {
+  override fun remove() {
     throw UnsupportedOperationException()
   }
 }
@@ -418,20 +418,20 @@ private class TokenScanner<T>(
 // Forcing the generated class name
 object Scanners {
   @JvmStatic
-  public fun <T> scan(stream: Reader, streamIdentifier: T): Iterator<Token<T>> {
+  fun <T> scan(stream: Reader, streamIdentifier: T): Iterator<Token<T>> {
     // yo dawg I heard u leik streams
-    return TokenScanner<T>(PushbackReader(stream), streamIdentifier)
+    return TokenScanner(PushbackReader(stream), streamIdentifier)
   }
 
   @JvmStatic
-  public fun <T> scanStr(buff: String, streamIdentifier: T): Iterator<Token<T>> {
-    return scan<T>(StringReader(buff), streamIdentifier)
+  fun <T> scanStr(buff: String, streamIdentifier: T): Iterator<Token<T>> {
+    return scan(StringReader(buff), streamIdentifier)
   }
 
   @JvmStatic
-  public fun <T> scanStrEager(buff: String, streamIdentifier: T): Iterable<Token<T>> {
+  fun <T> scanStrEager(buff: String, streamIdentifier: T): Iterable<Token<T>> {
     var l = List<Token<T>>()
-    val iter = scanStr<T>(buff, streamIdentifier)
+    val iter = scanStr(buff, streamIdentifier)
     while (iter.hasNext()) {
       l = l.addLast(iter.next())
     }
@@ -441,7 +441,7 @@ object Scanners {
 
 object ScannerTest {
   @JvmStatic
-  public fun main(args: Array<String>) {
+  fun main(args: Array<String>) {
     val scanner = Scanners.scan(System.`in`.reader(), String.format("stdin"))
     while (scanner.hasNext()) {
       val obj = scanner.next()
