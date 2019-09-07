@@ -1,7 +1,7 @@
-package io.oxlang;
+package io.oxlang
 
-import kotlin.test.assertEquals;
-import org.junit.Test;
+import kotlin.test.assertEquals
+import org.junit.Test
 
 class ScannerTest {
   fun scanTypes(input: String, exId: String): kotlin.collections.List<TokenType> {
@@ -19,32 +19,32 @@ class ScannerTest {
         TokenType.RPAREN
       ),
       scanTypes("()", "test-1")
-    );
+    )
   }
 
   @Test fun testScanBrackets(): Unit {
     assertEquals(
-      listOf<TokenType>(
+      listOf(
         TokenType.LBRACKET,
         TokenType.RBRACKET
       ),
       scanTypes("[]", "test-2")
-    );
+    )
   }
 
   @Test fun testScanBraces(): Unit {
     assertEquals(
-      listOf<TokenType>(
+      listOf(
         TokenType.LBRACE,
         TokenType.RBRACE
       ),
       scanTypes("{}", "test-3")
-    );
+    )
   }
 
   @Test fun testScanSymbols(): Unit {
     assertEquals(
-      listOf<TokenType>(
+      listOf(
         TokenType.SYMBOL,
         TokenType.WHITESPACE,
         TokenType.SYMBOL,
@@ -58,7 +58,7 @@ class ScannerTest {
 
   @Test fun testPuncBreaksSymbols(): Unit {
     assertEquals(
-      listOf<TokenType>(
+      listOf(
         TokenType.SYMBOL,
 
         TokenType.LPAREN,
@@ -90,9 +90,9 @@ class ScannerTest {
     )
   }
 
-  @Test fun testScanKeyword(): Unit {
+  @Test fun testScanKeyword() {
     assertEquals(
-      listOf<TokenType>(
+      listOf(
         TokenType.KEYWORD,
         TokenType.WHITESPACE,
         TokenType.KEYWORD,
@@ -105,7 +105,7 @@ class ScannerTest {
     )
   }
 
-  @Test fun testScanNumber(): Unit {
+  @Test fun testScanNumber() {
     assertEquals(
       Token(TokenType.NUMBER, StreamLocation("test-7", 0, 0, 0), -13),
       scanOne("-13", "test-7")
@@ -122,7 +122,7 @@ class ScannerTest {
     )
   }
 
-  @Test fun testScanComment(): Unit {
+  @Test fun testScanComment() {
     assertEquals(
       Token(TokenType.COMMENT, StreamLocation("test-8", 0, 0, 0), "; foo"),
       scanOne("; foo", "test-8")
@@ -136,6 +136,25 @@ class ScannerTest {
         TokenType.NEWLINE
       ),
       scanTypes("foo ;bar\n", "test-9")
+    )
+  }
+
+  @Test fun testScanStr() {
+    assertEquals(
+      Token(TokenType.STRING,
+        StreamLocation("test-10", 0, 0, 0), "foo\tbar baz\nqux\r\b\"'{}()#{}[]"),
+      scanOne("\"foo\\tbar baz\nqux\r\b\\\"'{}()#{}[]\"", "test-10")
+    )
+  }
+
+  @Test fun testScanSet() {
+    assertEquals(
+      listOf(
+        TokenType.HASH_LBRACE,
+        TokenType.KEYWORD,
+        TokenType.RBRACE
+        ),
+      scanTypes("#{:foo}", "test-11")
     )
   }
 }
