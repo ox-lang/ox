@@ -44,4 +44,8 @@ class ReaderTest {
     assertEquals(Keywords.of("foo bar/baz"), read("::|foo bar/baz|", "test-4"))
     assertEquals(Keywords.of("+foo-bar-baz+"), read("::+foo-bar-baz+", "test-4"))
   }
+
+  @Test fun testReadNumber() {
+    assertEquals(1, read("1", "test-5"))
+  }
 }
