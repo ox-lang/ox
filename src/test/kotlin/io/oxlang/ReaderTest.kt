@@ -1,10 +1,9 @@
 package io.oxlang
 
-import io.lacuna.bifurcan.List.of
 import io.lacuna.bifurcan.Lists
 import io.lacuna.bifurcan.Sets
-import kotlin.test.assertEquals
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class ReaderTest {
   fun read(input: String, exId: String): Any? {
@@ -28,5 +27,12 @@ class ReaderTest {
     assertEquals(Symbols.of("foo.bar/baz"), read("foo.bar/baz", "test-1"))
     assertEquals(Symbols.of("foo bar/baz"), read("|foo bar/baz|", "test-1"))
     assertEquals(Symbols.of("+foo-bar-baz+"), read("+foo-bar-baz+", "test-1"))
+  }
+
+  @Test fun testReadKeyword() {
+    assertEquals(Keywords.of("foo"), read("::foo", "test-2"))
+    assertEquals(Keywords.of("foo.bar/baz"), read("::foo.bar/baz", "test-2"))
+    assertEquals(Keywords.of("foo bar/baz"), read("::|foo bar/baz|", "test-2"))
+    assertEquals(Keywords.of("+foo-bar-baz+"), read("::+foo-bar-baz+", "test-2"))
   }
 }
