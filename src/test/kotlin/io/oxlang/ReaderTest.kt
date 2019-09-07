@@ -48,4 +48,10 @@ class ReaderTest {
   @Test fun testReadNumber() {
     assertEquals(1, read("1", "test-5"))
   }
+
+  @Test fun testReadString() {
+    assertEquals("foo bar baz", read("\"foo bar baz\"", "test-6"))
+    assertEquals("\n\r\t\b\\", read("\"\n\r\t\b\\\\\"", "test-6"))
+    assertEquals("\n\r\t\b\\", read("\"\\n\\r\\t\\b\\\\\"", "test-6"))
+  }
 }
