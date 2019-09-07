@@ -21,7 +21,7 @@ import java.util.Iterator
 
 typealias ERM = Map<TokenType, Function<*>>
 typealias TokenIter = ICurrentIterator<Token<*>>
-typealias ReadFn = (Reader, ERM, TokenIter) -> Any?
+typealias ReadFn = (Reader, ERM, Any, TokenIter) -> Any?
 typealias ReadMap = Map<TokenType, ReadFn>
 
 /**
@@ -34,7 +34,7 @@ typealias ReadMap = Map<TokenType, ReadFn>
  */
 
 data class SyntaxObject(
-  val obj: Any,
+  val obj: Any?,
   val start: Token<*>? = null):
   Tagged
 {
@@ -72,7 +72,7 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
       i.next() // discard the start token
       var v = List<Any>()
       val sentinel = Object()
-      val srm = rm.put(endType, { _: Any, _: Any, _: Any -> sentinel }) as ReadMap
+      val srm = rm.put(endType, { _: Any, _: Any, _: Any, _: Any -> sentinel }) as ReadMap
       while (i.current().tokenType != endType) {
         val el = this.read(srm, i)
         if (el != sentinel)
@@ -85,24 +85,24 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
     }
   }
 
-  fun readError(_rm: ERM, i: TokenIter): Any? {
+  fun readError(_rm: ERM, discard: Any, i: TokenIter): Any? {
     val t = i.current()
     val ttype = t.tokenType
     throw ParseException(t.location, "Unmapped token type: $ttype")
   }
 
-  fun readNothing(_rm: ERM, i: TokenIter): Any? {
+  fun readNothing(_rm: ERM, discard: Any, i: TokenIter): Any? {
     i.next();
-    return null
+    return discard
   }
 
-  fun readValue(_rm: ERM, i: TokenIter): Any? {
+  fun readValue(_rm: ERM, discard: Any, i: TokenIter): Any? {
     val token = i.current()
     i.next()
     return token.value
   }
 
-  fun readList(rm: ERM, i: TokenIter): Any? {
+  fun readList(rm: ERM, discard: Any, i: TokenIter): Any? {
     return readListy(
       TokenType.LPAREN,
       TokenType.RPAREN,
@@ -113,7 +113,7 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
     )
   }
 
-  fun readSqList(rm: ERM, i: TokenIter): Any? {
+  fun readSqList(rm: ERM, discard: Any, i: TokenIter): Any? {
     return readListy(
       TokenType.LBRACKET,
       TokenType.RBRACKET,
@@ -124,7 +124,7 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
     )
   }
 
-  fun readSet(rm: ERM, i: TokenIter): Any {
+  fun readSet(rm: ERM, discard: Any, i: TokenIter): Any {
     return readListy(
       TokenType.HASH_LBRACE,
       TokenType.RBRACE,
@@ -135,7 +135,7 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
     )
   }
 
-  fun readMap(rm: ERM, i: TokenIter): Any {
+  fun readMap(rm: ERM, discard: Any, i: TokenIter): Any {
     val startLoc = i.current().location
     val kvs: Iterator<Any> = readListy(
       TokenType.LBRACE,
@@ -146,7 +146,7 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
       i) as Iterator<Any>
 
     val m = Maps.EMPTY.linear()
-    while(kvs.hasNext()) {
+    while (kvs.hasNext()) {
       val k = kvs.next()
       if (!kvs.hasNext())
         throw ParseException(startLoc, "Unmatched key $k")
@@ -156,7 +156,7 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
     return m.forked()
   }
 
-  fun readTag(rm: ERM, i: TokenIter): Any? {
+  fun readTag(rm: ERM, discard: Any, i: TokenIter): Any? {
     i.next()
     val tag = this.read(rm as ReadMap, i)
     val obj = this.read(rm as ReadMap, i)
@@ -167,10 +167,10 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
    * FIXME (arrdem 9/7/2019)
    *   Can this be factored out as a reader parameter?
    */
-  fun readSymbol(_rm: ERM, i: TokenIter): Any? {
+  fun readSymbol(_rm: ERM, discard: Any, i: TokenIter): Any? {
     val token = i.current()
     i.next()
-    return when(token.value as Symbol) {
+    return when (token.value as Symbol) {
       Symbols.of("null") -> null
       /**
        * FIXME (arrdem 9/7/2019)
@@ -193,17 +193,20 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
 
   open fun read(rm: ReadMap, i: TokenIter): Any? {
     // yo dawg I heard u leik streams
-    while (i.hasNext()) {
-      val current: Token<*> = i.current()
-      if (current == null) {
-        throw ParseException(null, "Ran out of input while reading")
-      }
-      val handler = rm.get(current.tokenType, notFound) as ReadFn
-      val res = handler(this, rm as ERM, i)
-      if (res != null)
-        return res
+    val startPos = i.current().location
+    val discard: Any = Object()
+    var read: Any? = discard
+
+    while (i.current() != null && read == discard) {
+      val handler = rm.get(i.current().tokenType, notFound) as ReadFn
+      read = handler(this, rm as ERM, discard, i)
     }
-    return null
+
+    if (read != discard) {
+      return read
+    } else {
+      throw ParseException(startPos, "Got end of file while reading!")
+    }
   }
 }
 
@@ -224,7 +227,7 @@ class SyntaxReader(private val notFound: ReadFn = Reader::readError as ReadFn):
       i.next() // discard the start token
       var v = List<Any>()
       val sentinel = Object()
-      val srm = rm.put(endType, { _: Any, _: Any, _: Any -> sentinel }) as ReadMap
+      val srm = rm.put(endType, { _: Any, _: Any, _: Any, _: Any -> sentinel }) as ReadMap
       while (i.current().tokenType != endType) {
         val el: SyntaxObject? = this.read(srm, i)
         if (el!!.obj != sentinel)
@@ -239,16 +242,8 @@ class SyntaxReader(private val notFound: ReadFn = Reader::readError as ReadFn):
 
   override fun read(rm: ReadMap, i: TokenIter): SyntaxObject? {
     // yo dawg I heard u leik streams
-    while (true) {
-      val current: Token<*> = i.current()
-      if (current == null) {
-        throw ParseException(null, "Ran out of input while reading")
-      }
-      val handler = rm.get(current.tokenType, notFound) as ReadFn
-      val res = handler(this, rm as ERM, i)
-      if (res != null)
-        return SyntaxObject(res, current)
-    }
+    val current: Token<*> = i.current()
+    return SyntaxObject(super.read(rm, i), current)
   }
 }
 
