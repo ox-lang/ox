@@ -157,26 +157,53 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
   }
 
   fun readTag(rm: ERM, i: TokenIter): Any? {
-    val pos = i.current().location
     i.next()
     val tag = this.read(rm as ReadMap, i)
     val obj = this.read(rm as ReadMap, i)
     return Meta(tag!!, obj!!)
   }
 
+  /**
+   * FIXME (arrdem 9/7/2019)
+   *   Can this be factored out as a reader parameter?
+   */
+  fun readSymbol(_rm: ERM, i: TokenIter): Any? {
+    val token = i.current()
+    i.next()
+    return when(token.value as Symbol) {
+      Symbols.of("null") -> null
+      /**
+       * FIXME (arrdem 9/7/2019)
+       *   Given a warning(s) / messages framework, warn on these or make 'em pluggable.
+       */
+      Symbols.of("nil") -> null
+      Symbols.of("none") -> null
+
+      Symbols.of("+nan"),
+      Symbols.of("+NaN"),
+      Symbols.of("NaN"),
+      Symbols.of("nan") -> Double.NaN
+
+      Symbols.of("-NaN"),
+      Symbols.of("-nan") -> -1 * Double.NaN
+
+      else -> token.value
+    }
+  }
+
   open fun read(rm: ReadMap, i: TokenIter): Any? {
     // yo dawg I heard u leik streams
-    while (true) {
+    while (i.hasNext()) {
       val current: Token<*> = i.current()
       if (current == null) {
         throw ParseException(null, "Ran out of input while reading")
       }
       val handler = rm.get(current.tokenType, notFound) as ReadFn
-      val start: StreamLocation<*> = i.current().location
       val res = handler(this, rm as ERM, i)
       if (res != null)
         return res
     }
+    return null
   }
 }
 
@@ -237,7 +264,7 @@ object Readers {
       // Atoms
       .put(TokenType.NUMBER, Reader::readValue)
       .put(TokenType.KEYWORD, Reader::readValue)
-      .put(TokenType.SYMBOL, Reader::readValue)
+      .put(TokenType.SYMBOL, Reader::readSymbol)
       .put(TokenType.STRING, Reader::readValue)
 
       // Lists
@@ -268,6 +295,10 @@ object Readers {
 
   fun read(rm: ReadMap, buff: String, streamIdentifier: Any): Any? {
     return read(rm, ByteArrayInputStream(buff.toByteArray()).reader(), streamIdentifier)
+  }
+
+  fun read(buff: String, streamIdentifier: Any): Any? {
+    return read(BASE_READ_MAP, buff, streamIdentifier)
   }
 }
 
