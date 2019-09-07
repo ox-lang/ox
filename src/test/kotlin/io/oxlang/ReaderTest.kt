@@ -47,6 +47,7 @@ class ReaderTest {
 
   @Test fun testReadNumber() {
     assertEquals(1, read("1", "test-5"))
+    assertEquals(-1, read("-1", "test-5"))
   }
 
   @Test fun testReadString() {
