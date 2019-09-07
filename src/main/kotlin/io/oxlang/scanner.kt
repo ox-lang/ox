@@ -34,7 +34,7 @@ data class StreamLocation<T>(
 }
 
 // Tokens are of a type
-public enum class TokenType {
+enum class TokenType {
   // lists are ()
   LPAREN,
   RPAREN,
@@ -75,7 +75,7 @@ public enum class TokenType {
 
 // Tokens themselves
 
-public data class Token<T>(
+data class Token<T>(
   val tokenType: TokenType,
   val location: StreamLocation<T>,
   val value: Any
@@ -91,7 +91,7 @@ public data class Token<T>(
 
 // Before we can define the scanner, we need the exception it throws
 
-public class ScannerException(
+class ScannerException(
   val location: StreamLocation<Object>,
   message: String,
   cause: Throwable? = null
@@ -197,7 +197,7 @@ private class TokenScanner<T>(
         }
       }
     }
-    return Token(tt, curLoc, buff.toString())
+    return Token(tt, start, buff.toString())
   }
 
   private fun scanSimpleSymbol(buff: StringBuilder) {
