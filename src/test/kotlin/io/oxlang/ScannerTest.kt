@@ -54,6 +54,24 @@ class ScannerTest {
       // Simple symbols
       scanTypes("foo-bar +foo-bar+ |baz qux|", "test-4")
     )
+
+    assertEquals(
+      Token(TokenType.SYMBOL,
+        StreamLocation("test-4", 0, 0, 0), Symbols.of("foo")),
+      scanOne("foo", "test-4")
+    )
+
+    assertEquals(
+      Token(TokenType.SYMBOL,
+        StreamLocation("test-4", 0, 0, 0), Symbols.of("foo bar baz")),
+      scanOne("|foo bar baz|", "test-4")
+    )
+
+    assertEquals(
+      Token(TokenType.SYMBOL,
+        StreamLocation("test-4", 0, 0, 0), Symbols.of("foo.bar/baz")),
+      scanOne("foo.bar/baz", "test-4")
+    )
   }
 
   @Test fun testPuncBreaksSymbols(): Unit {
