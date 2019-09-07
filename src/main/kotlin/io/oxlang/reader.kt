@@ -157,6 +157,10 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
     return m.forked()
   }
 
+  /**
+   * FIXME (arrdem 9/7/2019)
+   *   How to wire user constructors in here?
+   */
   fun readTag(rm: ERM, discard: Any, i: TokenIter): Any? {
     i.next()
     val tag = this.read(rm as ReadMap, i)
