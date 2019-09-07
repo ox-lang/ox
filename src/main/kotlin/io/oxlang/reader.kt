@@ -72,7 +72,7 @@ open class Reader(private val notFound: ReadFn = Reader::readError as ReadFn) {
       i.next() // discard the start token
       var v = List<Any>()
       val sentinel = Object()
-      val srm = rm.put(endType, { _: Any, _: Any, _: Any, _: Any -> sentinel }) as ReadMap
+      val srm = rm.put(endType) { _: Any, _: Any, _: Any, _: Any -> sentinel } as ReadMap
       while (i.current().tokenType != endType) {
         val el = this.read(srm, i)
         if (el != sentinel)
@@ -227,7 +227,7 @@ class SyntaxReader(private val notFound: ReadFn = Reader::readError as ReadFn):
       i.next() // discard the start token
       var v = List<Any>()
       val sentinel = Object()
-      val srm = rm.put(endType, { _: Any, _: Any, _: Any, _: Any -> sentinel }) as ReadMap
+      val srm = rm.put(endType) { _: Any, _: Any, _: Any, _: Any -> sentinel } as ReadMap
       while (i.current().tokenType != endType) {
         val el: SyntaxObject? = this.read(srm, i)
         if (el!!.obj != sentinel)
