@@ -1,4 +1,4 @@
-package io.oxlang
+package me.arrdem.ox
 
 import io.lacuna.bifurcan.Lists
 import io.lacuna.bifurcan.Maps

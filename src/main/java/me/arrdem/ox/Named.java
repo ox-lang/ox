@@ -1,4 +1,4 @@
-package io.oxlang;
+package me.arrdem.ox;
 
 public interface Named {
   public String name();

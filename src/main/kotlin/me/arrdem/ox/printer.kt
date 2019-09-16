@@ -5,19 +5,14 @@
  * Dual to the scanner/reader in theory.
  */
 
-package io.oxlang
+package me.arrdem.ox
 
 import io.lacuna.bifurcan.Maps
 import java.io.ByteArrayOutputStream
 import java.io.OutputStreamWriter
-import java.io.StringWriter
-import java.util.*
 import io.lacuna.bifurcan.List as BList
 import io.lacuna.bifurcan.Map as BMap
 import io.lacuna.bifurcan.Set as BSet
-import kotlin.jvm.functions.Function4
-import java.lang.Object
-
 
 
 /**

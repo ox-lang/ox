@@ -5,7 +5,7 @@
  * Really just a pile of small bits and bats that didn't deserve their own files.
  */
 
-package io.oxlang
+package me.arrdem.ox
 
 /**
  * Type aliases that win by default so we just use Zach's fine datastructures everywhere.
@@ -108,3 +108,7 @@ data class Meta(val meta: Any?, val expr: Any?);
  * A container for #tag <> objects.
  */
 data class Tag(val tag: Any, val expr: Any);
+
+fun <E : Throwable> sneakyThrow(e: Throwable) {
+  throw e as E
+}

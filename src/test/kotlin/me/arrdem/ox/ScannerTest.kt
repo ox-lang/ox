@@ -1,4 +1,4 @@
-package io.oxlang
+package me.arrdem.ox
 
 import kotlin.test.assertEquals
 import org.junit.Test

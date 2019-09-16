@@ -13,7 +13,7 @@
  * sharing any state between the two.
  */
 
-package io.oxlang
+package me.arrdem.ox
 
 import io.lacuna.bifurcan.Maps
 import java.io.ByteArrayInputStream
@@ -315,6 +315,10 @@ object Readers {
 
   fun read(buff: String, streamIdentifier: Any): Any? {
     return read(BASE_READ_MAP, buff, streamIdentifier)
+  }
+
+  fun read(rdr: java.io.Reader, streamIdentifier: Any): Any? {
+    return read(BASE_READ_MAP, rdr, streamIdentifier)
   }
 }
 

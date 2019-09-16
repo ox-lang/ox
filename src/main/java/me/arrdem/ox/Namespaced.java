@@ -1,4 +1,4 @@
-package io.oxlang;
+package me.arrdem.ox;
 
 public interface Namespaced<T extends Namespaced> extends Named {
   public T namespace();

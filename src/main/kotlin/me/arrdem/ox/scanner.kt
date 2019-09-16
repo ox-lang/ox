@@ -5,7 +5,7 @@
  * Used to implement the reader.
  */
 
-package io.oxlang
+package me.arrdem.ox
 
 import java.io.PushbackReader
 import java.io.Reader
