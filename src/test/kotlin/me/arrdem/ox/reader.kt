@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
-class ReaderTest {
+class reader {
   fun read(input: String, exId: String): Any? {
     return Readers.read(input, exId)
   }
