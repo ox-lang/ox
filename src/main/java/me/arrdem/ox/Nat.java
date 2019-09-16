@@ -2,13 +2,20 @@
  * @author Reid 'arrdem' McKenzie 2019-9-13
  *
  * The natural numbers.
+ *
  * Inspired by 'What about the natural numbers' ~ Runciman 1989
- * With thanks to Jose Manuel Calderon Trilla who presented this paper at PWLConf 2019.
+ *   https://dl.acm.org/citation.cfm?id=66989
+ *   http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.56.3442&rep=rep1&type=pdf
+ *
+ * With thanks to José Manuel Calderón Trilla who presented this paper at PWLConf 2019.
+ *   https://pwlconf.org/2019/jose-trilla/
  *
  * Provides an implementation of REALLY BIG NUMBERS modeled as a pair (BigInteger, [thunk]) where the
  * BigInt holds the realized portion of the number, and the thunks are continuations which
- * will produce addends when called. This allows the value of the Nat to be incrementally realized
- * under addition and only partially realized under subtraction.
+ * will produce addends when called. This allows the value of the Nat to be incrementally realized.
+ *
+ * Nat implements the usual operations - addition, subtraction (saturating at zero), multiplication
+ * and division (with div/0 defined to be infinity per Runciman).
  */
 
 package me.arrdem.ox;
@@ -21,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 
-public final class Nat implements Comparable<Nat> {
+public final class Nat implements Number<Nat> {
   private static IList<Function0<Nat>> FEL = (IList<Function0<Nat>>) Lists.EMPTY;
 
   private BigInteger value;
@@ -31,16 +38,11 @@ public final class Nat implements Comparable<Nat> {
   public static Nat ONE = Nat.of(BigInteger.ONE);
   public static Nat TWO = Nat.of(BigInteger.TWO);
   public static Nat TEN = Nat.of(BigInteger.TEN);
-  /**
-   * FIXME (arrdem 2019-09-13)
-   *   Is stepping by Long.MAX_VALUE reasonable here?
-   */
   public static Nat INFINITY = Nat.of(BigInteger.valueOf(Long.MAX_VALUE), () -> Nat.INFINITY);
 
   private Nat(BigInteger value, IList<Function0<Nat>> thunks) {
     assert value.compareTo(BigInteger.ZERO) >= 0;
     this.value = value;
-    assert this.thunks != null;
     this.thunks = thunks;
   }
 
@@ -105,6 +107,9 @@ public final class Nat implements Comparable<Nat> {
       Nat next = thunk.invoke();
       if (next != null) {
         this.value = this.value.add(next.value);
+        if(!next.thunks.equals(FEL))
+          this.thunks = Lists.concat(this.thunks, next.thunks);
+
         return true;
       }
     }
@@ -178,16 +183,19 @@ public final class Nat implements Comparable<Nat> {
    */
   public Nat multiply(Nat other) {
     // Multiplying by zero is the base case and zero
-    if(this.equals(ZERO) || (!other.thunks.equals(FEL) && other.value.equals(0)))
+    if(this.equals(ZERO) || (other.thunks.equals(FEL) && other.value.equals(0)))
       return ZERO;
 
-      // Multiplying realized numbers is done eagerly
+    else if(other.equals(ONE))
+      return this;
+
+    // Multiplying realized numbers is done eagerly
     else if (other.thunks.equals(FEL) && this.thunks.equals(FEL))
       return Nat.of(this.value.multiply(other.value));
 
-      // Otherwise we use the recursive lazy coding
+    // Otherwise we use the recursive lazy coding
     else
-      return Nat.of(1, () -> this.add(this.multiply(other.decs())));
+      return this.add(this).add(Nat.of(0, () -> this.multiply(other.subtract(TWO))));
   }
 
   /**
@@ -240,9 +248,8 @@ public final class Nat implements Comparable<Nat> {
   }
 
   /**
-   *
-   * @param other
-   * @return -1 if this is less than other, 0 if equal, 1 if this is greater
+   * Comparison. Which is hard because we want to realize as little of either side  as we can
+   * possibly get away with.
    */
   @Override
   public int compareTo(@NotNull Nat other) {
@@ -250,30 +257,32 @@ public final class Nat implements Comparable<Nat> {
       return 0;
 
     while(true) {
-      // If the other side is smaller and it can be stepped, step it.
-      if(!other.thunks.equals(Lists.EMPTY) &&
-        other.value.compareTo(this.value) <= 0)
-        other.maybeStep();
-
-        // If our side is smaller and it can be stepped, step it
-      else if (!this.thunks.equals(Lists.EMPTY) &&
-        this.value.compareTo(other.value) <= 0)
-        this.maybeStep();
-
-        // We've exhausted this value, other has more AND is gt -> lt
-      else if (this.thunks.equals(Lists.EMPTY) &&
-        !other.thunks.equals(Lists.EMPTY) &&
-        this.value.compareTo(other.value) < 0)
+      // We've exhausted this value, other has more AND is gt -> lt
+      if (this.thunks.equals(Lists.EMPTY) &&
+          this.value.compareTo(other.value) < 0)
         return -1;
 
-        // We've exhausted the other, and other's lt -> we're gt
-      else if (!this.thunks.equals(Lists.EMPTY) &&
-        other.thunks.equals(Lists.EMPTY) &&
-        other.value.compareTo(this.value) < 0)
+      // We've exhausted the other, and other's lt -> we're gt
+      else if (other.thunks.equals(Lists.EMPTY) &&
+               this.value.compareTo(other.value) > 0)
         return 1;
 
       // We've exhausted both
-      return this.value.compareTo(other.value);
+      else if (this.thunks.equals(Lists.EMPTY) &&
+               other.thunks.equals(Lists.EMPTY))
+        return this.value.compareTo(other.value);
+
+      else {
+        // If the other side is smaller and it can be stepped, step it.
+        if (!other.thunks.equals(Lists.EMPTY) &&
+            other.value.compareTo(this.value) <= 0)
+          other.maybeStep();
+
+          // If our side is smaller and it can be stepped, step it
+        else if (!this.thunks.equals(Lists.EMPTY) &&
+                 this.value.compareTo(other.value) <= 0)
+          this.maybeStep();
+      }
     }
   }
 
@@ -289,7 +298,7 @@ public final class Nat implements Comparable<Nat> {
   }
 
   public String toString() {
-    return String.format("Nat<%s, more?=%s>",
+    return String.format("<Nat %s, more?=%s>",
       this.value.toString(10),
       !this.thunks.equals(Lists.EMPTY));
   }
