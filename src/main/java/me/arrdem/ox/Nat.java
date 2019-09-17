@@ -104,6 +104,10 @@ public final class Nat implements Number<Nat> {
       Function0<Nat> thunk = this.thunks.first();
       this.thunks = this.thunks.removeFirst();
 
+      /**
+       * FIXME (arrdem 2019-09-16)
+       *   This could be optimized by skipping zero terms maybe?
+       */
       Nat next = thunk.invoke();
       if (next != null) {
         this.value = this.value.add(next.value);
@@ -183,7 +187,7 @@ public final class Nat implements Number<Nat> {
    */
   public Nat multiply(Nat other) {
     // Multiplying by zero is the base case and zero
-    if(this.equals(ZERO) || (other.thunks.equals(FEL) && other.value.equals(0)))
+    if(this.equals(ZERO) || (other.thunks.equals(FEL) && other.value.equals(BigInteger.ZERO)))
       return ZERO;
 
     else if(other.equals(ONE))
@@ -211,11 +215,11 @@ public final class Nat implements Number<Nat> {
    */
   private static final Function2<Nat, Nat, Function0<Nat>> f = ((Nat current, Nat other) -> () -> {
     Nat difference = current.subtract(other);
-    if (difference.compareTo(ZERO) > 0)
-      return Nat.f.invoke(difference, other).invoke();
-
-    else
+    if (current.compareTo(other) >= 0 && difference.compareTo(ZERO) >= 0) {
+      return Nat.of(1, () -> difference.divide(other));
+    } else {
       return ZERO;
+    }
   });
 
   public Nat divide(Nat other) {
