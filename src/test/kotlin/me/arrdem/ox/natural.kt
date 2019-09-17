@@ -11,6 +11,8 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
 class NaturalTest {
+  val workFactor: Int = 1000
+
   private fun rint(r: Random): BigInteger {
     val l = r.nextLong(0, 10000)
     if(l < 0)
@@ -44,11 +46,11 @@ class NaturalTest {
 
   @Test
   fun testIdentity() {
-    for (i in 0..1000)
+    for (i in 0..workFactor)
       assertEquals(Nat.of(i.toLong()), degenerateOf(i.toLong()))
 
     val random = Random(System.currentTimeMillis())
-    for (i in 1..1000) {
+    for (i in 1..workFactor) {
       val v = rint(random)
       assertEquals(Nat.of(v), degenerateOf(v))
       assertEquals(degenerateOf(v), Nat.of(v))
@@ -58,10 +60,12 @@ class NaturalTest {
   @Test
   fun testDegenerateAddition() {
     val random = Random(System.currentTimeMillis())
-    for (i in 1..1000) {
+    for (i in 1..workFactor) {
       val a = rint(random)
       val b = rint(random)
       val sum = a + b
+
+      println("$a + $b = $sum")
 
       assertEquals(Nat.of(a).add(Nat.of(b)), Nat.of(sum));
       assertEquals(degenerateOf(a).add(Nat.of(b)), Nat.of(sum));
@@ -73,17 +77,19 @@ class NaturalTest {
   @Test
   fun testDegenerateSubtraction() {
     val random = Random(System.currentTimeMillis())
-    for (i in 1..1000) {
+    for (i in 1..workFactor) {
       var a = rint(random)
       var b = rint(random)
 
       // Ensure that A is greater
-      if(a.compareTo(b) < 0) {
+      if(a < b) {
         val t = a
         a = b
         b = t
       }
       val difference = a.subtract(b)
+
+      println("$a - $b = $difference")
 
       assertEquals(Nat.of(a).subtract(Nat.of(b)), Nat.of(difference));
       assertEquals(Nat.of(a).subtract(degenerateOf(b)), Nat.of(difference));
@@ -95,7 +101,7 @@ class NaturalTest {
   @Test
   fun testDegenerateMultiplication() {
     val random = Random(System.currentTimeMillis())
-    for (i in 1..1000) {
+    for (i in 1..workFactor) {
       var a = rint(random, 100)
       var b = rint(random, 100)
       val product = a.multiply(b)
@@ -103,21 +109,21 @@ class NaturalTest {
       println("$a * $b = $product")
 
       assertEquals(Nat.of(a).multiply(Nat.of(b)), Nat.of(product))
-      //assertEquals(degenerateOf(a).multiply(Nat.of(b)).get(), product)
+      assertEquals(degenerateOf(a).multiply(Nat.of(b)).get(), product)
       assertEquals(Nat.of(a).multiply(degenerateOf(b)), Nat.of(product))
-      //assertEquals(degenerateOf(a).multiply(degenerateOf(b)), Nat.of(product))
+      assertEquals(degenerateOf(a).multiply(degenerateOf(b)), Nat.of(product))
     }
   }
 
   @Test
   fun testDegenerateDivision() {
     val random = Random(System.currentTimeMillis())
-    for (i in 1..1000) {
-      var a = rint(random)
-      var b = rint(random)
+    for (i in 1..workFactor) {
+      var a = rint(random).inc()
+      var b = rint(random).inc()
 
       // Ensure that A is greater
-      if(a.compareTo(b) < 0) {
+      if(a < b) {
         val t = a
         a = b
         b = t
