@@ -10,7 +10,6 @@ class CurrentIterator<T>(private val iter: Iterator<T>,
                          private var current: T? = if (iter.hasNext()) iter.next() else null):
   ICurrentIterator<T>
 {
-
   override fun current(): T {
     return current as T
   }
@@ -26,6 +25,7 @@ class CurrentIterator<T>(private val iter: Iterator<T>,
 }
 
 interface IPeekIterator<T>: ICurrentIterator<T> {
+  fun hasPeek(): Boolean
   fun peek(): T
 }
 
@@ -34,6 +34,10 @@ class PeekIterator<T>(private val iter: Iterator<T>,
                       private var next: T? = if (iter.hasNext()) iter.next() else null):
   IPeekIterator<T>
 {
+  override fun hasPeek(): Boolean {
+    return next != null || iter.hasNext()
+  }
+
   override fun peek(): T {
     return next as T
   }

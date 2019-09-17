@@ -3,7 +3,7 @@ package me.arrdem.ox
 import kotlin.test.assertEquals
 import org.junit.Test
 
-class scanner {
+class ScannerTest {
   fun scanTypes(input: String, exId: String): kotlin.collections.List<TokenType> {
     return Scanners.scanStrEager(input, exId).map { t: Token<String> -> t.tokenType}
   }
