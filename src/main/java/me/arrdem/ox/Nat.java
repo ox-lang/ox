@@ -82,19 +82,6 @@ public final class Nat implements Number<Nat> {
     return new Nat(BigInteger.ONE, FEL.addLast(() -> this));
   }
 
-  public Nat add(int other) {
-    if (other == 0) return this;
-    else return new Nat(BigInteger.valueOf(other), FEL.addLast(() -> this));
-  }
-
-  public Nat add(long other) {
-    return new Nat(BigInteger.valueOf(other), FEL.addLast(() -> this));
-  }
-
-  public Nat add(BigInteger other) {
-    return new Nat(other, FEL.addLast(() -> this));
-  }
-
   public Nat add(Nat other) {
     return new Nat(this.value.add(other.value), Lists.concat(this.thunks, other.thunks));
   }
@@ -124,18 +111,6 @@ public final class Nat implements Number<Nat> {
     return this.subtract(ONE);
   }
 
-  public Nat subtract(int other) {
-    return this.subtract(Nat.of(other));
-  }
-
-  public Nat subtract(long other) {
-    return this.subtract(Nat.of(other));
-  }
-
-  public Nat subtract(BigInteger other) {
-    return this.subtract(Nat.of(other));
-  }
-
   /**
    * Subtraction is implemented by LAZILY evaluating both ths and other until either other has been
    * fully evaluated, or the subtrand has been reduced to zero.
@@ -160,18 +135,6 @@ public final class Nat implements Number<Nat> {
           return ZERO;
       }
     }
-  }
-
-  public Nat multiply(int other) {
-    return this.multiply(Nat.of(other));
-  }
-
-  public Nat multiply(long other) {
-    return this.multiply(Nat.of(value));
-  }
-
-  public Nat multiply(BigInteger other) {
-    return this.multiply(Nat.of(value));
   }
 
   /**
@@ -213,7 +176,7 @@ public final class Nat implements Number<Nat> {
    * with a new thunk reduced by the divisor - so this way we're incrementally counting down. Not
    * ideal - but correct for deeply thunked structures eg the minimal infinity.
    */
-  private static final Function2<Nat, Nat, Function0<Nat>> f = ((Nat current, Nat other) -> () -> {
+  private static final Function2<Nat, Nat, Function0<Nat>> df = ((Nat current, Nat other) -> () -> {
     Nat difference = current.subtract(other);
     if (current.compareTo(other) >= 0 && difference.compareTo(ZERO) >= 0) {
       return Nat.of(1, () -> difference.divide(other));
@@ -233,14 +196,44 @@ public final class Nat implements Number<Nat> {
       return Nat.of(this.value.divide(other.value));
 
     else
-      return f.invoke(this, other).invoke();
+      return df.invoke(this, other).invoke();
   }
 
   /**
-   * Compute the remainder (modulus) of the division of this by other.
+   * There are two obvious strategies here. One is to compute the division, then as division rounds
+   * down multiply and subtract to get the loss. This is HUGELY expensive and undefined when
+   * computing modulus by zero, so instead we re-implement the division machinery as a lazy cons of
+   * 0-valued cells which perform one subtraction until the remainder is computed. Relative to the
+   * first strategy this saves us a "lazy" multiplication which must be forced completely for an
+   * equally "lazy" subtraction so the lexical complexity of duplication division is worthwhile.
    */
+  private static final Function2<Nat, Nat, Function0<Nat>> rf = ((Nat current, Nat other) -> () -> {
+    Nat difference = current.subtract(other);
+    System.out.println(String.format("current: %s, other: %s => %s", current, other, difference));
+    if (difference.compareTo(other) < 0) {
+      System.out.println(String.format("Yielding %s", difference));
+      return difference;
+    } else {
+      System.out.println("Not done yet...");
+      return Nat.of(0, () -> difference.remainder(other));
+    }
+  });
+
   public Nat remainder(Nat other) {
-    return ZERO;
+    if(other.equals(ZERO))
+      return INFINITY;
+
+    else if(this.equals(ZERO))
+      return ZERO;
+
+    else if(other.equals(ONE))
+      return ZERO;
+
+    else if(this.thunks.equals(FEL) && other.thunks.equals(FEL))
+      return Nat.of(this.value.remainder(other.value));
+
+    else
+      return rf.invoke(this, other).invoke();
   }
 
   /**
@@ -297,8 +290,7 @@ public final class Nat implements Number<Nat> {
     if (!(other instanceof Nat))
       return false;
 
-    Nat o = (Nat) other;
-    return this.compareTo(o) == 0;
+    return this.compareTo((Nat) other) == 0;
   }
 
   public String toString() {

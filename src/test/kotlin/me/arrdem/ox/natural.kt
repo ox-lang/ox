@@ -1,14 +1,9 @@
 package me.arrdem.ox
 
-import io.lacuna.bifurcan.Lists
-import io.lacuna.bifurcan.Maps
-import io.lacuna.bifurcan.Sets
 import org.junit.Test
 import java.math.BigInteger
 import kotlin.random.Random
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
 
 class NaturalTest {
   val workFactor: Int = 1000
@@ -136,6 +131,30 @@ class NaturalTest {
       assertEquals(Nat.of(a).divide(degenerateOf(b)), Nat.of(dividend));
       assertEquals(degenerateOf(a).divide(Nat.of(b)), Nat.of(dividend));
       assertEquals(degenerateOf(a).divide(degenerateOf(b)), Nat.of(dividend));
+    }
+  }
+
+  @Test
+  fun testDegenerateRemainder() {
+    val random = Random(System.currentTimeMillis())
+    for (i in 1..workFactor) {
+      var a = rint(random).inc()
+      var b = rint(random).inc()
+
+      // Ensure that A is greater
+      if(a < b) {
+        val t = a
+        a = b
+        b = t
+      }
+      val rem = a.remainder(b)
+
+      println("$a % $b = $rem")
+
+      assertEquals(Nat.of(a).remainder(Nat.of(b)), Nat.of(rem));
+      assertEquals(Nat.of(a).remainder(degenerateOf(b)), Nat.of(rem));
+      assertEquals(degenerateOf(a).remainder(Nat.of(b)), Nat.of(rem));
+      assertEquals(degenerateOf(a).remainder(degenerateOf(b)), Nat.of(rem));
     }
   }
 }
